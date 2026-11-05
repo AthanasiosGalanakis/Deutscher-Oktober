@@ -6,6 +6,20 @@ view-if: year = 1923 and month = 9 and e23_october_path = 0 and crisis = 0
 max-visits: 1
 priority: 3
 on-arrival: {!
+Q.e23_oct_directive = 0;
+if (Q.comintern_member == 1) {
+    // effort stays below what would close the directive by itself: the October's own end decides it
+    RG.directive({
+        id: 'october', title: 'The German October',
+        text: 'The Executive instructs the German section to prepare the armed rising: to fix the date, to arm the proletarian hundreds, to enter the governments of Saxony and Thuringia as the base of the revolution, and to give the signal when the Reichswehr marches.',
+        from: 'trotsky', months: 3,
+        goals: [{q: 'e23_rising_phase', op: '=', v: 1}],
+        reward: {funds: 3, favour: 20, faction: 'offensive'},
+        punish: 'rival', announce: false
+    });
+    Q.e23_oct_directive = 1;
+}
+RG.news('German communist leaders summoned to Moscow', 2);
 var L = {unionist: 'Heinrich Brandler', offensive: 'Ruth Fischer', luxemburgist: (Q.luxemburg_alive == 1 ? 'Rosa Luxemburg' : (Q.levi_in_party == 1 ? 'Paul Levi' : 'Ernst Meyer')), ultraleft: 'Karl Schröder'};
 Q.party_leader = L[Q.leading_faction];
 Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];
@@ -29,6 +43,12 @@ The plan is simple to describe. The party will enter the governments of Saxony a
 @date
 subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Moscow's plan in full. Money, arms and advisers; little room for our own judgement.
 on-arrival: {!
+RG.comply(25);
+RG.ecci('trotsky', 10);
+RG.ecci('zinoviev', 4);
+Q.comintern_rep = 'Karl Radek';
+RG.setRole('radek', 'Envoy of the Executive, in Germany for the October');
+RG.ledger('Accepted Moscow\'s plan for a German October, and Trotsky\'s date.', 'e23_plan');
 if (Q.lock_moscow_orders == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -48,6 +68,12 @@ The date is set and written in no document. Pyatakov and Radek leave for Berlin 
 @own_moment
 subtitle: The Right's answer. Moscow's help, on German terms. Trotsky is annoyed.
 on-arrival: {!
+RG.comply(15);
+RG.ecci('trotsky', -6);
+RG.ecci('radek', 5);
+Q.comintern_rep = 'Karl Radek';
+RG.setRole('radek', 'Envoy of the Executive, in Germany for the October');
+RG.ledger('Accepted Moscow\'s plan for a German October, on German terms.', 'e23_plan');
 Q.e23_october_path = 1;
 Q.e23_date_set = 0;
 Q.independence -= 4;
@@ -65,6 +91,11 @@ view-if: offensive_gone = 0
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
+RG.comply(25);
+RG.ecci('zinoviev', 6);
+RG.ecci('bukharin', 8);
+RG.ecci('trotsky', -2);
+RG.ledger('Committed the party to a rising in October 1923.', 'e23_plan');
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -84,9 +115,13 @@ The Left's resolution wins in Moscow over Brandler's objections. The rising will
 @refuse
 subtitle: The Spartacist verdict. Independence rises sharply; Moscow's money and patience run out.
 on-arrival: {!
+RG.defy();
+RG.ecci('zinoviev', -10);
+RG.ecci('trotsky', -10);
+RG.ecci('radek', 4);
 Q.e23_october_path = 0;
-Q.independence += 15;
-Q.moscow_subsidy = 0;
+Q.independence += 10;
+Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
 Q.offensive_satisfaction -= 12;
 Q.luxemburgist_satisfaction += 8;
 Q.lean_luxemburgist += 3;

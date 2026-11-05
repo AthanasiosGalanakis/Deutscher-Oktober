@@ -5,6 +5,7 @@ tags: event
 view-if: year = 1923 and month = 7
 max-visits: 1
 on-arrival: {!
+RG.news('The dollar passes a million marks', 3);
 Q.inflation = Math.min(100, Q.inflation + 8);
 Q.stability -= 5;
 for (var d of Q.districts) {
@@ -26,6 +27,8 @@ The unions are bankrupt: their dues are worthless before they reach the treasure
 subtitle: The Left's answer. Food for some, prison for others.
 view-if: offensive_gone = 0 or ultraleft_gone = 0
 on-arrival: {!
+RG.district('berlin', {militancy: 5, repression: 5});
+RG.district('saxony', {militancy: 5, repression: 4});
 Q.e23_inflation_line = 1;
 Q.militancy += 8;
 Q.repression += 6;

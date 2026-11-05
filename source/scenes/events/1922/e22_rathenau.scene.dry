@@ -5,6 +5,8 @@ tags: event
 view-if: year = 1922 and month = 6
 max-visits: 1
 on-arrival: {!
+RG.news('Rathenau murdered in the Grunewald', 3);
+RG.district('berlin', {militancy: 6});
 Q.rathenau_murdered = 1;
 Q.stability -= 6;
 Q.inflation = Math.min(100, Q.inflation + 4);
@@ -28,6 +30,8 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any agreement with the social democrats.
 on-arrival: {!
+RG.ecci('radek', 5);
+RG.ecci('lenin', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -51,6 +55,10 @@ The four organisations march together on 4 July. A week later the SPD leaders, u
 subtitle: The Left's call. Militant, and the SPD will not follow.
 view-if: offensive_gone = 0
 on-arrival: {!
+RG.startStrike('berlin');
+RG.district('halle', {militancy: 5});
+RG.district('saxony', {militancy: 5});
+RG.ecci('bukharin', 5);
 Q.e22_rathenau_front = 2;
 Q.militancy += 10;
 Q.repression += 6;
@@ -68,6 +76,10 @@ subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Rais
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids building armed formations.
 on-arrival: {!
+RG.district('berlin', {guards: 1.5});
+RG.district('saxony', {guards: 1.5});
+RG.district('halle', {guards: 1});
+RG.ecci('trotsky', 3);
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

@@ -33,7 +33,14 @@ A strike committee of fifteen is elected, seven of them Social Democrats. The SP
 
 @guard
 subtitle: Protects the strike; frightens the moderates.
-on-arrival: crisis_momentum += 4; red_guards_loyalty += 4; militancy += 3; spd_relation -= 2; lean_offensive += 1
+on-arrival: {!
+Q.crisis_momentum += 4;
+Q.red_guards_loyalty += 4;
+Q.militancy += 3;
+Q.spd_relation -= 2;
+Q.lean_offensive += 1;
+RG.district('berlin', {guards: 1});
+!}
 
 Grey windcheaters appear at the doors of the power stations and the council's hall. The police keep their distance.
 
@@ -41,6 +48,12 @@ Grey windcheaters appear at the doors of the power stations and the council's ha
 subtitle: Costs 1 fund. A national body for the councils, which may outlast the strike.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds to bring the delegates.
-on-arrival: resources -= 1; crisis_momentum += 5; worker_support += 3; lean_ultraleft += 1
+on-arrival: {!
+Q.resources -= 1;
+Q.crisis_momentum += 5;
+Q.worker_support += 3;
+Q.lean_ultraleft += 1;
+RG.startStrike('halle');
+!}
 
 Delegates from three hundred works arrive in Berlin by lorry and bicycle. The congress elects a national committee of the factory councils. The ADGB declares it illegitimate.

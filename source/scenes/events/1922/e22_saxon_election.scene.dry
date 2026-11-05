@@ -1,17 +1,37 @@
-title: A Workers' Majority in Saxony
-subtitle: The Saxon Landtag elections give the two workers' parties a majority.
+title: The Saxon Election
+subtitle: Saxony elects a new Landtag.
 new-page: true
 tags: event
 view-if: year = 1922 and month = 11
 max-visits: 1
 priority: 2
 on-arrival: {!
-Q.district_saxony_members *= 1.04;
+var r = RG.election('saxony', {
+    base: {spd: 40, kpd: 10, dnvp: 19, dvp: 19, ddp: 8},
+    size: 96,
+    kpdShare: 10.5,
+    bonus: (Q.e22_reunification == 1 ? 1 : 0) + (Q.e22_inflation_line == 1 ? 0.5 : 0)
+});
+Q.e22_sax_spd = r.seats.spd || 0;
+Q.e22_sax_right = (r.seats.dnvp || 0) + (r.seats.dvp || 0) + (r.seats.ddp || 0);
+Q.e22_sax_majority = Q.landtag_saxony_left_majority;
+Q.e22_sax_stood = Q.election_kpd_share > 0 ? 1 : 0;
+Q.e22_sax_gain = Q.election_kpd_seats - 10;
+if (Q.e22_sax_stood) {
+    Q.district_saxony_members *= 1 + Math.max(0, Q.election_kpd_share - 6) / 100;
+}
+if (Q.e22_sax_majority) {
+    RG.news('Saxony: the workers\' parties win a majority in the Landtag', 3);
+} else {
+    RG.news('Saxony: no majority for the workers\' parties', 3);
+}
 !}
 
-= A Workers' Majority in Saxony
+= The Saxon Election
 
-On 5 November Saxony elects a new Landtag. The SPD wins forty seats, the party wins ten, and together the two workers' parties hold fifty of the ninety-six. In Saxony, at least, the bourgeois parties can be outvoted.
+On 5 November Saxony elects a new Landtag. [? if e22_sax_stood = 1 : The party wins [+ election_kpd_share_display +] per cent of the vote and [+ election_kpd_seats +] seats. ?][? if e22_sax_stood = 0 : The party stands no candidates, on principle. ?] The SPD wins [+ e22_sax_spd +], and the bourgeois parties [+ e22_sax_right +] between them. [? if e22_sax_majority = 1 : Together the two workers' parties hold [+ election_left_seats +] of the ninety-six seats. In Saxony, at least, the bourgeois parties can be outvoted. ?][? if e22_sax_majority = 0 : The workers' parties hold [+ election_left_seats +] of the ninety-six seats, short of a majority. The Saxon SPD can govern only with the Democrats, or with our votes and theirs. ?]
+
+[? if e22_sax_gain >= 3 : It is the party's best result anywhere in Germany, and the Chemnitz district secretaries are photographed for the first time in their lives. ?][? if e22_sax_gain <= -3 : It is a disappointment: the hungry winter has not come to our lists. ?]
 
 The Saxon SPD is the most left-wing in Germany. Its members sing the *Internationale* at their meetings and many of them would rather govern with us than with the Democrats. Its leaders want our votes for a Social Democratic government. They ask what our price is.
 
@@ -31,6 +51,8 @@ if (Q.lock_united_front == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.e22_saxon_toleration = 1;
+RG.ecci('radek', 3);
+RG.district('saxony', {militancy: 2});
 Q.spd_relation += 6;
 Q.worker_support += 3;
 Q.district_saxony_loyalty += 6;
@@ -43,8 +65,8 @@ The SPD accepts most of our conditions on paper. A Social Democratic minority go
 
 @ministers
 subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Only possible if the Saxon SPD trusts us. Bold, and Berlin will be alarmed.
-choose-if: lock_united_front < 2 and spd_relation >= 35
-unavailable-subtitle: The SPD will not take communist ministers, or the line forbids it.
+choose-if: lock_united_front < 2 and spd_relation >= 35 and e22_sax_majority = 1
+unavailable-subtitle: The SPD will not take communist ministers without a majority, or the line forbids it.
 on-arrival: {!
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
@@ -52,6 +74,10 @@ if (Q.lock_united_front == 1) {
 }
 Q.e22_saxon_toleration = 3;
 Q.saxony_government = 1;
+RG.ledger('Communist ministers entered the Saxon government, a year early.', 'e22_sax_ministers');
+RG.news('Two communists join the Saxon cabinet', 2);
+RG.ecci('radek', 6);
+RG.ecci('zinoviev', -3);
 Q.spd_relation += 4;
 Q.worker_support += 4;
 Q.repression += 4;
@@ -67,6 +93,8 @@ After a month of talks, two communists take seats in the Saxon cabinet. It is th
 subtitle: The Left's answer. The SPD governs with the Democrats, and blames us.
 on-arrival: {!
 Q.e22_saxon_toleration = 2;
+RG.ecci('radek', -4);
+RG.ecci('zinoviev', 2);
 Q.spd_relation -= 6;
 Q.district_saxony_loyalty -= 5;
 Q.offensive_satisfaction += 6;

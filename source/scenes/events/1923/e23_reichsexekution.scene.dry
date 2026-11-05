@@ -6,6 +6,10 @@ view-if: year = 1923 and month = 10 and e23_reich_done = 0 and crisis = 0 and e2
 max-visits: 1
 priority: 2
 on-arrival: {!
+RG.district('saxony', {repression: 20});
+RG.district('thuringia', {repression: 10});
+RG.news('Reichswehr deposes the Saxon government', 3);
+RG.ledger('The Reichswehr deposed the workers\' government of Saxony.', 'e23_reichsexekution');
 Q.e23_reich_done = 1;
 Q.repression += 6;
 Q.spd_in_government = 0;
@@ -30,6 +34,8 @@ view-if: e23_october_done = 0
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
+RG.startStrike('saxony', true);
+RG.district('saxony', {militancy: 10});
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -56,6 +62,9 @@ The sirens of Chemnitz sound at noon. The hundreds take the station and the post
 @protest
 subtitle: Shows that Saxony's workers object. The army takes their names.
 on-arrival: {!
+RG.startStrike('saxony', true);
+RG.endStrike('saxony', 'crushed');
+RG.news('Soldiers fire on strikers in Freiberg', 2);
 if (!Q.e23_october_done) { Q.german_october = 0; Q.e23_october_done = 1; }
 Q.militancy += 3;
 Q.repression += 4;
@@ -69,6 +78,7 @@ For a day the Saxon works stand still. In Freiberg soldiers fire into a crowd of
 @yield
 subtitle: The careful course. No martyrs. The Left calls it capitulation.
 on-arrival: {!
+RG.district('saxony', {loyalty: -6, militancy: -5});
 if (!Q.e23_october_done) { Q.german_october = 0; Q.e23_october_done = 1; }
 Q.militancy -= 5;
 Q.worker_support -= 3;

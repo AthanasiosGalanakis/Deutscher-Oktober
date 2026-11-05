@@ -5,6 +5,7 @@ tags: event
 view-if: year = 1922 and month = 9
 max-visits: 1
 on-arrival: {!
+RG.news('Nuremberg: the Independents rejoin the SPD', 2);
 var L = {unionist: 'Heinrich Brandler', offensive: 'Ruth Fischer', luxemburgist: (Q.luxemburg_alive == 1 ? 'Rosa Luxemburg' : (Q.levi_in_party == 1 ? 'Paul Levi' : 'Ernst Meyer')), ultraleft: 'Karl Schröder'};
 Q.party_leader = L[Q.leading_faction];
 Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];

@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1922 and month = 5
 max-visits: 1
+on-arrival: {!
+RG.news('Lenin taken ill at Gorki: the doctors speak of overwork', 2);
+!}
 
 = The Eight-Hour Day
 
@@ -55,6 +58,7 @@ subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The 
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids occupations.
 on-arrival: {!
+RG.district('bavaria', {militancy: 5, repression: 4});
 if (Q.lock_councils == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

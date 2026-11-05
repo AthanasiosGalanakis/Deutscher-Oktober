@@ -6,6 +6,7 @@ view-if: year = 1923 and month = 11 and beer_hall_putsch = 0
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news(Q.bavaria_soviet == 2 ? 'Hitler and Ludendorff invade Red Bavaria, and are beaten' : 'Hitler putsch fails at the Odeonsplatz', 3);
 Q.beer_hall_putsch = 1;
 if (Q.spd_in_government && Q.dvp_in_government && Q.e22_workers_gov == 0) {
     Q.spd_in_government = 0;
@@ -34,6 +35,7 @@ The putsch has failed, but the danger has not. Half the officer corps sympathise
 @strike
 subtitle: The Left's answer. Militant; the authorities will treat us like the putschists.
 on-arrival: {!
+RG.ecci('zinoviev', 3);
 Q.militancy += 6;
 Q.repression += 5;
 Q.worker_support += 2;
@@ -49,6 +51,7 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
+RG.ecci('radek', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

@@ -6,6 +6,7 @@ view-if: year = 1923 and month = 7
 max-visits: 1
 priority: 2
 on-arrival: {!
+RG.news('Prussia bans the Anti-Fascist Day', 2);
 Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];
 Q.sa_strength += 3;
 !}
@@ -25,6 +26,11 @@ The Prussian government bans all open-air demonstrations for that day. Other sta
 @march
 subtitle: [? if lock_moscow_orders = 0 : Defies Moscow's advice. ?] The Left's answer. A test of strength with the police.
 on-arrival: {!
+RG.district('berlin', {repression: 8, militancy: 5});
+RG.ecci('radek', -6);
+RG.ecci('zinoviev', 5);
+RG.ecci('bukharin', 5);
+RG.news('Forty thousand defy the ban in Berlin', 3);
 Q.e23_antifascist_day = 1;
 Q.militancy += 8;
 Q.repression += 8;
@@ -41,6 +47,10 @@ In Berlin forty thousand march despite the ban. The Schupo charge on the Alexand
 @indoor
 subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Moscow's advice. The Right's caution; the Left calls it a retreat.
 on-arrival: {!
+RG.district('saxony', {militancy: 4, guards: 1});
+RG.district('thuringia', {militancy: 4});
+RG.ecci('radek', 5);
+RG.ecci('zinoviev', -4);
 if (Q.lock_moscow_orders == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -61,6 +71,7 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any appeal to the SPD.
 on-arrival: {!
+RG.ecci('radek', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

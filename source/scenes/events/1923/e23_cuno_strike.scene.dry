@@ -6,6 +6,7 @@ view-if: year = 1923 and month = 8 and e22_workers_gov = 0 and e23_cuno_done = 0
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('Berlin\'s factory councils call a general strike against Cuno', 3);
 var L = {unionist: 'Heinrich Brandler', offensive: 'Ruth Fischer', luxemburgist: (Q.luxemburg_alive == 1 ? 'Rosa Luxemburg' : (Q.levi_in_party == 1 ? 'Paul Levi' : 'Ernst Meyer')), ultraleft: 'Karl Schröder'};
 Q.party_leader = L[Q.leading_faction];
 Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];
@@ -87,6 +88,10 @@ var m = 36 + Q.worker_support * 0.2 + (Q.unity - 50) * 0.1 + Q.e23_cuno_bonus;
 if (Q.e23_inflation_line == 2) { m += 5; }
 if (Q.red_guards_strength >= 20) { m += 3; }
 Q.crisis_momentum = Math.max(20, Math.min(62, m));
+RG.startStrike('berlin', true);
+RG.startStrike('hamburg', true);
+RG.startStrike('saxony', true);
+if (Q.e23_cuno_aim == 3) { RG.district('berlin', {guards: 1.5, repression: 4}); }
 !}
 
 = Three Million on Strike

@@ -6,6 +6,9 @@ view-if: crisis_october = 1 and crisis_time = 1 and e23_rising_phase = 0 and e23
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.district('saxony', {repression: 15});
+RG.district('thuringia', {repression: 8});
+RG.news('General Müller bans the hundreds in Saxony', 3);
 Q.e23_muller_done = 1;
 Q.repression += 5;
 !}
@@ -26,6 +29,7 @@ The rising was meant to begin when the Reichswehr marched on Saxony. The Reichsw
 @defy
 subtitle: Shows our strength and commits our people. The army will take note of every name.
 on-arrival: {!
+RG.district('saxony', {militancy: 6, repression: 5});
 Q.crisis_momentum += 6;
 Q.repression += 6;
 Q.red_guards_loyalty += 5;
@@ -39,6 +43,7 @@ Twenty thousand hundreds march through Chemnitz on Sunday. The Reichswehr watche
 @hide
 subtitle: The careful course. The arms survive; the workers wonder.
 on-arrival: {!
+RG.district('saxony', {militancy: -3});
 Q.crisis_momentum -= 2;
 Q.red_guards_arms += 3;
 Q.unity += 3;
@@ -71,6 +76,10 @@ view-if: offensive_gone = 0
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
+RG.startStrike('saxony', true);
+RG.startStrike('thuringia', true);
+RG.startStrike('berlin', true);
+RG.news('The rising begins a week early', 3);
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

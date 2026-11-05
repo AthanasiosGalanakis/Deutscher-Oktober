@@ -18,6 +18,8 @@ The military apparatus counted the party's weapons for the plan. The result was 
 @raid
 subtitle: [? if e23_rising_phase = 1 : The fighting needs rifles now. ?] More arms, and blood.
 on-arrival: {!
+RG.district('saxony', {guards: 1});
+RG.district('halle', {guards: 1, repression: 4});
 Q.red_guards_arms += 8;
 Q.repression += 5;
 Q.crisis_momentum += (Q.e23_rising_phase == 1) ? 7 : 4;
@@ -42,6 +44,7 @@ Russian money, Dutch smugglers, a barge on the Elbe. Most of the crates arrive. 
 @share
 subtitle: Every district gets something. Nobody gets enough.
 on-arrival: {!
+for (var ad of Q.districts) { RG.district(ad, {guards: 0.3}); }
 Q.red_guards_loyalty += 5;
 Q.unity += 3;
 Q.crisis_momentum += 3;

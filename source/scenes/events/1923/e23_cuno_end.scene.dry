@@ -6,6 +6,7 @@ view-if: crisis_cuno = 1 and crisis_time >= 2
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('Cuno resigns: Stresemann forms a great coalition', 3);
 var m = Q.crisis_momentum;
 Q.e23_cuno_result = m >= 72 ? 1 : (m >= 40 ? 2 : 3);
 Q.chancellor = 'Gustav Stresemann';
@@ -34,6 +35,12 @@ view-if: e23_cuno_result = 1
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
+for (var sd of Q.districts) { if (Q['district_' + sd + '_strike']) { RG.district(sd, {guards: 1, militancy: 6}); } }
+RG.ecci('zinoviev', -4);
+RG.ecci('radek', -6);
+RG.ecci('bukharin', 6);
+RG.ledger('The Cuno strike became a rising, without a plan and without Moscow.', 'e23_cuno_rising');
+RG.news('Hundreds seize Berlin power stations', 3);
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -62,6 +69,10 @@ The council of the Berlin works calls for the arming of the workers. The hundred
 subtitle: The party's prestige rises, and many strikers join.
 view-if: e23_cuno_result <= 2
 on-arrival: {!
+for (var sd of Q.districts) { if (Q['district_' + sd + '_strike']) { RG.endStrike(sd, 'won'); } }
+RG.ecci('zinoviev', 8);
+RG.ecci('trotsky', 6);
+RG.ledger('The Cuno strike, led by the party, brought down the government.', 'e23_cuno_won');
 Q.e23_cuno_done = 1;
 Q.crisis = 0; Q.crisis_cuno = 0; Q.crisis_name = 0; Q.crisis_goal = 0;
 Q.worker_support += 6;
@@ -79,6 +90,9 @@ The factory councils vote to return to work on 14 August. Tens of thousands join
 @retreat
 subtitle: The strike ends with its organisation intact, and little else.
 on-arrival: {!
+for (var sd of Q.districts) { if (Q['district_' + sd + '_strike']) { RG.endStrike(sd, ''); } }
+RG.ecci('zinoviev', -5);
+RG.ecci('radek', 2);
 Q.e23_cuno_done = 1;
 Q.crisis = 0; Q.crisis_cuno = 0; Q.crisis_name = 0; Q.crisis_goal = 0;
 Q.worker_support -= 2;

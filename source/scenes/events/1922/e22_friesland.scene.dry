@@ -21,6 +21,8 @@ Half the Central Committee wants him gone by the end of the month. The other hal
 @expel
 subtitle: Moscow and the Left are satisfied. Some members follow him out.
 on-arrival: {!
+RG.ecci('zinoviev', 5);
+RG.news('Friesland expelled from the party', 2);
 Q.e22_friesland = 1;
 Q.independence -= 6;
 Q.unity += 3;
@@ -35,6 +37,8 @@ The Central Committee votes him out. Reuter takes a few hundred Berlin members w
 @debate
 subtitle: The Spartacist answer. The party grows more independent, and Moscow notices.
 on-arrival: {!
+RG.ecci('zinoviev', -6);
+RG.ecci('radek', -3);
 Q.e22_friesland = 2;
 Q.independence += 8;
 Q.lean_luxemburgist += 2;

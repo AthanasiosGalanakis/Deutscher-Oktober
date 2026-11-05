@@ -5,6 +5,7 @@ tags: event
 view-if: year = 1922 and month = 12
 max-visits: 1
 on-arrival: {!
+RG.news('Germany declared in default: Poincaré prepares to march', 3);
 Q.inflation = Math.min(100, Q.inflation + 4);
 Q.e22_red_ruhr = (Q.ruhr_red_army == 2) ? 1 : 0;
 !}
@@ -35,6 +36,7 @@ Q.worker_support += 2;
 @french
 subtitle: The internationalist answer. The Spartacists and the Left Radicals approve; the nationalists howl.
 on-arrival: {!
+RG.ecci('zinoviev', 2);
 Q.e22_ruhr_line = 2;
 Q.world_revolution += 3;
 Q.luxemburgist_satisfaction += 4;
@@ -48,6 +50,7 @@ Marcel Cachin and the French party promise agitation among the French conscripts
 @national
 subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Radek's private advice. Popular in some quarters, and dangerous.
 on-arrival: {!
+RG.ecci('radek', 5);
 if (Q.lock_moscow_orders == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

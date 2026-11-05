@@ -6,6 +6,7 @@ view-if: year = 1923 and month = 3
 max-visits: 1
 priority: 2
 on-arrival: {!
+RG.news('Zeigner elected Minister-President of Saxony', 2);
 Q.e23_had_sax = Q.saxony_government ? 1 : 0;
 !}
 
@@ -24,6 +25,8 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids keeping Social Democrats in office.
 on-arrival: {!
+RG.district('saxony', {guards: 1.5});
+RG.ecci('radek', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -45,6 +48,9 @@ view-if: saxony_government = 0
 choose-if: lock_united_front < 2 and spd_relation >= 40
 unavailable-subtitle: Zeigner's party will not take communist ministers yet, or the line forbids it.
 on-arrival: {!
+RG.ledger('Communist ministers joined Zeigner\'s government in the spring of 1923.', 'e23_zeigner_ministers');
+RG.ecci('radek', 5);
+RG.ecci('zinoviev', -3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -64,6 +70,7 @@ Two communists join Zeigner's cabinet in the spring. In Berlin, the Reichswehr m
 @refuse
 subtitle: The Left's answer. Zeigner turns to the Democrats; Saxony's workers blame us.
 on-arrival: {!
+RG.ecci('radek', -4);
 Q.e23_zeigner = 2;
 Q.saxony_government = 0;
 Q.spd_relation -= 7;

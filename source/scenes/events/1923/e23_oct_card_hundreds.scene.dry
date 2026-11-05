@@ -18,6 +18,7 @@ The hundreds are workers, not soldiers. They drill on Sunday mornings and go to 
 @all
 subtitle: Many fighters, and many targets.
 on-arrival: {!
+RG.district(RG.target('guards'), {guards: 1.5, repression: 4});
 Q.red_guards_strength += 6;
 Q.crisis_momentum += (Q.e23_rising_phase == 1) ? 7 : 3;
 Q.repression += 5;
@@ -40,6 +41,7 @@ The apparatus forms shock companies of veterans from 1920, with machine guns and
 @guard
 subtitle: The strike holds; the army is not provoked.
 on-arrival: {!
+RG.district(RG.target('strike'), {loyalty: 4});
 Q.worker_support += 3;
 Q.crisis_momentum += 3;
 Q.spd_relation += 2;
