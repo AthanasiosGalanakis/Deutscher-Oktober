@@ -1,0 +1,56 @@
+title: The Saxon Question
+subtitle: The congress debates the workers' government.
+view-if: congress_leipzig = 1 and congress_closing = 0 and e23_lz_saxony_used = 0
+on-arrival: {!
+Q.month_actions += 1;
+Q.e23_lz_saxony_used = 1;
+Q.e23_lz_sax_ours = (Q.saxony_government == 1 || Q.e22_saxon_toleration == 1) ? 1 : 0;
+!}
+frequency: 150
+is-card: true
+new-page: true
+tags: congress
+
+= The Saxon Question
+
+The longest debate of the congress is about one Land. [? if e23_lz_sax_ours = 1 : In Dresden a Social Democratic government holds office with our votes. ?][? if e23_lz_sax_ours = 0 : In Dresden the Social Democrats govern without us, and invite us to change our minds. ?] Thalheimer says a workers' government in Saxony would be the first step to power. Fischer says it would be the first step into a coalition. Both are partly right, which is why the hall is so loud.
+
+- @road: Put Saxony at the centre: the road to power runs through Dresden.
+- @street: Put the Ruhr and the street at the centre.
+- @both: Propose that the congress decide on Saxony case by case.
+
+@road
+subtitle: The Right's argument. It wins the Saxon and Thuringian delegates who are not yet ours.
+on-arrival: {!
+var n = RG.congress.convert('saxony', 0.3) + RG.congress.convert('thuringia', 0.3);
+if (Q.unionist_gone == 0) { RG.congress.swayTo('unionist', 0.03); }
+RG.congress.tally();
+Q.e23_lz_moved = n;
+RG.district('saxony', {loyalty: 4});
+Q.lean_unionist += 1;
+!}
+
+The Saxon delegates cheer every sentence about the control committees and the hundreds. [? if e23_lz_moved > 0 : [+ e23_lz_moved +] of them, and of the Thuringians, come over to us. ?] Elsewhere in the hall, the Right gains a little ground.
+
+@street
+subtitle: The Left's argument. It wins Berlin and Hamburg delegates who are not yet ours.
+on-arrival: {!
+var n = RG.congress.convert('berlin', 0.25) + RG.congress.convert('hamburg', 0.25);
+if (Q.offensive_gone == 0) { RG.congress.swayTo('offensive', 0.03); }
+RG.congress.tally();
+Q.e23_lz_moved = n;
+Q.militancy += 2;
+Q.lean_offensive += 1;
+!}
+
+The speakers of the Left say a government in Dresden is worth less than a strike in Essen. [? if e23_lz_moved > 0 : [+ e23_lz_moved +] Berlin and Hamburg delegates come over to us. ?] Elsewhere in the hall, the Left gains a little ground.
+
+@both
+subtitle: Calms the hall. Wins few votes, and costs fewer.
+on-arrival: {!
+RG.congress.sway(0.03);
+RG.congress.bitter(-3);
+Q.unity += 2;
+!}
+
+The congress refers the Saxon question to the new Zentrale, with a resolution both sides vote for. [? if congress_last_moved > 0 : [+ congress_last_moved +] tired delegates are grateful enough to vote with us on the theses. ?]

@@ -6,6 +6,8 @@ view-if: year = 1923 and month = 1
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('French and Belgian troops occupy the Ruhr', 3);
+RG.district('ruhr', {repression: 12, militancy: 8});
 Q.ruhr_occupied = 1;
 Q.inflation = Math.min(100, Q.inflation + 10);
 Q.stability -= 6;
@@ -34,6 +36,7 @@ The nation is at war again, without guns. The party must decide which side it is
 @both
 subtitle: The Right's line. Holds the party between the camps and wins a hearing.
 on-arrival: {!
+RG.ecci('radek', 4);
 Q.e23_ruhr_line = 1;
 Q.worker_support += 4;
 Q.unionist_satisfaction += 6;
@@ -46,6 +49,8 @@ Our leaflets in the Ruhr say the French soldiers are workers in uniform and the 
 @international
 subtitle: The Spartacist answer. Internationalist, and it brings arrests on both sides of the border.
 on-arrival: {!
+RG.ecci('zinoviev', 3);
+RG.district('ruhr', {repression: 4});
 Q.e23_ruhr_line = 2;
 Q.world_revolution += 4;
 Q.repression += 5;
@@ -62,6 +67,11 @@ subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The 
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids occupations.
 on-arrival: {!
+RG.startStrike('ruhr');
+RG.district('ruhr', {guards: 2, repression: 8});
+RG.ecci('bukharin', 6);
+RG.ecci('radek', -5);
+RG.news('Pit committees take over abandoned Ruhr mines', 2);
 if (Q.lock_councils == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -84,6 +94,7 @@ Q.lean_ultraleft += 1;
 @national
 subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Radek's national line. Some nationalists listen; many of our own are disgusted.
 on-arrival: {!
+RG.ecci('radek', 6);
 if (Q.lock_moscow_orders == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

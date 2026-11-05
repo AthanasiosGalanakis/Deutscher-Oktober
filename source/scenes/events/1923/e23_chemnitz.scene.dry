@@ -6,6 +6,7 @@ view-if: crisis_october = 1 and crisis_time >= 2 and e23_rising_phase = 0 and e2
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('Chemnitz: the factory councils of Saxony meet', 2);
 Q.e23_chemnitz_done = 1;
 var L = {unionist: 'Heinrich Brandler', offensive: 'Ruth Fischer', luxemburgist: (Q.luxemburg_alive == 1 ? 'Rosa Luxemburg' : (Q.levi_in_party == 1 ? 'Paul Levi' : 'Ernst Meyer')), ultraleft: 'Karl Schröder'};
 Q.party_leader = L[Q.leading_faction];
@@ -29,6 +30,10 @@ In Hamburg, the district leaders are waiting for a courier from this hall. In Be
 @call_off
 subtitle: What history did. The party survives, and the word may already have gone to Hamburg.
 on-arrival: {!
+RG.news('Chemnitz conference refers the general strike to a commission', 3);
+RG.ecci('radek', 3);
+RG.ecci('zinoviev', -6);
+RG.ecci('trotsky', -8);
 Q.e23_rising_phase = 2;
 Q.crisis_momentum -= 10;
 Q.unionist_satisfaction += 3;
@@ -42,6 +47,12 @@ The proposal goes to a commission. That night the Zentrale meets in Chemnitz and
 @stop_courier
 subtitle: The rising is called off everywhere. No martyrs, no victory, and a furious Left.
 on-arrival: {!
+if (Q.directive_active && Q.directive_id == 'october') { RG.directiveResolve('fail'); Q.directive_reckoning = 0; Q.e23_oct_verdict = 1; }
+RG.ledger('Called off the German October at Chemnitz, everywhere and in time.', 'e23_stopped');
+RG.ecci('zinoviev', -10);
+RG.ecci('trotsky', -10);
+RG.ecci('radek', 4);
+RG.news('Reichswehr in Saxony: no rising', 3);
 Q.e23_rising_phase = 3;
 Q.german_october = 0;
 Q.e23_october_done = 1;
@@ -61,6 +72,12 @@ subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The 
 choose-if: lock_uprising < 2 and e23_spd_ready = 1
 unavailable-subtitle: The SPD delegates will not stay, or the line forbids a rising.
 on-arrival: {!
+RG.startStrike('saxony', true);
+RG.startStrike('thuringia', true);
+RG.startStrike('halle', true);
+RG.district('saxony', {militancy: 10, guards: 2});
+RG.ecci('trotsky', 6);
+RG.news('General strike in Saxony: the hundreds take the stations', 3);
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -85,6 +102,12 @@ subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The 
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
+RG.startStrike('saxony', true);
+RG.spreadStrike('saxony');
+RG.district('saxony', {militancy: 10});
+RG.ecci('bukharin', 6);
+RG.ecci('zinoviev', 4);
+RG.news('Communists vote the general strike alone: the German revolution begins', 3);
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

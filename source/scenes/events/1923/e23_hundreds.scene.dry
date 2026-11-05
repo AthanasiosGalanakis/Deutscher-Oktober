@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1923 and month = 2
 max-visits: 1
+on-arrival: {!
+RG.news('Proletarian hundreds drill in Saxony and Thuringia', 2);
+!}
 
 = The Proletarian Hundreds
 
@@ -22,6 +25,11 @@ subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] More
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed formations.
 on-arrival: {!
+RG.district('saxony', {guards: 3});
+RG.district('thuringia', {guards: 2});
+RG.district('berlin', {guards: 1.5});
+RG.district('halle', {guards: 1});
+RG.ecci('trotsky', 4);
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -45,6 +53,10 @@ subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The 
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
+RG.district('saxony', {loyalty: 3, militancy: 3});
+RG.district('thuringia', {loyalty: 3, militancy: 3});
+RG.district('berlin', {loyalty: 3});
+RG.ecci('radek', 4);
 if (Q.lock_councils == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -64,6 +76,10 @@ The control committees become the most popular thing the party has ever done. Ho
 @apparatus
 subtitle: Costs independence. Better arms and secret officers; Moscow pays.
 on-arrival: {!
+RG.district('berlin', {guards: 1});
+RG.district('saxony', {guards: 2});
+RG.ecci('trotsky', 6);
+RG.ecci('zinoviev', 3);
 Q.e23_hundreds = 3;
 Q.red_guards_arms += 10;
 Q.red_guards_loyalty += 6;

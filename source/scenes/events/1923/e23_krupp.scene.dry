@@ -4,6 +4,10 @@ new-page: true
 tags: event
 view-if: year = 1923 and month = 3
 max-visits: 1
+on-arrival: {!
+RG.news('French soldiers kill thirteen workers at Krupp', 3);
+RG.district('ruhr', {militancy: 8});
+!}
 
 = Easter Saturday at Krupp
 
@@ -22,6 +26,7 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids a common march with the reformist unions.
 on-arrival: {!
+RG.ecci('radek', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -39,6 +44,10 @@ On 10 April three hundred thousand follow the coffins. Our banners say "Murdered
 subtitle: The Left's call. The Ruhr Left is ready; both armies are watching.
 view-if: offensive_gone = 0 or ultraleft_gone = 0
 on-arrival: {!
+RG.startStrike('ruhr');
+RG.spreadStrike('ruhr');
+RG.district('ruhr', {repression: 6});
+RG.ecci('bukharin', 4);
 Q.e23_krupp = 2;
 Q.militancy += 10;
 Q.repression += 7;
@@ -55,6 +64,8 @@ For three days the strike holds from Duisburg to Dortmund. Our pit committees ta
 @soldiers
 subtitle: The internationalist answer. Some French soldiers listen; the French courts do not.
 on-arrival: {!
+RG.ecci('zinoviev', 2);
+RG.district('ruhr', {repression: 3});
 Q.e23_krupp = 3;
 Q.world_revolution += 3;
 Q.luxemburgist_satisfaction += 5;

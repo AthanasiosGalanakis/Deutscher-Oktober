@@ -6,6 +6,7 @@ view-if: year = 1922 and month = 10
 max-visits: 1
 priority: 2
 on-arrival: {!
+RG.news('Mussolini takes power in Rome', 3);
 Q.sa_strength += 3;
 Q.nsdap_relation = 0;
 !}

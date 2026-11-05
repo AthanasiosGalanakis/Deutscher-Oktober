@@ -17,7 +17,12 @@ The printers of the Reichsdruckerei are still out, and so are the private firms 
 
 @picket
 subtitle: The strongest pressure on the government. The police will try to break it.
-on-arrival: crisis_momentum += 7; repression += 3; red_guards_loyalty += 2
+on-arrival: {!
+Q.crisis_momentum += 7;
+Q.repression += 3;
+Q.red_guards_loyalty += 2;
+RG.district('berlin', {repression: 3, militancy: 3});
+!}
 
 The printers and the hundreds stand outside the Reichsdruckerei in shifts. A police charge on the second night is beaten back with cobblestones.
 

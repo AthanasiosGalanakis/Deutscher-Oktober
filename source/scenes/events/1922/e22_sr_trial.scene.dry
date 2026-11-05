@@ -18,6 +18,7 @@ The SPD press runs the trial on its front page every day. In the factories, our 
 @defend
 subtitle: Loyal to Moscow. The social democrats have a weapon against us.
 on-arrival: {!
+RG.ecci('zinoviev', 4);
 Q.e22_sr_trial = 1;
 Q.independence -= 5;
 Q.spd_relation -= 6;
@@ -31,6 +32,8 @@ Q.lean_offensive += 1;
 @protest
 subtitle: The Spartacist answer. More independence; Moscow takes offence.
 on-arrival: {!
+RG.ecci('zinoviev', -6);
+RG.ecci('lenin', -3);
 Q.e22_sr_trial = 2;
 Q.independence += 8;
 Q.spd_relation += 4;

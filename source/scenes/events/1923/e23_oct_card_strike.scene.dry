@@ -18,6 +18,7 @@ Every plan of the rising begins with a general strike. Without it the hundreds a
 @railways
 subtitle: If the trains stop, the army cannot concentrate. The railwaymen must agree.
 on-arrival: {!
+if (Q.worker_support >= 35 || Q.e23_rail_joined == 1) { RG.startStrike('halle', true); RG.startStrike('berlin', true); }
 var ok = Q.worker_support >= 35 || Q.e23_rail_joined == 1;
 Q.e23_rail_ok = ok ? 1 : 0;
 Q.crisis_momentum += ok ? 8 : 2;
@@ -30,13 +31,20 @@ Q.repression += 3;
 subtitle: Costs 1 fund. The strikers can hold out.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
-on-arrival: resources -= 1; worker_support += 4; crisis_momentum += 5; unity += 2
+on-arrival: {!
+Q.resources -= 1;
+Q.worker_support += 4;
+Q.crisis_momentum += 5;
+Q.unity += 2;
+RG.district(RG.target('strike'), {loyalty: 5, members: 0.03});
+!}
 
 The control committees requisition potatoes and flour, and the strike kitchens feed the families in every workers' district.
 
 @power
 subtitle: The cities go dark. The strikers' families too.
 on-arrival: {!
+RG.startStrike('berlin', true);
 Q.crisis_momentum += 6;
 Q.worker_support -= 2;
 Q.militancy += 4;

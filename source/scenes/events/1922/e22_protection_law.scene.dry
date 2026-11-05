@@ -5,6 +5,9 @@ tags: event
 view-if: year = 1922 and month = 7
 max-visits: 1
 priority: 2
+on-arrival: {!
+RG.news('The Reichstag passes the Law for the Protection of the Republic', 2);
+!}
 
 = The Law for the Protection of the Republic
 

@@ -1,0 +1,87 @@
+title: Zinoviev against Radek
+subtitle: In Moscow, the Executive quarrels over who lost Germany.
+new-page: true
+tags: event
+view-if: year = 1923 and month = 12 and comintern_member = 1 and crisis = 0 and congress = 0 and e23_quarrel = 0
+max-visits: 1
+priority: 3
+on-arrival: {!
+Q.e23_q_rose = (Q.german_october == 2) ? 1 : 0;
+Q.e23_q_called = (Q.german_october == 1 || (Q.german_october == 0 && Q.e23_october_done == 1)) ? 1 : 0;
+Q.e23_q_never = (Q.e23_october_done == 0) ? 1 : 0;
+Q.e23_q_refused = (Q.directive_october == 4 && Q.directive_defied == 1) ? 1 : 0;
+RG.news('Moscow: Zinoviev and Radek clash over the German defeat', 3);
+!}
+
+= Zinoviev against Radek
+
+In the first week of December the Presidium of the Executive meets in Moscow on the German question, and the meeting goes on for three nights.
+
+[? if e23_q_called = 1 : Zinoviev opens it. The German October, he says, was ruined by the opportunism of the German Zentrale, which called off the rising in Chemnitz because a Social Democratic minister threatened to leave the hall. Radek answers that he was in Germany and Zinoviev was not, that the masses would not have followed, and that the retreat saved the party. ?][? if e23_q_rose = 1 : Zinoviev opens it. The German October, he says, was lost because the German Zentrale prepared it like a debating society and fought it like a trade union. Radek answers that a rising fought without the Social Democratic workers could only be lost, and that he said so in September. ?][? if e23_q_never = 1 : Zinoviev opens it. The German revolution, he says, passed the German party by while it was busy with resolutions. Radek answers that no revolution passed anybody by, and that the German party is still alive to prove it. ?] [? if e23_q_refused = 1 : Both men agree on one thing: the German party refused the Executive's plan in September, and it will be made to remember. ?]
+
+Behind them, the Russian quarrel is louder than the German one. Trotsky has written that the October was a lost chance and that the leaders of the International share the blame. Stalin says little and takes notes. Whatever the Presidium decides about Germany will be read in Moscow as a vote on Trotsky.
+
+The German delegates are asked to give the Zentrale's view.
+
+- @radek: Stand by Radek: the retreat was right.
+- @zinoviev: Stand by Zinoviev: the German leaders failed.
+- @trotsky: Write to Trotsky: the lesson of October is for all of us.
+- @judge: The German party will judge its own leaders.
+
+@radek
+subtitle: The Right's defence. Radek is grateful, Zinoviev is not, and Radek's star is falling.
+on-arrival: {!
+Q.e23_quarrel = 1;
+RG.ecci('radek', 12);
+RG.ecci('zinoviev', -12);
+RG.ecci('bukharin', -4);
+Q.unionist_satisfaction += 5;
+Q.offensive_satisfaction -= 5;
+Q.lean_unionist += 2;
+RG.setRole('radek', 'Accused of opportunism in Moscow');
+!}
+
+The German delegation says the Zentrale stands by its decisions. Radek embraces them in the corridor. A month later he is removed from the German commission, and the triumvirs make sure the German delegates know why.
+
+@zinoviev
+subtitle: The Left's verdict, and Moscow's majority. Independence falls; the Right is isolated.
+on-arrival: {!
+Q.e23_quarrel = 2;
+RG.ecci('zinoviev', 12);
+RG.ecci('bukharin', 5);
+RG.ecci('radek', -10);
+Q.independence -= 5;
+Q.offensive_satisfaction += 6;
+Q.unionist_satisfaction -= 6;
+Q.lean_offensive += 2;
+Q.comintern_rep = 'Dmitri Manuilsky';
+RG.setRole('radek', 'Removed from the German commission');
+!}
+
+The German delegation votes with the majority. Zinoviev's resolution condemns "the opportunist leadership of the German October". Radek is removed from German affairs, and the Executive sends Dmitri Manuilsky to Berlin in his place.
+
+@trotsky
+subtitle: Honest, perhaps. The triumvirs will not forget who agreed with Trotsky.
+on-arrival: {!
+Q.e23_quarrel = 3;
+RG.ecci('trotsky', 10);
+RG.ecci('zinoviev', -8);
+RG.ecci('radek', 2);
+Q.independence += 2;
+Q.luxemburgist_satisfaction += 2;
+Q.lean_luxemburgist += 1;
+!}
+
+Our letter to Trotsky says that the German party made mistakes, and so did the Executive that planned the October from Moscow. Trotsky quotes it in his next article. Stalin's secretariat files a copy.
+
+@judge
+subtitle: The Spartacist answer. More independence; the whole Executive is offended.
+on-arrival: {!
+Q.e23_quarrel = 4;
+Q.independence += 6;
+RG.ecci('all', -5);
+Q.luxemburgist_satisfaction += 5;
+Q.lean_luxemburgist += 2;
+!}
+
+The German delegation says the German Central Committee will decide who was to blame, and will tell the Executive afterwards. Zinoviev calls it a declaration of independence. He does not mean it as a compliment.

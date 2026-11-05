@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1922 and month = 4
 max-visits: 1
+on-arrival: {!
+RG.news('Germany and Soviet Russia sign a treaty at Rapallo', 3);
+!}
 
 = Rapallo
 
@@ -18,6 +21,7 @@ Everyone in the Zentrale knows what the treaty does not say. General von Seeckt'
 @hail
 subtitle: Moscow is pleased. Independence falls.
 on-arrival: {!
+RG.ecci('all', 3);
 Q.e22_rapallo = 1;
 Q.independence -= 5;
 Q.world_revolution += 3;
@@ -31,6 +35,8 @@ Q.lean_unionist += 1;
 @warn
 subtitle: The Spartacist line. More independence; Radek is furious.
 on-arrival: {!
+RG.ecci('radek', -8);
+RG.ecci('trotsky', -4);
 Q.e22_rapallo = 2;
 Q.independence += 7;
 Q.luxemburgist_satisfaction += 5;
@@ -44,6 +50,7 @@ Our Reichstag deputies ask what German officers are doing in Russia. The Reichsw
 @trade
 subtitle: The Right's line. Practical, and wins a hearing in the factories.
 on-arrival: {!
+RG.ecci('lenin', 3);
 Q.e22_rapallo = 3;
 Q.worker_support += 3;
 Q.unionist_satisfaction += 4;

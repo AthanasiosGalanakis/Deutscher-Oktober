@@ -27,6 +27,7 @@ Q.e22_old_chancellor = Q.chancellor;
 subtitle: Our own campaign. The workers listen; the trusts do not care.
 view-if: e22_labour_branch = 0
 on-arrival: {!
+RG.news('Cuno forms a cabinet of business', 3);
 Q.government_name = 'Cuno cabinet (non-party, with Centre, DDP, DVP, BVP)';
 Q.chancellor = 'Wilhelm Cuno';
 Q.spd_in_government = 0; Q.zentrum_in_government = 1; Q.ddp_in_government = 1; Q.dvp_in_government = 1; Q.bvp_in_government = 1;
@@ -45,6 +46,8 @@ view-if: e22_labour_branch = 0
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any proposal to the SPD.
 on-arrival: {!
+RG.news('Cuno forms a cabinet of business', 3);
+RG.ecci('radek', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -67,6 +70,8 @@ view-if: e22_labour_branch = 1
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids keeping social democrats in office.
 on-arrival: {!
+RG.news('The workers\' government survives by eleven votes', 3);
+RG.ecci('radek', 5);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -92,6 +97,10 @@ view-if: e22_labour_branch = 1
 choose-if: lock_united_front < 2 and spd_relation >= 30
 unavailable-subtitle: The SPD will not take communist ministers, or the line forbids it.
 on-arrival: {!
+RG.news('Communist ministers in the Reich government', 3);
+RG.ledger('Communist ministers sat in the Reich government.', 'e22_kpd_ministers');
+RG.ecci('radek', 6);
+RG.ecci('zinoviev', -6);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -116,6 +125,10 @@ Three communists take ministries: labour, food supply and justice. The first dec
 subtitle: The Left's answer. Cuno comes, and the SPD will never forgive us.
 view-if: e22_labour_branch = 1
 on-arrival: {!
+RG.news('Communist votes bring down the workers\' government', 3);
+RG.ledger('The party brought down the workers\' government.', 'e22_let_fall');
+RG.ecci('radek', -8);
+RG.ecci('zinoviev', 4);
 Q.e22_workers_gov = 0;
 Q.government_name = 'Cuno cabinet (non-party, with Centre, DDP, DVP, BVP)';
 Q.chancellor = 'Wilhelm Cuno';

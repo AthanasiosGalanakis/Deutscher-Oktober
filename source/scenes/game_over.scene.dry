@@ -26,6 +26,60 @@ Q.go_red_ruhr = (Q.ruhr_red_army == 2 && Q.ending_id == 6) ? 1 : 0;
 Q.go_people = (Q.ending_id == 6) ? 1 : 0;
 Q.go_exile = (Q.ending_id == 3 || Q.ending_id == 4) ? 1 : 0;
 Q.go_thaelmann_rise = (Q.go_lead == 2 || Q.e23_reckoning == 2 || Q.e23_reckoning == 4) ? 1 : 0;
+var esc = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+// the party's record: the ledger as a dated list
+var led = Array.isArray(Q.ledger) ? Q.ledger.filter(function (x) { return typeof x === 'string' && x; }) : [];
+Q.go_has_record = led.length ? 1 : 0;
+Q.go_record_html = led.length ? '<ul class="party-record">' + led.map(function (x) {
+    var i = x.indexOf(': ');
+    return i > 0 ? '<li><strong>' + esc(x.slice(0, i)) + '</strong>: ' + esc(x.slice(i + 2)) + '</li>' : '<li>' + esc(x) + '</li>';
+}).join('') + '</ul>' : '';
+// Moscow
+var fav = Q.moscow_favour || 0;
+Q.go_msk = Q.comintern_member != 1 ? 0 : (fav < 30 ? 1 : (fav < 60 ? 2 : 3));
+var fr = ['zinoviev', 'radek', 'trotsky', 'bukharin'].concat(Q.ecci_lenin_ill ? [] : ['lenin']);
+fr.sort(function (a, b) { return (Q['ecci_' + b] || 0) - (Q['ecci_' + a] || 0); });
+Q.go_friend = {lenin: 'Lenin', zinoviev: 'Zinoviev', radek: 'Radek', trotsky: 'Trotsky', bukharin: 'Bukharin'}[fr[0]];
+Q.go_backs_other = (Q.moscow_backs && Q.moscow_backs != Q.leading_faction && !Q[Q.moscow_backs + '_gone']) ? 1 : 0;
+Q.go_backs_name = Q.moscow_backs_name || 0;
+Q.go_zinoviev_hostile = (Q.ecci_zinoviev || 0) < 35 ? 1 : 0;
+Q.go_trotsky_friend = (Q.ecci_trotsky || 0) >= 65 ? 1 : 0;
+Q.go_dir_ok = Q.directives_fulfilled || 0;
+Q.go_dir_defied = Q.directives_defied || 0;
+// the map: strongholds, broken districts, armed districts
+var dn = Q.district_names || {};
+var ds = (Q.districts || []).slice();
+var hold = ds.filter(function (d) { return Q['district_' + d + '_loyalty'] >= 55 && Q['district_' + d + '_members'] >= 8; });
+hold.sort(function (a, b) { return Q['district_' + b + '_members'] - Q['district_' + a + '_members']; });
+var broken = ds.filter(function (d) { return Q['district_' + d + '_repression'] >= 80 && hold.indexOf(d) < 0; });
+Q.go_broken_many = broken.length >= 5 ? 1 : 0;
+var armed = ds.filter(function (d) { return Q['district_' + d + '_guards'] >= 4; });
+var striking = ds.filter(function (d) { return Q['district_' + d + '_strike']; });
+var names = function (arr) {
+    var n = arr.map(function (d) { return dn[d] || d; });
+    return n.length <= 1 ? n.join('') : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1];
+};
+Q.go_hold = names(hold.slice(0, 3)); Q.go_has_hold = hold.length ? 1 : 0;
+Q.go_broken = names(broken); Q.go_has_broken = broken.length ? 1 : 0;
+Q.go_armed = names(armed); Q.go_has_armed = armed.length ? 1 : 0;
+Q.go_striking = names(striking); Q.go_has_striking = striking.length ? 1 : 0;
+var biggest = ds.slice().sort(function (a, b) { return Q['district_' + b + '_members'] - Q['district_' + a + '_members']; })[0];
+Q.go_biggest = dn[biggest] || biggest;
+Q.go_biggest_members = Math.round(Q['district_' + biggest + '_members'] || 0);
+// the comrades
+var roster = Array.isArray(Q.comrades) ? Q.comrades.filter(function (c) { return c.faction != 'ecci' && c.status != 'outside'; }) : [];
+var by = function (st) { return roster.filter(function (c) { return c.status == st; }).map(function (c) { return c.name; }); };
+var lst = function (n) { return n.length <= 1 ? n.join('') : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1]; };
+var pr = by('prison'), ex = by('exile'), de = by('dead'), xp = by('expelled');
+Q.go_c_prison = lst(pr); Q.go_c_has_prison = pr.length ? 1 : 0;
+Q.go_c_exile = lst(ex); Q.go_c_has_exile = ex.length ? 1 : 0;
+Q.go_c_dead = lst(de); Q.go_c_has_dead = de.length ? 1 : 0;
+Q.go_c_expelled = lst(xp); Q.go_c_has_expelled = xp.length ? 1 : 0;
+var st = function (id) { return Q['comrade_' + id] || 0; };
+Q.go_brandler = st('brandler'); Q.go_fischer = st('fischer'); Q.go_thalmann = st('thalmann'); Q.go_radek = st('radek');
+// a last headline
+var score = (Q.members || 0) / 6 + (Q.worker_support || 0) * 0.8 + (Q.unity || 0) * 0.3 + hold.length * 4 - broken.length * 4 - (Q.kpd_banned == 1 ? 10 : 0);
+Q.go_grade = Q.ending_id != 6 ? 0 : (score < 25 ? 1 : (score < 45 ? 2 : (score < 65 ? 3 : 4)));
 !}
 
 = Game Over
@@ -93,11 +147,25 @@ Members: [+ members_display +] thousand. Unity: [+ unity : level +]. Worker supp
 
 [? if go_people = 1 and levi_in_party = 1 : Paul Levi stayed in the party he spent five years trying to save from itself. In Moscow they still call him a renegade. In Germany they call him the only communist the bourgeoisie is afraid to debate. ?][? if go_people = 1 and levi_split = 1 : Paul Levi went back to the SPD with the last Independents and became the conscience of its left wing in the Reichstag, the scourge of the generals and the judges. He died in 1930, falling from the window of his Berlin flat in a fever. ?]
 
-[? if go_people = 1 and unionist_gone = 1 : Heinrich Brandler, expelled, built a communist opposition of his own among the union men of Saxony. It was small, honest and right more often than it was heard. ?][? if go_people = 1 and unionist_gone = 0 and go_lead = 3 : Heinrich Brandler, the stonemason who never wanted to be a German Lenin, leads the party into 1924. His enemies in Moscow are already preparing his replacement. ?][? if go_people = 1 and unionist_gone = 0 and go_lead != 3 : Heinrich Brandler was blamed for the October, summoned to Moscow and kept there. Expelled at last in 1929, he founded a communist opposition and outlived nearly everyone in this story. He died in Hanover in 1967. ?]
+[? if go_people = 1 and go_brandler = 5 : Heinrich Brandler, expelled, built a communist opposition of his own among the union men of Saxony. It was small, honest and right more often than it was heard. He died in Hanover in 1967, having outlived nearly everyone in this story. ?][? if go_people = 1 and go_brandler = 3 : Heinrich Brandler was blamed for the October, summoned to Moscow and kept there, in a hotel room with a view of the Kremlin and no work to do. Expelled at last in 1929, he founded a communist opposition and outlived nearly everyone in this story. ?][? if go_people = 1 and go_brandler = 2 : Heinrich Brandler is in a cell in Leipzig, waiting for the State Court and writing to his wife about the building trade. ?][? if go_people = 1 and go_brandler = 4 : Heinrich Brandler did not live to see 1924. ?][? if go_people = 1 and go_brandler = 1 and go_lead = 3 : Heinrich Brandler, the stonemason who never wanted to be a German Lenin, leads the party into 1924. His enemies in Moscow are already preparing his replacement. ?][? if go_people = 1 and go_brandler = 1 and go_lead != 3 : Heinrich Brandler, outvoted, keeps his seat on the Central Committee and his friends in Chemnitz. Moscow will not leave him there for long. ?]
 
-[? if go_people = 1 and offensive_gone = 1 : Ruth Fischer leads a small party of the Left in Berlin, and waits for the Zentrale to fail. ?][? if go_people = 1 and offensive_gone = 0 and go_lead = 2 : Ruth Fischer leads the party, twenty-eight years old and certain. Moscow made her, and Moscow will unmake her: within three years she will be expelled, and she will spend the rest of her life as an enemy of Stalin. ?][? if go_people = 1 and offensive_gone = 0 and go_lead != 2 : Ruth Fischer leads the Berlin opposition and counts the delegates for the next congress. ?]
+[? if go_people = 1 and offensive_gone = 1 : Ruth Fischer leads a small party of the Left in Berlin, and waits for the Zentrale to fail. ?][? if go_people = 1 and offensive_gone = 0 and go_fischer = 2 : Ruth Fischer is in prison, which does her reputation on the Left no harm at all. ?][? if go_people = 1 and offensive_gone = 0 and go_fischer = 3 : Ruth Fischer writes for the party from abroad, and counts the days until she can come back to Berlin. ?][? if go_people = 1 and offensive_gone = 0 and go_fischer = 1 and go_lead = 2 : Ruth Fischer leads the party, twenty-eight years old and certain. Moscow made her, and Moscow will unmake her: within three years she will be expelled, and she will spend the rest of her life as an enemy of Stalin. ?][? if go_people = 1 and offensive_gone = 0 and go_fischer = 1 and go_lead != 2 : Ruth Fischer leads the Berlin opposition and counts the delegates for the next congress. ?]
 
-[? if go_people = 1 and offensive_gone = 0 and go_thaelmann_rise = 1 : Ernst Thälmann, the Hamburg docker, is the rising man of the Left. Within two years he will be chairman of the party. He will be arrested by the National Socialists in 1933 and shot in Buchenwald in 1944. ?][? if go_people = 1 and offensive_gone = 0 and go_thaelmann_rise = 0 : Ernst Thälmann goes back to the Hamburg docks and his district, and waits for the Left's turn. ?]
+[? if go_people = 1 and go_thalmann = 4 : Ernst Thälmann, the Hamburg docker, died on the barricades of 1923, and the Left named its first school after him. ?][? if go_people = 1 and go_thalmann = 2 : Ernst Thälmann is in prison in Hamburg. The dockers collect for his family every Friday. ?][? if go_people = 1 and go_thalmann = 1 and go_thaelmann_rise = 1 : Ernst Thälmann, the Hamburg docker, is the rising man of the Left. Within two years he will be chairman of the party. He will be arrested by the National Socialists in 1933 and shot in Buchenwald in 1944. ?][? if go_people = 1 and go_thalmann = 1 and go_thaelmann_rise = 0 : Ernst Thälmann goes back to the Hamburg docks and his district, and waits for the Left's turn. ?]
+
+[? if go_people = 1 and go_radek = 1 : Karl Radek, who knew Germany better than anyone in Moscow, is already being blamed for losing it. Within four years he will be expelled with Trotsky; he will die in a labour camp in 1939. ?]
+
+[? if go_msk > 0 : **Moscow.** ?][? if go_msk = 1 : The Executive has written the German party off as a problem to be solved. Its favour is spent, and its letters arrive with instructions rather than advice. ?][? if go_msk = 2 : The Executive watches the German party with suspicion and pays its bills, most months. ?][? if go_msk = 3 : The Executive counts the German party among its best sections, and pays for it accordingly. ?][? if go_msk > 0 : The party's best friend in Moscow is [+ go_friend +]. ?][? if go_msk > 0 and go_backs_other = 1 : The Executive would rather see the [+ go_backs_name +] in the Zentrale, and in Moscow that kind of preference does not stay a preference for long. ?][? if go_msk > 0 and go_zinoviev_hostile = 1 : Zinoviev, who will soon have more power over the International than anyone, does not forgive it. ?][? if go_msk > 0 and go_dir_defied = 1 : The German party has defied a directive of the Executive, and the refusal is in a file. ?][? if go_msk > 0 and go_dir_defied > 1 : The German party has defied the Executive's directives [+ go_dir_defied +] times, and every refusal is in a file. ?][? if go_msk > 0 and go_dir_ok > 0 and go_dir_defied = 0 : It has carried out what the Executive asked of it, and Moscow remembers that too. ?][? if go_msk = 0 : The party is outside the International, and Moscow speaks of it as it speaks of Levi. ?]
+
+[? if ending_id != 1 and ending_id != 4 : **The map.** The party's largest district is [+ go_biggest +], with [+ go_biggest_members +] thousand members. ?][? if ending_id != 1 and ending_id != 4 and go_has_hold = 1 : Its strongholds are [+ go_hold +], where the district follows the Zentrale and the workers follow the district. ?][? if ending_id != 1 and ending_id != 4 and go_has_armed = 1 : In [+ go_armed +] the hundreds still have rifles under the floorboards. ?][? if ending_id != 1 and ending_id != 4 and go_has_broken = 1 and go_broken_many = 0 : In [+ go_broken +] the police and the courts have broken the organisation: the offices are sealed and the secretaries are in prison. ?][? if ending_id != 1 and ending_id != 4 and go_broken_many = 1 and go_has_hold = 1 : Everywhere else the police and the courts have broken the organisation: the offices are sealed and the secretaries are in prison. ?][? if ending_id != 1 and ending_id != 4 and go_broken_many = 1 and go_has_hold = 0 : Everywhere the police and the courts have broken the organisation: the offices are sealed and the secretaries are in prison. ?][? if ending_id != 1 and ending_id != 4 and go_has_striking = 1 : In [+ go_striking +] the strike is still on. ?]
+
+[? if go_c_has_prison = 1 : In prison: [+ go_c_prison +]. ?][? if go_c_has_exile = 1 : In exile: [+ go_c_exile +]. ?][? if go_c_has_dead = 1 : Dead: [+ go_c_dead +]. ?][? if go_c_has_expelled = 1 : Expelled or gone: [+ go_c_expelled +]. ?]
+
+[? if go_grade = 1 : The last front page of the year, printed on a hand press: **"We Are Still Here."** ?][? if go_grade = 2 : The last front page of the year: **"The Struggle Goes On."** ?][? if go_grade = 3 : The last front page of the year: **"A Million Workers Behind the Party."** ?][? if go_grade = 4 : The last front page of the year: **"The Party of the German Working Class."** ?]
+
+[? if go_has_record = 1 : **The party's record** ?]
+
+[+ go_record_html +]
 
 - @end_game: End game.
 

@@ -6,6 +6,7 @@ view-if: year = 1923 and month = 10 and e23_october_done = 0 and e23_saxony_deci
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('Zeigner offers communists seats in the Saxon cabinet', 2);
 var L = {unionist: 'Heinrich Brandler', offensive: 'Ruth Fischer', luxemburgist: (Q.luxemburg_alive == 1 ? 'Rosa Luxemburg' : (Q.levi_in_party == 1 ? 'Paul Levi' : 'Ernst Meyer')), ultraleft: 'Karl Schröder'};
 Q.party_leader = L[Q.leading_faction];
 Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];
@@ -44,6 +45,13 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids sitting in a government with Social Democrats.
 on-arrival: {!
+if (Q.e23_had_sax == 0) { RG.ledger('Communist ministers entered the governments of Saxony and Thuringia.', 'e23_sax_ministers'); }
+RG.comply(5);
+RG.district('saxony', {guards: 2});
+RG.district('thuringia', {guards: 1});
+RG.ecci('radek', 4);
+RG.setRole('brandler', 'Head of the Saxon state chancellery');
+RG.news('Communists enter the Saxon government', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -66,6 +74,12 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2 and spd_relation >= 40
 unavailable-subtitle: Zeigner will never hand us the police, or the line forbids it.
 on-arrival: {!
+RG.ledger('A communist became Saxony\'s minister of the interior, and opened the police armouries to the hundreds.', 'e23_sax_police');
+RG.comply(10);
+RG.district('saxony', {guards: 4, repression: -6});
+RG.district('thuringia', {guards: 2});
+RG.ecci('trotsky', 6);
+RG.news('A communist takes the Saxon interior ministry', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -88,6 +102,9 @@ After three nights of argument, Zeigner gives way. A communist becomes Saxony's 
 @outside
 subtitle: The Left's answer. No ministers for the SPD to hide behind; the hundreds get what arms we can find.
 on-arrival: {!
+RG.district('saxony', {guards: 1.5});
+RG.ecci('radek', -4);
+RG.ecci('trotsky', -3);
 Q.e23_saxony_decided = 1;
 Q.saxony_government = 0;
 Q.crisis_momentum += 2;

@@ -6,6 +6,7 @@ view-if: year = 1923 and month >= 9 and e23_sept_done = 0 and crisis = 0
 max-visits: 1
 priority: 2
 on-arrival: {!
+RG.news('Passive resistance ends: a state of emergency for the Reich', 3);
 Q.e23_sept_done = 1;
 Q.repression += 6;
 Q.army_loyalty += 4;
@@ -28,6 +29,8 @@ That night President Ebert declares a state of emergency for the whole Reich. Ex
 subtitle: The Left's answer. A show of strength, and a list of names for the police.
 view-if: offensive_gone = 0 or ultraleft_gone = 0
 on-arrival: {!
+RG.startStrike('saxony');
+RG.district('saxony', {repression: 6});
 Q.militancy += 6;
 Q.repression += 6;
 Q.worker_support += 1;
@@ -57,6 +60,9 @@ Our open letter to the SPD's members asks how long their ministers will sit besi
 @prepare
 subtitle: The careful answer. Better arms where they may be needed.
 on-arrival: {!
+RG.district('saxony', {guards: 2});
+RG.district('thuringia', {guards: 1});
+RG.district('berlin', {guards: -0.5});
 Q.red_guards_arms += 6;
 Q.district_saxony_loyalty += 3;
 Q.repression -= 2;
