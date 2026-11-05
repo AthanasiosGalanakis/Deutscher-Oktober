@@ -41,6 +41,12 @@ Q.offensive_satisfaction -= 8;
 Q.lean_luxemburgist += 2;
 Q.lean_unionist += 2;
 Q.lean_offensive -= 1;
+RG.ecci('radek', 8);
+RG.ecci('lenin', 5);
+RG.ecci('zinoviev', -4);
+RG.ecci('bukharin', -4);
+RG.news('Open Letter to all workers\' organisations: the communists offer joint action', 3);
+RG.ledger('The Open Letter of January 1921 offered the whole labour movement joint action.', 'e21_open_letter');
 !}
 
 The letter appears on 8 January. The SPD's *Vorwärts* calls it a manoeuvre and the union leaders refuse within the week. But it is read aloud at factory meetings across Germany, and in many of them the social democratic workers vote for it.
@@ -61,6 +67,8 @@ Q.worker_support += 1;
 Q.unity += 2;
 Q.lean_offensive += 1;
 Q.lean_unionist += 1;
+RG.ecci('radek', 2);
+RG.news('Communists publish an Open Letter, and predict its rejection', 2);
 !}
 
 The letter is published with a commentary predicting its rejection. The prediction comes true. The *Vorwärts* quotes our commentary back at us, and the social democratic workers conclude that we never meant it.
@@ -75,6 +83,9 @@ Q.luxemburgist_satisfaction -= 6;
 Q.militancy += 2;
 Q.lean_offensive += 2;
 Q.lean_unionist -= 1;
+RG.ecci('radek', -5);
+RG.ecci('zinoviev', 3);
+RG.ecci('bukharin', 3);
 !}
 
 The draft goes back in the drawer. In Stuttgart, the comrades who started it all are told to dissolve their joint committee. Some of them do.

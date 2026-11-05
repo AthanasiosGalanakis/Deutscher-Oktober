@@ -5,7 +5,11 @@ tags: event
 view-if: year = 1921 and month >= 4 and crisis = 0 and levi_in_party = 1 and march_action = 1 and e21_march_mode = 2 and e21_after_done = 0
 max-visits: 1
 priority: 12
-on-arrival: e21_after_done = 1
+on-arrival: {!
+Q.e21_after_done = 1;
+RG.news('Levi: the March Action was the greatest Bakuninist putsch in history', 3);
+RG.ecci('lenin', 2);
+!}
 
 = Against Putschism
 
@@ -24,6 +28,10 @@ Every word is read in the Zentrale, in the police headquarters and in the Hotel 
 subtitle: What the Zentrale did on 15 April. The Left and Moscow approve. Levi's friends will follow him out.
 on-arrival: {!
 Q.e21_levi_fate = 1;
+RG.expel('levi', {news: 'Levi expelled for gross breach of discipline', priority: 2});
+RG.ecci('zinoviev', 6);
+RG.ecci('bukharin', 4);
+RG.ecci('lenin', -3);
 Q.levi_in_party = 0;
 Q.levi_split = 1;
 Q.levi_advisor = 0;
@@ -54,6 +62,8 @@ On 15 April the Zentrale expels Paul Levi for gross breach of discipline. The Ce
 subtitle: The Right's way. The Left will call it cowardice; the case is not closed.
 on-arrival: {!
 Q.e21_levi_fate = 2;
+RG.ecci('radek', 3);
+RG.ecci('zinoviev', -4);
 Q.unionist_satisfaction += 6;
 Q.offensive_satisfaction -= 10;
 Q.luxemburgist_satisfaction += 4;
@@ -67,6 +77,13 @@ The Zentrale publicly condemns the pamphlet and strips Levi of his functions, bu
 subtitle: The Spartacist line. The leaders of the action must go. The Left will fight it with everything it has.
 on-arrival: {!
 Q.e21_levi_fate = 3;
+RG.ecci('zinoviev', -10);
+RG.ecci('bukharin', -8);
+RG.ecci('radek', -4);
+RG.ecci('lenin', 3);
+RG.setRole('zetkin', 'Zentrale');
+RG.news('The Zentrale admits the March Action was a mistake', 3);
+RG.ledger('The Zentrale publicly admitted that the March Action had been a mistake.', 'e21_admitted');
 Q.leading_faction = 'unionist';
 Q.junior_faction = 'luxemburgist';
 Q.independence += 8;
@@ -93,6 +110,7 @@ if (Q.lock_moscow_orders == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.e21_levi_fate = 2;
+RG.ecci('all', 2);
 Q.independence -= 5;
 Q.offensive_satisfaction += 2;
 Q.lean_offensive += 1;

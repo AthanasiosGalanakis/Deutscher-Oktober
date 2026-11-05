@@ -5,6 +5,24 @@ tags: event
 view-if: year = 1921 and month = 1 and e21_open_letter_done = 1 and e21_livorno = 0
 max-visits: 1
 priority: 9
+on-arrival: {!
+// Moscow wants the German party to approve the split; the February
+// Central Committee will decide whether it does.
+if (Q.comintern_member == 1) {
+    RG.directive({
+        id: 'livorno',
+        title: 'Approve the split at Livorno',
+        text: 'The Executive requires the German section to approve the action of its envoys at Livorno, to condemn Serrati and his centrists in its press, and to draw the lesson for its own ranks.',
+        from: 'zinoviev',
+        months: 2,
+        goals: [{q: 'independence', op: '<=', v: Math.max(20, Math.round(Q.independence - 8))}],
+        reward: {favour: 10, faction: 'offensive'},
+        punish: 'envoy',
+        announce: false
+    });
+}
+RG.news('Livorno: the Italian socialists split, and Moscow keeps only a third', 3);
+!}
 
 = Livorno
 
@@ -28,9 +46,13 @@ Q.unionist_satisfaction += 2;
 Q.offensive_satisfaction -= 6;
 Q.lean_luxemburgist += 2;
 Q.lean_offensive -= 1;
+RG.ecci('zinoviev', -8);
+RG.ecci('bukharin', -4);
+RG.ecci('radek', -4);
+RG.ecci('lenin', -2);
 !}
 
-Levi's articles say what many think: that you cannot build a communist party by expelling the workers. In the Hotel Lux, the articles are translated and underlined.
+Levi's articles say what many think: that you cannot build a communist party by expelling the workers. In the Hotel Lux, the articles are translated and underlined. [? if directive_livorno = 1 : Zinoviev's telegram demanding that the German party approve the split is still unanswered. The Central Committee will have to answer it in February. ?]
 
 @inside
 subtitle: No public quarrel with Moscow. The question will come back at the Central Committee.
@@ -39,9 +61,11 @@ Q.e21_livorno = 2;
 Q.unity += 3;
 Q.unionist_satisfaction += 3;
 Q.lean_unionist += 1;
+RG.comply(10);
+RG.ecci('zinoviev', -2);
 !}
 
-The Zentrale debates Livorno behind closed doors, and the Rote Fahne prints only the facts. Rákosi takes the silence for weakness.
+The Zentrale debates Livorno behind closed doors, and the Rote Fahne prints only the facts. Rákosi takes the silence for weakness. [? if directive_livorno = 1 : The Executive's telegram demanding our approval stays on the table until the Central Committee meets. ?]
 
 @endorse
 subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] The Left's line: the International decides, and it was right to purge.
@@ -58,6 +82,9 @@ Q.offensive_satisfaction += 8;
 Q.luxemburgist_satisfaction -= 8;
 Q.lean_offensive += 2;
 Q.lean_luxemburgist -= 1;
+RG.ecci('zinoviev', 6);
+RG.ecci('bukharin', 4);
+RG.comply(100);
 !}
 
 The Rote Fahne salutes the new Communist Party of Italy and condemns Serrati. [? if levi_in_party = 1 : Levi does not sign the article. Everybody notices. ?]

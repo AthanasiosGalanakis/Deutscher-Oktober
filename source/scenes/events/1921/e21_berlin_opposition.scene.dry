@@ -2,7 +2,7 @@ title: The Berlin Opposition
 subtitle: Ruth Fischer and Arkadi Maslow turn Berlin against the Zentrale.
 new-page: true
 tags: event
-view-if: year = 1921 and month = 10 and crisis = 0 and offensive_gone = 0 and left_split = 0 and e21_left_leads = 0
+view-if: year = 1921 and month = 10 and crisis = 0 and congress = 0 and offensive_gone = 0 and left_split = 0 and e21_left_leads = 0
 max-visits: 1
 priority: 7
 
@@ -18,13 +18,29 @@ Their complaint is the united front: it is a road back to the SPD, they say, and
 
 @co_opt
 subtitle: The Left's influence grows. Berlin calms down.
-on-arrival: offensive_satisfaction += 10; district_berlin_loyalty += 10; unionist_satisfaction -= 4; lean_offensive += 1
+on-arrival: {!
+Q.offensive_satisfaction += 10;
+Q.unionist_satisfaction -= 4;
+Q.lean_offensive += 1;
+RG.district('berlin', {loyalty: 10, militancy: 3});
+RG.setRole('fischer', 'Head of the work among the unemployed');
+RG.ecci('zinoviev', 3);
+!}
 
 Fischer is given responsibility for the party's work among the unemployed. She uses it to build her following across the country.
 
 @isolate
 subtitle: The Right's and the Spartacists' way. Berlin will resent it.
-on-arrival: offensive_satisfaction -= 10; district_berlin_loyalty -= 10; unity -= 2; unionist_satisfaction += 4; luxemburgist_satisfaction += 4; lean_unionist += 1; lean_luxemburgist += 1
+on-arrival: {!
+Q.offensive_satisfaction -= 10;
+Q.unity -= 2;
+Q.unionist_satisfaction += 4;
+Q.luxemburgist_satisfaction += 4;
+Q.lean_unionist += 1;
+Q.lean_luxemburgist += 1;
+RG.district('berlin', {loyalty: -10});
+RG.ecci('zinoviev', -3);
+!}
 
 The Zentrale sends its own organisers to Berlin and builds a minority of the district around them. Every district meeting becomes a battle.
 
@@ -38,6 +54,8 @@ if (Q.lock_moscow_orders == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.e21_maslow_moscow = 1;
+if (Q.comrade_maslow == 1) { RG.exile('maslow', {news: 'Maslow summoned to Moscow, and kept there', priority: 2}); }
+RG.ecci('zinoviev', 4);
 Q.independence -= 5;
 Q.offensive_satisfaction -= 5;
 Q.unity += 2;

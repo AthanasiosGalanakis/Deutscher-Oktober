@@ -2,10 +2,16 @@ title: The Trial of Max Hoelz
 subtitle: The red general before a special court.
 new-page: true
 tags: event
-view-if: year = 1921 and month = 6 and crisis = 0 and march_action != 2
+view-if: year = 1921 and month = 6 and crisis = 0 and congress = 0 and march_action != 2 and comrade_hoelz != 4 and comrade_hoelz != 3
 max-visits: 1
 priority: 6
-on-arrival: hoelz_imprisoned = 1
+on-arrival: {!
+if (Q.comrade_hoelz != 2) { RG.arrest('hoelz', 0, {quiet: true}); }
+Q.hoelz_imprisoned = 1;
+RG.setRole('hoelz', 'Penal servitude for life');
+RG.news('Max Hoelz sentenced to penal servitude for life', 3);
+RG.ledger('Max Hoelz was sentenced to penal servitude for life.', 'e21_hoelz_life');
+!}
 
 = The Trial of Max Hoelz
 
@@ -21,7 +27,16 @@ On 22 June he is sentenced to penal servitude for life, for a murder he almost c
 
 @campaign
 subtitle: The Left's line. Hoelz is popular, and so is defiance.
-on-arrival: worker_support += 2; militancy += 3; offensive_satisfaction += 5; luxemburgist_satisfaction -= 2; lean_offensive += 1
+on-arrival: {!
+Q.worker_support += 2;
+Q.militancy += 2;
+Q.offensive_satisfaction += 5;
+Q.luxemburgist_satisfaction -= 2;
+Q.lean_offensive += 1;
+RG.district('saxony', {militancy: 5});
+RG.district('halle', {militancy: 4, loyalty: 3});
+RG.ecci('bukharin', 3);
+!}
 
 "Free Max Hoelz" is painted on walls from Plauen to Hamburg. The campaign will last for years.
 
@@ -44,6 +59,6 @@ Committees of Red Aid are formed in every district: lawyers for the accused, par
 
 @distance
 subtitle: Respectable. Central Germany will not like it.
-on-arrival: spd_relation += 2; district_halle_loyalty -= 6; offensive_satisfaction -= 5; luxemburgist_satisfaction += 2
+on-arrival: spd_relation += 2; district_halle_loyalty -= 6; district_saxony_loyalty -= 4; offensive_satisfaction -= 5; luxemburgist_satisfaction += 2
 
 The Rote Fahne reports the sentence in a short notice on page three.

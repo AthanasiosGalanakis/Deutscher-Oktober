@@ -1,0 +1,59 @@
+title: Rákosi Takes the Floor
+subtitle: The Executive's envoy speaks to the Central Committee.
+view-if: congress_cc21 = 1 and congress_closing = 0 and e21_cg_rakosi_out = 0
+on-arrival: {!
+Q.month_actions += 1;
+Q.e21_cg_rakosi_out = 1;
+var sp = RG.speaker(Q.congress_backing);
+Q.congress_speaker_name = sp.name;
+Q.congress_speaker_power = sp.power;
+Q.sys_outcome = 0;
+!}
+frequency: 400
+is-card: true
+new-page: true
+tags: congress
+
+= Rákosi Takes the Floor
+
+Mátyás Rákosi is small, bald and very sure of himself. He speaks German with a Hungarian accent and an Executive mandate. Serrati, he says, chose Turati over the International. Anyone who defends Serrati has made the same choice. The German party, he adds, looking at nobody in particular, may need a Livorno of its own.
+
+The committee members who have not made up their minds look at the Zentrale's end of the table.
+
+- @answer: Answer him point by point.
+- @mandate: Ask by what mandate he speaks to a German committee.
+- @silence: Let him speak, and say nothing.
+
+@answer
+subtitle: Our best speaker against Moscow's envoy. Wins members, if the speaker is good enough.
+on-arrival: {!
+RG.congress.sway((0.06 + Math.random() * 0.05) * Q.congress_speaker_power);
+RG.ecci('zinoviev', -2);
+Q['lean_' + Q.congress_backing] += 1;
+!}
+
+[+ congress_speaker_name +] answers for forty minutes: on Italy, on Serrati's workers, on what a split costs when it is made by telegram. [? if congress_last_moved > 0 : [+ congress_last_moved +] members of the committee are seen nodding, and they vote that way too. ?][? if congress_last_moved = 0 : It is a fine speech. Nobody moves. ?]
+
+@mandate
+subtitle: The Spartacist question. Some members admire it; Moscow will not.
+on-arrival: {!
+RG.congress.sway(0.05 + Math.random() * 0.04);
+RG.congress.bitter(3);
+Q.independence += 4;
+RG.ecci('zinoviev', -6);
+RG.ecci('radek', -3);
+Q.lean_luxemburgist += 1;
+Q.offensive_satisfaction -= 4;
+!}
+
+The question is put politely, and it is not a polite question. Rákosi answers that he speaks for the World Congress, which is to say for all of us. [? if congress_last_moved > 0 : [+ congress_last_moved +] members of the committee decide they do not like being spoken for. ?] The Left calls the question a provocation.
+
+@silence
+subtitle: No scene in front of Moscow's man. He gains ground, but nobody can say we insulted the International.
+on-arrival: {!
+RG.congress.lose(0.04);
+RG.ecci('zinoviev', 3);
+Q.unity += 1;
+!}
+
+The Zentrale lets Rákosi finish, thanks him, and moves to the next speaker. A few waverers take the silence as an answer.

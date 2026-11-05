@@ -47,7 +47,12 @@ if (won) {
     }
     Q.district_halle_members *= fh;
     Q.district_halle_loyalty -= 10;
-    Q.repression += (mode == 2) ? 20 : 10;
+    // the courts and the Security Police: hardest where the fighting was
+    Q.repression += (mode == 2) ? 5 : 2;
+    RG.district('halle', {repression: (mode == 2) ? 25 : 12, guards: -2});
+    for (var dd of Q.districts) {
+        if (dd != 'halle' && Q['district_' + dd + '_strike']) { RG.district(dd, {repression: (mode == 2) ? 12 : 6}); }
+    }
     Q.worker_support -= (mode == 2) ? 6 : 2;
     Q.red_guards_strength *= (mode == 2) ? 0.5 : 0.8;
     Q.red_guards_arms -= Q.e21_arms_saved ? 4 : ((mode == 2) ? 15 : 6);
@@ -59,6 +64,50 @@ if (won) {
     Q.offensive_satisfaction -= (mode == 2) ? 4 : 6;
     Q.world_revolution -= 5;
     Q.stability += 4;
+}
+// the strikes end, district by district
+for (var ds of Q.districts) {
+    if (Q['district_' + ds + '_strike']) {
+        if (won) { RG.endStrike(ds, 'won'); }
+        else if (ds == 'halle' && mode == 2) { RG.endStrike(ds, 'crushed'); }
+        else { RG.endStrike(ds, 'quiet'); }
+    }
+}
+// the comrades
+Q.e21_brandler_jailed = 0;
+if (!won) {
+    if (Q.comrade_hoelz != 4 && Q.comrade_hoelz != 2) {
+        RG.arrest('hoelz', 0, {news: 'Max Hoelz arrested in Berlin under a false name', priority: 2});
+    }
+    if (mode == 2 && Q.comrade_brandler == 1) {
+        RG.arrest('brandler', 8, {news: 'Brandler arrested: the chairman of the party before a special court', priority: 2});
+        Q.e21_brandler_jailed = 1;
+    }
+} else {
+    RG.setRole('hoelz', 'The red general of Mansfeld');
+}
+// Moscow: the directive is judged by what the party did, the men by how it ended
+if (Q.directive_offensive == 1) {
+    if (mode == 2) { RG.comply(100); } else { RG.comply(won ? 60 : 20); }
+}
+if (won) {
+    RG.ecci('zinoviev', 10);
+    RG.ecci('bukharin', 10);
+    RG.ecci('lenin', 3);
+    RG.ecci('trotsky', 3);
+    RG.news(mode == 2 ? 'Hörsing\'s police withdraw: armed workers hold Central Germany' : 'The government gives way: police leave Mansfeld, councils recognised at Leuna', 3);
+} else if (mode == 2) {
+    RG.ecci('lenin', -10);
+    RG.ecci('trotsky', -8);
+    RG.ecci('radek', -4);
+    RG.ecci('zinoviev', 2);
+    RG.ecci('bukharin', 4);
+    RG.news('The March Action called off: a hundred and fifty dead, thousands in prison', 3);
+} else {
+    RG.ecci('lenin', 2);
+    RG.ecci('radek', 3);
+    RG.ecci('zinoviev', -4);
+    RG.news('The Central German strike ends in defeat; the party stands', 3);
 }
 Q.e21_members_now = Math.round(Q['district_berlin_members'] + Q['district_hamburg_members'] + Q['district_bremen_members'] + Q['district_ruhr_members'] + Q['district_saxony_members'] + Q['district_thuringia_members'] + Q['district_bavaria_members'] + Q['district_halle_members']);
 !}
@@ -74,3 +123,5 @@ Q.e21_members_now = Math.round(Q['district_berlin_members'] + Q['district_hambur
 [? if march_action = 1 and e21_march_mode = 1 : The strike ends without victory. The police stay in Mansfeld, the leaders of the strike committees are arrested, and the Leuna works are cleared. But the party fought for something every worker understood, and most of its members are still with it: [+ e21_members_now +] thousand. ?]
 
 [? if march_action = 2 and e21_soviet_viable = 1 : In Halle the council of the district is meeting day and night. Some delegates are asking a question nobody dared ask a month ago: why give anything back? ?]
+
+[? if march_action = 1 and e21_brandler_jailed = 1 : Heinrich Brandler, who signed the call to arms for the Zentrale, is arrested in Berlin and will stand before a special court. ?][? if march_action = 1 and comrade_hoelz = 2 : Max Hoelz is caught in Berlin, living under a false name. The papers that called him a bandit now call him a murderer. ?]

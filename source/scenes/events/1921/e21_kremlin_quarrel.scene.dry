@@ -1,0 +1,82 @@
+title: The Quarrel in the Kremlin
+subtitle: The Executive argues about Germany, and the German party must choose its friends.
+new-page: true
+tags: event
+view-if: year = 1921 and month = 5 and crisis = 0 and congress = 0 and e21_march_started = 1 and e21_quarrel_done = 0 and comintern_member = 1
+max-visits: 1
+priority: 7
+on-arrival: {!
+Q.e21_quarrel_done = 1;
+Q.e21_moscow_friend = 0;
+RG.news('Moscow divided over the German events', 2);
+!}
+
+= The Quarrel in the Kremlin
+
+The reports from Germany reach Moscow faster than the delegates. [? if march_action = 1 : Kun's says the March Action was a step forward. Levi's letter to Lenin says it was a crime. Radek's says, depending on the page, both. ?][? if march_action = 2 : Kun's says the victory in Central Germany proves the theory of the offensive. Radek's says the Reichswehr had its own reasons for staying in barracks. ?][? if march_action = 0 : Kun's says the German Zentrale let Hörsing occupy Mansfeld without firing a shot. Radek's says it kept the party alive. ?]
+
+The Executive is not one man. Zinoviev, its President, has staked his name on Kun. Bukharin has written the theory of the offensive into a pamphlet. Lenin has read the German papers and the German letters, and he is angry, though it is not yet clear with whom. Trotsky agrees with Lenin, which is rare enough this year to be noticed. Radek, who knows Germany better than any of them, is looking for the side that will win.
+
+Before the World Congress opens in June, the Zentrale can send someone to Moscow, and whoever it sends will be heard by somebody.
+
+- @lenin: Send Clara Zetkin to Lenin.
+- @zinoviev: Send the Left's men to Zinoviev.
+- @radek: Work through Radek.
+- @wait: Send nobody, and wait for the congress.
+
+@lenin
+subtitle: The Spartacist way: tell Lenin the truth about March. Zinoviev will know who told him.
+choose-if: comrade_zetkin = 1
+unavailable-subtitle: Zetkin is not free to travel.
+on-arrival: {!
+Q.e21_moscow_friend = 1;
+RG.ecci('lenin', 10);
+RG.ecci('trotsky', 6);
+RG.ecci('zinoviev', -6);
+RG.ecci('bukharin', -5);
+Q.luxemburgist_satisfaction += 5;
+Q.offensive_satisfaction -= 4;
+Q.lean_luxemburgist += 2;
+!}
+
+Zetkin travels by way of Stettin and Reval. Lenin receives her in his study in the Kremlin, with a plaid over his knees, and lets her talk for an hour. [? if march_action = 1 : When she has finished he says that Levi was right about March, and that it does not excuse the way he said it. Then he asks her to stay for the congress. ?][? if march_action != 1 : He listens, asks about the factory councils, and says that the German party must learn to be patient without being passive. ?]
+
+@zinoviev
+view-if: offensive_gone = 0
+subtitle: The Left's way: Zinoviev and Bukharin are our friends, and friends must be kept. Lenin is watching.
+on-arrival: {!
+Q.e21_moscow_friend = 2;
+RG.ecci('zinoviev', 10);
+RG.ecci('bukharin', 8);
+RG.ecci('lenin', -6);
+RG.ecci('trotsky', -4);
+Q.offensive_satisfaction += 6;
+Q.luxemburgist_satisfaction -= 4;
+Q.lean_offensive += 2;
+!}
+
+Frölich and two Berlin delegates go to the Hotel Lux and from there to Zinoviev's office. Zinoviev embraces them. [? if march_action = 1 : He tells them that the German workers' blood was not shed in vain, and that he will defend them at the congress. He does not say against whom. ?][? if march_action != 1 : He tells them that the next time, the German party must not wait for the enemy. ?]
+
+@radek
+subtitle: The Right's way: the middle of the Executive, and a man who changes sides on time.
+on-arrival: {!
+Q.e21_moscow_friend = 3;
+RG.ecci('radek', 10);
+RG.ecci('lenin', 3);
+RG.ecci('zinoviev', -2);
+Q.unionist_satisfaction += 4;
+Q.lean_unionist += 2;
+!}
+
+Thalheimer writes to Radek every other day. Radek answers with jokes and good advice, and passes the letters to Lenin when they say what Lenin wants to hear. By June he is telling everybody that he warned the German comrades in time.
+
+@wait
+subtitle: The party keeps its own counsel. Every faction in Moscow takes the silence as an insult.
+on-arrival: {!
+Q.e21_moscow_friend = 0;
+Q.independence += 4;
+RG.ecci('all', -3);
+Q.luxemburgist_satisfaction += 2;
+!}
+
+The Zentrale sends no one ahead. The delegation will travel together in June and speak with one voice, if it can find one.

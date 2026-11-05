@@ -2,11 +2,13 @@ title: The Central Committee
 subtitle: Rákosi comes to Berlin to settle accounts.
 new-page: true
 tags: event
-view-if: year = 1921 and month = 2 and e21_cc_done = 0 and e21_levi_leads = 1 and levi_in_party = 1
+view-if: year = 1921 and month = 2 and e21_cc_done = 0 and e21_levi_leads = 1 and levi_in_party = 1 and congress = 0 and crisis = 0
 max-visits: 1
 priority: 10
 on-arrival: {!
 Q.e21_cc_done = 1;
+Q.comintern_rep = 'Mátyás Rákosi';
+// the year so far decides how the members of the committee lean before anyone speaks
 var p = 35;
 p += 3 * ((Q.history_luxemburgist || 0) - (Q.history_offensive || 0));
 p += (Q.independence - 50) / 2;
@@ -14,8 +16,11 @@ p += (Q.luxemburgist_satisfaction - Q.offensive_satisfaction) / 4;
 if (Q.e21_livorno == 1) { p += 10; }
 if (Q.open_letter == 1) { p += 5; }
 if (Q.luxemburg_alive == 1) { p += 25; }
+p += (Q.ecci_radek - 50) / 5;
 Q.e21_cc_win_chance = Math.round(Math.max(10, Math.min(85, p)));
 Q.e21_cc_odds = (Q.e21_cc_win_chance < 30) ? 'poor' : ((Q.e21_cc_win_chance < 55) ? 'uncertain' : 'good');
+// a fraction of the committee that moves before the debate: positive for Levi
+Q.e21_cc_tilt = (Q.e21_cc_win_chance - 45) / 100;
 !}
 
 = The Central Committee
@@ -26,36 +31,63 @@ From 22 to 24 February the Central Committee meets in Berlin. Rákosi has come s
 
 [? if luxemburg_alive = 1 : Rosa Luxemburg speaks before the vote. She says that a party which takes its orders on Italy from a Hungarian it has never elected will soon take its orders on Germany the same way. ?][? if luxemburg_alive = 0 : Clara Zetkin speaks for Levi. Thalheimer, Frölich and the Berlin delegates speak for Rákosi. ?] Levi has said that if the resolution passes, he will resign the chair, and Zetkin, Däumig, Adolph Hoffmann and Otto Brass will go with him.
 
+Heinrich Brandler has a resolution of his own in his pocket: Livorno approved in principle, Levi kept in the chair. He will table it if the Zentrale asks him to.
+
 - @fight: Fight the vote, and win it.
+- @compromise: Ask Brandler to table his compromise.
 - @resign: Let Levi resign in protest.
 - @accept: Accept Moscow's verdict to keep Levi in the chair.
 - @rakosi: Back Rákosi, and bring in a new Zentrale.
 
 @fight
-subtitle: The Spartacist line. Levi counts the votes: his chances look [+ e21_cc_odds +]. If we lose, we lose everything.
+subtitle: The Spartacist line. Levi counts the votes: his chances look [+ e21_cc_odds +]. If we lose, we lose the chair.
 on-arrival: {!
 Q.lean_luxemburgist += 3;
-Q.e21_cc_won = (100 * Math.random() < Q.e21_cc_win_chance) ? 1 : 0;
-if (Q.e21_cc_won) {
-    Q.independence += 10;
-    Q.luxemburgist_satisfaction += 12;
-    Q.unionist_satisfaction += 2;
-    Q.offensive_satisfaction -= 15;
-    Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
-    Q.junior_faction = 'unionist';
-} else {
-    Q.e21_levi_resigned = 1;
-    Q.e21_levi_leads = 0;
-    Q.e21_lux_leads = 0;
-    Q.leading_faction = 'offensive';
-    Q.junior_faction = 'unionist';
-    Q.luxemburgist_satisfaction -= 15;
-    Q.offensive_satisfaction += 10;
-    Q.unity -= 5;
-}
+Q.e21_cc_mode = 1;
+RG.congressStart({
+    id: 'cc21',
+    name: 'The Central Committee',
+    stake: 'Rákosi\'s resolution on Livorno, and Levi\'s chair',
+    sessions: 2,
+    positions: ['luxemburgist', 'offensive'],
+    backing: 'luxemburgist',
+    kind: 'motion',
+    mandates: 'zentrale',
+    delegates: 51,
+    ownClose: true
+});
+// Thalheimer and much of the Right side with Rákosi against Levi
+RG.congress.swayTo('offensive', 0.07);
+if (Q.e21_cc_tilt > 0) { RG.congress.sway(Q.e21_cc_tilt * 0.5); } else { RG.congress.lose(-Q.e21_cc_tilt * 0.6); }
+RG.congress.bitter(3);
+RG.ecci('zinoviev', -3);
 !}
 
-[? if e21_cc_won = 1 : Levi works the corridors for two days. When the vote comes, Rákosi's resolution falls. Levi keeps the chair, and Rákosi leaves Berlin promising that Moscow will hear of it. The Left calls the Zentrale a nest of Serratis. ?][? if e21_cc_won = 0 : Levi fights and loses, 28 votes to 23. He, Zetkin, Däumig, Hoffmann and Brass resign from the Zentrale the same evening. Heinrich Brandler and Walter Stoecker take the chair, and the new Zentrale talks of the offensive. ?]
+The Zentrale will fight. Levi spends the evening before the session with a list of the fifty-one members of the committee and a pencil. By midnight there are ticks, crosses and too many question marks.
+
+@compromise
+subtitle: The Right's way. Levi stays if Brandler's motion carries, and Moscow gets half of what it asked. Neither Levi nor Rákosi will thank us.
+on-arrival: {!
+Q.lean_unionist += 2;
+Q.lean_luxemburgist += 1;
+Q.e21_cc_mode = 2;
+RG.congressStart({
+    id: 'cc21',
+    name: 'The Central Committee',
+    stake: 'Brandler\'s compromise on Livorno, and Levi\'s chair',
+    sessions: 2,
+    positions: ['unionist', 'offensive'],
+    backing: 'unionist',
+    kind: 'motion',
+    mandates: 'zentrale',
+    delegates: 51,
+    ownClose: true
+});
+if (Q.e21_cc_tilt > 0) { RG.congress.sway(Q.e21_cc_tilt * 0.5); } else { RG.congress.lose(-Q.e21_cc_tilt * 0.4); }
+RG.ecci('radek', 3);
+!}
+
+Brandler tables his resolution. Levi withdraws his own and tells his friends to vote for Brandler's, without enthusiasm. Rákosi says that a compromise with centrism is centrism.
 
 @resign
 subtitle: What history did. Brandler and Stoecker take over, and the theory of the offensive comes with them.
@@ -70,6 +102,13 @@ Q.offensive_satisfaction += 12;
 Q.independence -= 5;
 Q.lean_luxemburgist += 1;
 Q.lean_offensive += 1;
+RG.setRole('levi', 'Reichstag deputy');
+RG.setRole('brandler', 'Chairman of the Zentrale');
+RG.comply(100);
+RG.ecci('zinoviev', 6);
+RG.ecci('lenin', -3);
+RG.news('Levi and Zetkin resign from the Zentrale', 3);
+RG.ledger('Paul Levi resigned the chair after the Central Committee approved Livorno.', 'e21_levi_resigned');
 !}
 
 Rákosi's resolution passes, 28 votes to 23. Levi, Zetkin, Däumig, Hoffmann and Brass resign from the Zentrale. They mean it as a warning. Rákosi takes it as a victory. Heinrich Brandler and Walter Stoecker take the chair, and the new Zentrale, with Thalheimer and Paul Frölich at its side, begins to talk about the offensive.
@@ -90,6 +129,9 @@ Q.offensive_satisfaction -= 2;
 Q.unity += 5;
 Q.junior_faction = 'unionist';
 Q.lean_unionist += 2;
+RG.comply(100);
+RG.ecci('radek', 4);
+RG.news('Levi bows to Moscow: the Central Committee approves Livorno', 3);
 !}
 
 Levi swallows the resolution. He votes for it himself, and keeps the chair. Zetkin does not speak to him for a week. Rákosi reports to Moscow that the German leadership can be bent.
@@ -112,6 +154,15 @@ Q.luxemburgist_satisfaction -= 15;
 Q.offensive_satisfaction += 15;
 Q.lean_offensive += 3;
 Q.lean_luxemburgist -= 2;
+RG.setRole('levi', 'Reichstag deputy');
+RG.setRole('brandler', 'Chairman of the Zentrale');
+RG.setRole('fischer', 'Berlin organiser; member of the Zentrale');
+RG.comply(100);
+RG.ecci('zinoviev', 10);
+RG.ecci('bukharin', 6);
+RG.ecci('lenin', -5);
+RG.news('The Zentrale backs Rákosi: Levi and his friends resign', 3);
+RG.ledger('The Zentrale itself turned on Levi in February 1921.', 'e21_cc_rakosi');
 !}
 
 The Zentrale itself backs Rákosi. The resolution passes by a wide margin, and Levi and his friends resign. Brandler and Stoecker take the chair. Ruth Fischer's Berlin delegates are given a voice in the new Zentrale, and they intend to use it.

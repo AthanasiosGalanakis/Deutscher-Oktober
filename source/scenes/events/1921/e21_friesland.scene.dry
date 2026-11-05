@@ -2,7 +2,7 @@ title: The Friesland Affair
 subtitle: The party's general secretary turns against Moscow's methods.
 new-page: true
 tags: event
-view-if: year = 1921 and month = 12 and crisis = 0
+view-if: year = 1921 and month = 12 and crisis = 0 and congress = 0
 max-visits: 1
 priority: 8
 
@@ -22,6 +22,10 @@ Moscow's representatives want him removed. Many in the party agree with every wo
 subtitle: What history did. Moscow is satisfied. Friesland will not stay long after this.
 on-arrival: {!
 Q.friesland_outcome = 1;
+RG.ecci('zinoviev', 6);
+RG.ecci('radek', 3);
+RG.news('Friesland removed as general secretary', 3);
+RG.ledger('Ernst Reuter (Friesland) was removed as general secretary for defying the Executive\'s envoys.', 'e21_friesland_removed');
 Q.independence -= 6;
 Q.moscow_subsidy += 1;
 Q.unity -= 2;
@@ -36,6 +40,11 @@ The Central Committee removes Friesland as general secretary. In the new year he
 subtitle: The Spartacist line: a German party, a member of the International, not its colony.
 on-arrival: {!
 Q.friesland_outcome = 2;
+RG.ecci('zinoviev', -10);
+RG.ecci('radek', -4);
+RG.ecci('lenin', -2);
+RG.news('The Zentrale backs Friesland: "guests, not masters"', 3);
+RG.ledger('The Zentrale backed its general secretary Friesland against Moscow\'s envoys.', 'e21_friesland_backed');
 Q.independence += 10;
 Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
 Q.luxemburgist_satisfaction += 8;
@@ -47,6 +56,14 @@ The Zentrale backs its general secretary and writes to the Executive that its em
 
 @compromise
 subtitle: The Right's way. Friesland stays in his post, under watch.
-on-arrival: friesland_outcome = 3; unity += 3; unionist_satisfaction += 4; independence += 2; lean_unionist += 1
+on-arrival: {!
+Q.friesland_outcome = 3;
+Q.unity += 3;
+Q.unionist_satisfaction += 4;
+Q.independence += 2;
+Q.lean_unionist += 1;
+RG.ecci('zinoviev', -2);
+RG.news('Friesland censured, and kept in his post', 2);
+!}
 
 The Central Committee censures Friesland for indiscipline and keeps him in his post. Everyone involved knows it is a reprieve.

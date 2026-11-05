@@ -20,9 +20,10 @@ subtitle: The Left's line. Strong if the Ruhr district is loyal to us; costly ei
 on-arrival: {!
 var gain = (Q.district_ruhr_loyalty >= 50 || Q.ruhr_red_army == 2) ? 8 : 3;
 Q.crisis_momentum += gain;
-Q.district_ruhr_members *= 0.96;
-Q.repression += 2;
+Q.e21_card_struck = RG.startStrike('ruhr', true) ? 1 : 0;
+RG.district('ruhr', {members: -0.04, repression: 6, militancy: 5});
 Q.lean_offensive += 1;
+if (Q.e21_card_struck) { RG.news('The Ruhr pits come out for Mansfeld', 2); }
 !}
 
 Strike committees form at a dozen pits around Bochum and Gelsenkirchen. The police arrest their leaders the same night.
@@ -32,7 +33,9 @@ subtitle: The Left's line. Berlin decides whether this is a national action or a
 on-arrival: {!
 var gain = (Q.district_berlin_loyalty >= 50) ? 7 : 3;
 Q.crisis_momentum += gain;
-Q.district_berlin_members *= 0.97;
+Q.e21_card_struck = RG.startStrike('berlin', true) ? 1 : 0;
+RG.district('berlin', {members: -0.03, repression: 4, militancy: 4});
+if (Q.e21_card_struck) { RG.news('Berlin electrical works strike in solidarity with Central Germany', 2); }
 Q.offensive_satisfaction += 3;
 Q.lean_offensive += 1;
 !}
@@ -52,6 +55,8 @@ Q.crisis_momentum += (Q.e21_march_mode == 1) ? 7 : 4;
 Q.spd_relation += 2;
 Q.worker_support += 1;
 Q.lean_unionist += 1;
+RG.district('halle', {loyalty: 3});
+RG.district('saxony', {militancy: 3});
 !}
 
 At the factory gates our speakers do not shout. They ask the social democratic workers what they would do if the police came to their town. Some of them answer by joining the strike.

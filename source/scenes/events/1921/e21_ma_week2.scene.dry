@@ -5,6 +5,14 @@ tags: event
 view-if: crisis_march = 1 and crisis_time = 2
 max-visits: 1
 priority: 10
+on-arrival: {!
+// which district will refuse to come out (read by e21_ma_refusal)
+var c = Q.districts.filter(function (d) {
+    return d != 'halle' && !Q['district_' + d + '_strike'] && Q['district_' + d + '_members'] >= 3;
+});
+c.sort(function (a, b) { return Q['district_' + a + '_militancy'] - Q['district_' + b + '_militancy']; });
+Q.e21_refuse_district = c.length ? c[0] : 0;
+!}
 
 = Leuna
 
@@ -20,16 +28,20 @@ The Leuna works near Merseburg, the biggest chemical plant in Europe, have been 
 subtitle: The Left's line. If Leuna holds, the action holds. If it falls, it falls hard.
 on-arrival: {!
 var arms = Q.red_guards_arms + (Q.e21_ma_hoelz ? 10 : 0);
-if (arms >= 30 || Q.crisis_momentum >= 65) {
+var hg = Q.district_halle_guards || 0;
+if (arms >= 30 || Q.crisis_momentum >= 65 || (hg >= 5 && arms >= 22)) {
     Q.crisis_momentum += 8;
     Q.e21_leuna = 1;
+    RG.district('halle', {guards: 1, militancy: 5, repression: 4});
+    RG.news('Leuna holds: the police fall back on the Merseburg road', 3);
+    RG.ledger('The workers of Leuna held their works against the Security Police.', 'e21_leuna_held');
 } else {
     Q.crisis_momentum -= 8;
     Q.e21_leuna = 2;
-    Q.district_halle_members *= 0.92;
-    Q.red_guards_strength -= 2;
+    RG.district('halle', {members: -0.08, guards: -2, repression: 12, militancy: -4});
+    RG.news('Leuna stormed: more than a thousand prisoners marched away', 3);
+    RG.ledger('The Leuna works were shelled and stormed on 29 March 1921.', 'e21_leuna_fell');
 }
-Q.repression += 5;
 Q.offensive_satisfaction += 5;
 Q.lean_offensive += 2;
 !}
@@ -46,6 +58,8 @@ Q.luxemburgist_satisfaction += 4;
 Q.offensive_satisfaction -= 6;
 Q.lean_unionist += 1;
 Q.lean_luxemburgist += 1;
+RG.district('halle', {repression: 3, loyalty: -3});
+RG.news('Leuna: the occupiers march out of the works with their heads high', 2);
 !}
 
 Through a works council member with a brother in the police, the occupiers agree to march out with their heads high and their rifles hidden. The police take an empty factory. The Left calls it capitulation.
@@ -59,16 +73,20 @@ if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-if (Q.red_guards_strength >= 12 || Q.ruhr_red_army == 2) {
+if (Q.red_guards_strength >= 12 || Q.ruhr_red_army == 2 || (Q.district_halle_guards || 0) >= 6) {
     Q.crisis_momentum += 10;
     Q.e21_leuna = 1;
+    RG.district('halle', {repression: 4, militancy: 6});
+    RG.news('Armed workers from Halle break the ring around Leuna', 3);
+    RG.ledger('Armed workers from Halle broke the police ring around Leuna.', 'e21_leuna_held');
 } else {
     Q.crisis_momentum -= 5;
     Q.e21_leuna = 2;
-    Q.red_guards_strength -= 3;
+    RG.district('halle', {guards: -3, repression: 10, members: -0.04});
+    RG.news('Relief column cut down on the Merseburg road; Leuna falls', 3);
+    RG.ledger('The Leuna works were stormed on 29 March 1921, after the relief column was cut down.', 'e21_leuna_fell');
 }
-Q.repression += 6;
-Q.militancy += 4;
+Q.militancy += 2;
 Q.lean_offensive += 2;
 !}
 

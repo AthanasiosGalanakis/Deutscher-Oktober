@@ -2,10 +2,15 @@ title: The Communist Working Group
 subtitle: Levi's friends found an organisation of their own.
 new-page: true
 tags: event
-view-if: year = 1921 and month >= 9 and crisis = 0 and levi_split = 1 and levi_in_party = 0 and e21_kag_done = 0
+view-if: year = 1921 and month >= 9 and crisis = 0 and congress = 0 and levi_split = 1 and levi_in_party = 0 and e21_kag_done = 0
 max-visits: 1
 priority: 8
-on-arrival: e21_kag_done = 1; kag_exists = 1
+on-arrival: {!
+Q.e21_kag_done = 1;
+Q.kag_exists = 1;
+RG.news('Levi\'s friends found the Communist Working Group', 3);
+RG.ledger('Levi\'s friends founded the Communist Working Group, the KAG.', 'e21_kag_founded');
+!}
 
 = The Communist Working Group
 
@@ -62,6 +67,8 @@ for (var d of Q.districts) {
 Q.luxemburgist_satisfaction += 8;
 Q.offensive_satisfaction -= 8;
 Q.independence += 3;
+RG.ecci('zinoviev', -6);
+RG.ecci('lenin', -2);
 Q.lean_luxemburgist += 2;
 !}
 

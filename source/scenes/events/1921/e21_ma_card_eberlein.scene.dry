@@ -20,7 +20,17 @@ He says the masses need a shock. Some members of the Zentrale do not want to kno
 
 @approve
 subtitle: The Left's logic, carried to its end. If it comes out, it will poison everything.
-on-arrival: e21_ma_eberlein = 1; crisis_momentum += 4; repression += 6; luxemburgist_satisfaction -= 12; unionist_satisfaction -= 6; offensive_satisfaction += 2; lean_offensive += 1
+on-arrival: {!
+Q.e21_ma_eberlein = 1;
+Q.crisis_momentum += 4;
+Q.repression += 2;
+RG.district('halle', {repression: 8});
+Q.luxemburgist_satisfaction -= 12;
+Q.unionist_satisfaction -= 6;
+Q.offensive_satisfaction += 2;
+Q.lean_offensive += 1;
+RG.news('Bomb damages railway bridge near Halle', 2);
+!}
 
 A few bombs go off in the week that follows. A railway bridge is damaged. Nobody believes the right did it.
 

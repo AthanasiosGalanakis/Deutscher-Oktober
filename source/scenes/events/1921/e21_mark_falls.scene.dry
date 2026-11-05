@@ -2,10 +2,14 @@ title: The Mark Falls
 subtitle: Prices are running away, and wages are not.
 new-page: true
 tags: event
-view-if: year = 1921 and month = 11 and crisis = 0
+view-if: year = 1921 and month = 11 and crisis = 0 and congress = 0
 max-visits: 1
 priority: 6
-on-arrival: inflation += 4; worker_support += 1
+on-arrival: {!
+Q.inflation += 4;
+Q.worker_support += 1;
+RG.news('The dollar passes 250 marks: hunger riots in Berlin', 3);
+!}
 
 = The Mark Falls
 
@@ -36,13 +40,26 @@ Control committees of workers and housewives visit the markets and the warehouse
 
 @real_values
 subtitle: The Right's line: a demand for the unions and the Reichstag.
-on-arrival: worker_support += 2; uspd_relation += 3; spd_relation += 2; unionist_satisfaction += 5; lean_unionist += 2
+on-arrival: {!
+Q.worker_support += 2;
+Q.uspd_relation += 3;
+Q.spd_relation += 2;
+Q.unionist_satisfaction += 5;
+Q.lean_unionist += 2;
+RG.comply(10);
+!}
 
 The party's demand, that the state take a share of every factory and estate instead of printing money, is taken up by union branches in Saxony and Thuringia. The ADGB's leaders say it is worth discussing, which is more than they have ever said about any demand of ours.
 
 @hunger
 view-if: offensive_gone = 0
 subtitle: The Left's line. The unemployed are with us; the police are waiting.
-on-arrival: militancy += 5; repression += 5; worker_support += 1; offensive_satisfaction += 5; district_berlin_loyalty += 5; lean_offensive += 2
+on-arrival: {!
+Q.worker_support += 1;
+Q.offensive_satisfaction += 5;
+Q.lean_offensive += 2;
+RG.district('berlin', {militancy: 8, repression: 8, loyalty: 5});
+RG.startStrike('berlin');
+!}
 
 Columns of the unemployed march on the Berlin city hall behind our banners. Windows are broken, and so are heads.

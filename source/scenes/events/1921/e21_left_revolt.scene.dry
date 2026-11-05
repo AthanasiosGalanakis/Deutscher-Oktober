@@ -5,7 +5,13 @@ tags: event
 view-if: year = 1921 and month >= 4 and crisis = 0 and e21_march_started = 1 and e21_march_mode = 0 and e21_after_done = 0
 max-visits: 1
 priority: 12
-on-arrival: e21_after_done = 1; comintern_rep = 'Karl Radek'
+on-arrival: {!
+Q.e21_after_done = 1;
+Q.comintern_rep = 'Karl Radek';
+RG.district('berlin', {loyalty: -6});
+RG.district('halle', {loyalty: -4});
+RG.news('Berlin conference condemns the "passivity" of the Zentrale', 2);
+!}
 
 = The Left Revolts
 

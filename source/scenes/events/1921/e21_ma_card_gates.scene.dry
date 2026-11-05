@@ -17,9 +17,22 @@ In most of the country the factories are working. The strike call has been read 
 
 @unemployed
 subtitle: The Left's line. It may close the gates. It will also set worker against worker.
-on-arrival: crisis_momentum += 6; worker_support -= 4; unity -= 4; spd_relation -= 4; offensive_satisfaction += 4; luxemburgist_satisfaction -= 6; lean_offensive += 1
+on-arrival: {!
+Q.crisis_momentum += 6;
+Q.worker_support -= 4;
+Q.unity -= 4;
+Q.spd_relation -= 4;
+Q.offensive_satisfaction += 4;
+Q.luxemburgist_satisfaction -= 6;
+Q.lean_offensive += 1;
+RG.target('militancy');
+Q.e21_gates_name = Q.sys_target_name;
+RG.district(Q.sys_target, {loyalty: -5, repression: 6});
+RG.startStrike(Q.sys_target, true);
+RG.news('Workers fight the unemployed at the factory gates in ' + Q.sys_target_name, 2);
+!}
 
-Columns of unemployed men march to the gates at dawn. At some works they turn the shift back. At others the workers fight them with iron bars, and the photographs are in every newspaper by noon.
+Columns of unemployed men march to the gates at dawn. At some works they turn the shift back. At others the workers fight them with iron bars, and the photographs from [+ e21_gates_name +] are in every newspaper by noon.
 
 @meetings
 subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The Spartacist way: the workers decide. It works where we are trusted.
