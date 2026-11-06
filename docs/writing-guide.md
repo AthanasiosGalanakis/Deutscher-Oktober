@@ -196,7 +196,9 @@ Q.kapp_outcome = Q.crisis_momentum >= 65 ? 3 : 1;
 !}
 ```
 
-The month turns after every fourth week, so a long crisis can run into the next month. The page darkens slightly and a Crisis tab appears in the sidebar while it runs.
+The month turns after every fourth week, so a long crisis can run into the next month. The page darkens slightly while it runs.
+
+Each crisis has its own mechanic. The top of the Party tab shows `crisis_name`, `crisis_goal`, then up to three status lines the crisis writes itself (`crisis_line_1`, `crisis_line_2`, `crisis_line_3`, 0 to hide), and `crisis_momentum` only when `crisis_momentum_label` is set (for example 'The strike'). Clear them all in the end event.
 
 ## The systems: helpers you can call
 

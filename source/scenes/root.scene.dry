@@ -172,6 +172,10 @@ Q.crisis_time = 0;
 Q.crisis_name = 0;
 Q.crisis_goal = 0;
 Q.crisis_momentum = 50;
+Q.crisis_line_1 = 0;
+Q.crisis_line_2 = 0;
+Q.crisis_line_3 = 0;
+Q.crisis_momentum_label = 0;
 
 // ------------------------------------------------------------ endings
 Q.ending_id = 0;
@@ -204,6 +208,10 @@ if (typeof RG === 'undefined' && this.game.scenes.sys_lib) {
 if (typeof RG !== 'undefined') {
     RG.ensureState();
 }
+// what the sidebar shows before the first turn
+Q.party_name = "KPD";
+Q.leading_faction_name = Q.faction_names[Q.leading_faction];
+Q.members_display = Q.districts.reduce(function (s, d) { return s + Q["district_" + d + "_members"]; }, 0).toFixed(1);
 !}
 new-page: true
 
