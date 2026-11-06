@@ -1,0 +1,29 @@
+title: The Conference Votes
+subtitle: The districts give their verdict on the boycott
+new-page: true
+tags: event
+view-if: congress_conference19 = 2
+max-visits: 1
+priority: 9
+on-arrival: {!
+RG.congressEnd();
+var zentraleWon = (Q.congress_result == 'luxemburgist');
+Q.e19_conf_outcome = zentraleWon ? 1 : 2;
+if (zentraleWon) {
+    Q.ultraleft_satisfaction -= 6;
+    RG.news('Communist conference votes to end the boycott', 3);
+    RG.ecci('lenin', 4);
+    RG.ecci('radek', 3);
+} else {
+    Q.luxemburgist_satisfaction -= 6;
+    Q.election_boycott = 1;
+    RG.news('Communist conference upholds the boycott', 3);
+    RG.ledger('The national conference of 1919 upheld the boycott of parliament and the unions.', 'e19_conf_boycott');
+}
+!}
+
+= The Conference Votes
+
+The conference sits through a hot night with the windows shut. The vote is taken at four in the morning: [+ congress_votes_for +]% for our motion. [? if e19_conf_outcome = 1 : The boycott of parliament is declared a question of tactics, not of principle, and the party may stand in the next election. The Left Radicals walk home through the dawn saying that Heidelberg will reverse it. ?][? if e19_conf_outcome = 2 : The conference confirms the founding congress: no candidates, no union cards, the councils and nothing else. The Left Radicals walk home through the dawn saying that Heidelberg will confirm it again. ?]
+
+[? if e19_conf_outcome = 1 and congress_won = 1 : The Zentrale goes into the autumn with the wind behind it. ?][? if e19_conf_outcome = 2 and congress_won = 0 : The Zentrale has lost its first trial of strength, and every district knows it. ?]

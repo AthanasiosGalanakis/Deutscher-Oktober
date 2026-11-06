@@ -6,6 +6,7 @@ view-if: year = 1920 and month = 10 and crisis = 0 and ending_id = 0
 max-visits: 1
 on-arrival: {!
 Q.inflation += 1;
+RG.news('The price of bread doubles in a year', 2);
 !}
 
 = The Price of Bread
@@ -62,6 +63,9 @@ Q.repression += 4;
 Q.worker_support += 1;
 Q.offensive_satisfaction += 6;
 Q.lean_offensive += 2;
+RG.districtSync();
+RG.district('berlin', {militancy: 4, repression: 4});
+RG.district('saxony', {militancy: 4});
 !}
 
 Thousands march on the town halls of Halle, Leipzig and Chemnitz. In Leipzig the police fire over their heads. The mayors promise extra rations, and some of them deliver.

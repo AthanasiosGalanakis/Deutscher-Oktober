@@ -7,6 +7,7 @@ max-visits: 1
 priority: 2
 on-arrival: {!
 Q.congress_done = 1;
+RG.news('Second Congress of the International: Zinoviev\'s twenty-one conditions', 3);
 !}
 
 = The Twenty-One Conditions
@@ -37,6 +38,8 @@ Q.resources += 1;
 Q.world_revolution += 2;
 Q.offensive_satisfaction += 8;
 Q.lean_offensive += 2;
+RG.ecci('zinoviev', 10);
+RG.ecci('lenin', 4);
 !}
 
 Our delegates raise their cards with the rest. The conditions are adopted with only a handful of votes against. Zinoviev embraces our delegation.
@@ -50,6 +53,7 @@ Q.independence += 3;
 Q.uspd_score += strong ? 1 : 0;
 Q.luxemburgist_satisfaction += 8;
 Q.lean_luxemburgist += 2;
+if (Q.twenty_one_conditions == 2) { RG.ecci('lenin', 3); RG.ecci('zinoviev', -6); } else { RG.ecci('zinoviev', -3); }
 !}
 
 [? if twenty_one_conditions = 2 : Our amendments pass in commission: the conditions will be applied "with regard to national circumstances", and no named leader of the USPD's left must be expelled. Däumig thanks us privately. ?][? if twenty_one_conditions = 1 : Zinoviev listens politely and changes nothing. The conditions are adopted as drafted, with our votes. ?]
@@ -64,6 +68,9 @@ Q.uspd_relation -= 8;
 Q.offensive_satisfaction += 10;
 Q.unionist_satisfaction -= 5;
 Q.lean_offensive += 2;
+RG.ecci('zinoviev', 10);
+RG.ecci('bukharin', 6);
+RG.ecci('lenin', -3);
 !}
 
 Our delegates propose that the conditions name the men who must go: Kautsky, Hilferding, Crispien, Dittmann. The congress agrees. Crispien and Dittmann go home to fight the conditions with all they have.
@@ -79,6 +86,17 @@ Q.luxemburgist_satisfaction += 6;
 Q.offensive_satisfaction -= 10;
 Q.ultraleft_satisfaction += 4;
 Q.lean_luxemburgist += 2;
+if (Q.twenty_one_conditions == 2) {
+    RG.ecci('zinoviev', -15);
+    RG.ecci('lenin', 2);
+    RG.ledger('The German party forced Moscow to soften the twenty-one conditions.', 'e20_21_softened');
+} else {
+    RG.ecci('zinoviev', -15);
+    RG.ecci('lenin', -8);
+    RG.ecci('radek', -6);
+    RG.punish('rival');
+    RG.ledger('The German party refused the twenty-one conditions.', 'e20_21_refused');
+}
 !}
 
 [? if twenty_one_conditions = 2 : Our refusal shakes the congress. Lenin himself intervenes, and the conditions are softened for Germany: no names, no deadlines. Zinoviev will not forget who humiliated him. ?][? if twenty_one_conditions = 3 : The conditions are adopted over our votes. Moscow's subsidies stop, and Radek begins to talk to the Left about the German party's leadership. ?]

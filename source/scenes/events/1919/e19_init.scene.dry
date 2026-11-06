@@ -73,7 +73,14 @@ var start = {
     heid_lost_names: 0,
     heid_split_share: 0.7,
     e19_split_done: 0,
-    leipzig_line: 0
+    leipzig_line: 0,
+    // Heidelberg as a congress
+    heid_motion: 0, heid_cg_mandates: 0, heid_cg_thesis: 0, heid_cg_radek: 0, heid_cg_rooms: 0,
+    heid_raided: 0, heid_speaker_name: 0, heid_speaker_power: 1, heid_ul_won: 0, heid_open_votes: 0,
+    // the summer conference on the boycott
+    e19_conf_seen: 0, e19_conf_outcome: 0,
+    // new events
+    e19_eberlein_line: 0, e19_wildcat_line: 0, e19_rescue_line: 0, e19_rescue_name: 0, e19_rescue_ok: 0, e19_rescue_id: 0, e19_rescue_role: 0
 };
 for (var k in start) {
     if (Q[k] === undefined) {

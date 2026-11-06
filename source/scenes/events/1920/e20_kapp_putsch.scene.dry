@@ -18,6 +18,10 @@ Q.stability -= 15;
 Q.army_loyalty -= 15;
 Q.freikorps_loyalty -= 20;
 Q.e20_lead_ul = (Q.leading_faction == 'ultraleft') ? 1 : 0;
+RG.news('Putsch in Berlin: Kapp proclaims himself Chancellor', 3);
+if (Q.levi_chair == 1 && Q.comrade_levi == 1) { RG.arrest('levi', 1, {quiet: true}); }
+for (var d of Q.districts) { if (d != 'bavaria') { RG.startStrike(d, true); } }
+RG.news('General strike: twelve million down tools against the putsch', 3);
 !}
 
 = The Kapp Putsch
@@ -45,6 +49,9 @@ Q.ultraleft_satisfaction += 4;
 Q.luxemburgist_satisfaction -= 8;
 Q.unionist_satisfaction -= 8;
 Q.lean_offensive += 2;
+RG.ecci('lenin', -8);
+RG.ecci('radek', -6);
+RG.ecci('bukharin', 2);
 !}
 
 The statement goes out under the Zentrale's name: we will not defend the republic of Noske, the murderer of Rosa Luxemburg. By the afternoon, it is clear that every factory in Berlin is stopping anyway, without us. Our own members are on the picket lines and ask what the Zentrale is playing at.
@@ -68,6 +75,8 @@ Q.unionist_satisfaction += 6;
 Q.offensive_satisfaction -= 3;
 Q.lean_luxemburgist += 2;
 Q.lean_unionist += 1;
+RG.ecci('lenin', 5);
+RG.ecci('radek', 5);
 !}
 
 Our call goes out the same day: down tools, against Kapp and against the generals, for the arming of the workers and the disarming of the counter-revolution. Our people are on the strike committees from the first hour.
@@ -91,6 +100,12 @@ Q.red_guards_arms += 6;
 Q.offensive_satisfaction += 10;
 Q.luxemburgist_satisfaction -= 4;
 Q.lean_offensive += 2;
+RG.ecci('bukharin', 6);
+RG.ecci('zinoviev', 4);
+RG.districtSync();
+RG.district('ruhr', {guards: 2});
+RG.district('saxony', {guards: 1});
+RG.district('halle', {guards: 1});
 !}
 
 We call on the workers to arm themselves, from the police stations and the civil guards' depots if need be. In the Ruhr and in Central Germany, they are already doing it.
@@ -106,6 +121,10 @@ Q.ultraleft_satisfaction += 10;
 Q.kapd_relation += 5;
 Q.unionist_satisfaction -= 6;
 Q.lean_ultraleft += 2;
+RG.ecci('lenin', -4);
+RG.districtSync();
+RG.district('hamburg', {militancy: 6});
+RG.district('bremen', {militancy: 6});
 !}
 
 Our call goes out for action committees elected in every factory, to take the works and the towns into the workers' hands. In Hamburg and Bremen, the committees spring up within hours. Elsewhere, workers strike under the unions' banner and ask what councils have to do with Kapp.

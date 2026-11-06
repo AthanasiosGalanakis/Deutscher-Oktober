@@ -5,6 +5,9 @@ tags: event
 view-if: crisis_ruhr = 1 and crisis_time = 3
 max-visits: 1
 priority: 5
+on-arrival: {!
+RG.news('Bielefeld: the government offers the Ruhr an agreement', 2);
+!}
 
 = The Bielefeld Agreement
 

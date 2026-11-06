@@ -35,6 +35,7 @@ if (Q.kapd_exists) {
     Q.district_berlin_members += 1;
     Q.district_hamburg_members += 0.5;
 }
+RG.ecci('lenin', 6);
 !}
 
 The pamphlet sells at every party meeting. [? if kapd_exists = 1 : In Berlin, a few hundred KAPD members read it and come back to us. ?]
@@ -53,6 +54,8 @@ Q.district_saxony_members += 0.5;
 Q.unionist_satisfaction += 8;
 Q.ultraleft_satisfaction -= 10;
 Q.lean_unionist += 2;
+RG.ecci('lenin', 5);
+RG.ecci('radek', 4);
 !}
 
 The Zentrale orders every member who has left a union to rejoin it, and every cell to form a fraction inside its branch. Brandler is delighted.
@@ -65,6 +68,7 @@ Q.unity += 3;
 Q.offensive_satisfaction += 6;
 Q.luxemburgist_satisfaction -= 3;
 Q.lean_offensive += 1;
+RG.ecci('zinoviev', 5);
 !}
 
 Our young cadres underline the passages on iron discipline and the leading role of the party, and skip the ones about compromise.
@@ -78,6 +82,8 @@ Q.ultraleft_satisfaction += 10;
 Q.luxemburgist_satisfaction -= 6;
 Q.offensive_satisfaction -= 4;
 Q.lean_ultraleft += 2;
+RG.ecci('lenin', -10);
+RG.ecci('zinoviev', -8);
 !}
 
 We publish a reply: Russian tactics for Russian conditions. Germany has a proletariat of millions, and does not need to learn from Moscow how to deal with Legien. Zinoviev answers in *Pravda*.

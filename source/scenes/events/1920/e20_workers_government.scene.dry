@@ -26,6 +26,8 @@ Q.worker_support += 3;
 Q.uspd_relation += 5;
 Q.luxemburgist_satisfaction += 8;
 Q.lean_luxemburgist += 2;
+RG.ecci('lenin', 5);
+RG.ecci('radek', 4);
 !}
 
 We vote for the purge of the army and against every concession to the employers. The cabinet does not love us, but it knows where we stand.
@@ -51,6 +53,11 @@ Q.unionist_satisfaction += 12;
 Q.offensive_satisfaction -= 15;
 Q.ultraleft_satisfaction -= 15;
 Q.lean_unionist += 3;
+RG.ecci('zinoviev', -10);
+RG.ecci('bukharin', -8);
+RG.ecci('lenin', -3);
+RG.news('Communists enter the workers\' government', 3);
+RG.ledger('Communist ministers sat in a German government in 1920.', 'e20_ministers');
 !}
 
 A communist becomes undersecretary for the mines, another sits on the commission for the purge of the army. Zinoviev's telegram from Moscow is not friendly.
@@ -89,6 +96,8 @@ Q.spd_relation -= 6;
 Q.offensive_satisfaction += 10;
 Q.unionist_satisfaction -= 8;
 Q.lean_offensive += 2;
+RG.ecci('bukharin', 4);
+RG.ecci('lenin', -5);
 !}
 
 We declare that a government of Legien is the last line of defence of German capital. Many workers who struck in March think we have forgotten who Kapp was.

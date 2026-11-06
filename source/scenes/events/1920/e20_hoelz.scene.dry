@@ -1,0 +1,95 @@
+title: The Red Robin Hood of the Vogtland
+subtitle: Max Hoelz refuses to lay down his arms
+new-page: true
+tags: event
+view-if: year = 1920 and month = 4 and crisis = 0 and congress = 0 and ending_id = 0 and comrade_hoelz = 1 and e20_hoelz_line = 0
+max-visits: 1
+priority: 2
+on-arrival: {!
+RG.news('Hoelz\'s Red Guards hold Falkenstein and Plauen', 2);
+RG.district('saxony', {guards: 1, militancy: 4});
+!}
+
+= The Red Robin Hood of the Vogtland
+
+Max Hoelz is a lathe operator from the Vogtland, thirty years old, who came back from the war a pacifist and became a leader of the unemployed of Falkenstein. When Kapp marched, Hoelz formed a Red Guard of a few hundred men, took the town halls of Falkenstein and Plauen, made the factory owners pay a levy for the unemployed, and burned the land registers. Kapp has fled. Hoelz has not stopped.
+
+The Reichswehr is closing on the Vogtland. The papers call him a bandit, the unemployed call him a Robin Hood, and he carries a party card. [? if levi_chair = 1 : Levi wants him out of the party: a communist party is not a band of guerrillas, and every bank Hoelz robs is a gift to Noske's successors. ?] The Left says that Hoelz did what the Zentrale only talked about.
+
+- @expel: Expel Hoelz, and say why.
+- @border: Get him and his men over the border into Bohemia.
+- @back: Stand by him, and defend the Vogtland.
+- @talk: Send a Zentrale man to talk him down.
+
+@expel
+subtitle: The Spartacist line, and Levi's. A party, not a band. The Left will never forgive it, and the unemployed of the Vogtland will not understand.
+on-arrival: {!
+Q.e20_hoelz_line = 1;
+RG.expel('hoelz', {news: 'Communist Zentrale expels Max Hoelz', priority: 2});
+Q.luxemburgist_satisfaction += 5;
+Q.offensive_satisfaction -= 8;
+Q.lean_luxemburgist += 2;
+RG.district('saxony', {loyalty: -6, guards: -0.5});
+RG.ecci('bukharin', -4);
+RG.ecci('radek', 2);
+!}
+
+The circular says that the party fights for the working class, not for a few hundred armed men and their own justice. Hoelz reads it in a barn near Klingenthal and joins the KAPD within the month.
+
+@border
+subtitle: Costs 1 fund. Hoelz lives to fight another day, from abroad. Nobody in the party is satisfied.
+choose-if: resources >= 1
+unavailable-subtitle: We have no money for guides and papers.
+on-arrival: {!
+Q.e20_hoelz_line = 2;
+Q.resources -= 1;
+RG.exile('hoelz', {news: 'Max Hoelz escapes into Czechoslovakia', priority: 2});
+Q.unity += 2;
+Q.lean_unionist += 1;
+RG.district('saxony', {guards: -0.5, repression: -3});
+!}
+
+Hoelz and forty of his men cross the mountains into Bohemia at night, with their rifles buried behind them. The Czech police intern them, and treat them politely. In Falkenstein, the Reichswehr finds the town halls empty.
+
+@back
+subtitle: The Left's line. The Vogtland becomes a battlefield, and Hoelz may not come out of it free.
+on-arrival: {!
+Q.e20_hoelz_line = 3;
+Q.offensive_satisfaction += 8;
+Q.luxemburgist_satisfaction -= 5;
+Q.lean_offensive += 2;
+Q.militancy += 3;
+Q.repression += 4;
+RG.districtSync();
+RG.district('saxony', {guards: 1.5, militancy: 6, repression: 10});
+RG.ecci('bukharin', 5);
+RG.ecci('lenin', -3);
+if (Math.random() < 0.45) {
+    Q.e20_hoelz_caught = 1;
+    RG.arrest('hoelz', 8, {news: 'Max Hoelz captured by the Reichswehr', priority: 3});
+} else {
+    Q.e20_hoelz_caught = 0;
+    RG.exile('hoelz', {news: 'Max Hoelz breaks through to Bohemia', priority: 2});
+}
+!}
+
+Our paper calls Hoelz a soldier of the revolution, and the Saxon district sends him rifles and men. For ten days the Vogtland is at war. [? if e20_hoelz_caught = 1 : Then the Reichswehr closes the ring, and Hoelz is taken in a forester's hut, still arguing. ?][? if e20_hoelz_caught = 0 : Then the Reichswehr closes the ring, and Hoelz slips through it into Bohemia with a price on his head. ?]
+
+@talk
+subtitle: The Right's way. Brandler knows the Vogtland. It may work, and Hoelz will feel betrayed.
+on-arrival: {!
+Q.e20_hoelz_line = 4;
+Q.unionist_satisfaction += 4;
+Q.lean_unionist += 1;
+if (Math.random() < 0.6) {
+    Q.e20_hoelz_caught = 0;
+    RG.exile('hoelz', {quiet: true});
+    RG.district('saxony', {guards: -1, loyalty: 4});
+} else {
+    Q.e20_hoelz_caught = 1;
+    RG.district('saxony', {repression: 6});
+    RG.arrest('hoelz', 6, {news: 'Max Hoelz arrested in the Vogtland', priority: 2});
+}
+!}
+
+Brandler goes to Falkenstein in a borrowed car. [? if e20_hoelz_caught = 0 : He and Hoelz shout at each other for a night, and in the morning Hoelz's men bury their rifles and Hoelz goes over the mountains into Bohemia. ?][? if e20_hoelz_caught = 1 : Hoelz will not listen. Two days later the Reichswehr takes him, and the party has neither saved him nor disowned him. ?]

@@ -7,6 +7,7 @@ max-visits: 1
 priority: 2
 on-arrival: {!
 Q.kapd_sympathiser = 1;
+RG.news('Moscow admits the KAPD as a sympathising party', 2);
 !}
 
 = Moscow and the KAPD
@@ -27,6 +28,8 @@ Q.kapd_relation -= 8;
 Q.luxemburgist_satisfaction += 5;
 Q.offensive_satisfaction -= 3;
 Q.lean_luxemburgist += 1;
+RG.ecci('zinoviev', -6);
+RG.ecci('bukharin', -4);
 !}
 
 Our letter to Zinoviev is sharp: the International cannot have two sections in Germany. Zinoviev replies that the International can have whatever it likes.
@@ -47,6 +50,8 @@ Q.district_berlin_members += 1;
 Q.offensive_satisfaction += 6;
 Q.unionist_satisfaction -= 4;
 Q.lean_offensive += 2;
+RG.ecci('zinoviev', 5);
+RG.ecci('bukharin', 4);
 !}
 
 Our delegates and theirs meet under Radek's eye. Nothing is agreed, but a few KAPD branches in Berlin vote to return.

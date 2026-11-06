@@ -7,6 +7,7 @@ max-visits: 1
 priority: 3
 on-arrival: {!
 Q.halle_done = 1;
+RG.news('Zinoviev in Halle: the USPD decides on Moscow', 3);
 !}
 
 = The Halle Congress
@@ -28,6 +29,7 @@ Q.e20_halle_bonus = 1;
 Q.independence -= 3;
 Q.offensive_satisfaction += 4;
 Q.lean_offensive += 1;
+RG.ecci('zinoviev', 6);
 !}
 
 - @vote: Continue...
@@ -39,6 +41,8 @@ Q.e20_halle_bonus = (Q.twenty_one_conditions == 2) ? 2 : 1;
 Q.independence += 3;
 Q.luxemburgist_satisfaction += 5;
 Q.lean_luxemburgist += 2;
+RG.ecci('zinoviev', -3);
+RG.ecci('radek', 3);
 !}
 
 - @vote: Continue...
@@ -87,6 +91,10 @@ if (Q.kapp_outcome == 3 && Q.uspd_in_government && Q.uspd_split == 2) {
     Q.government_name = 'Legien cabinet (SPD, unions)';
     Q.stability -= 5;
 }
+Q.e20_halle_won = (Q.uspd_split == 1 || Q.uspd_split == 2) ? 1 : 0;
+if (Q.uspd_split == 3) { RG.news('Halle: the USPD rejects the conditions', 3); RG.ecci('zinoviev', -6); }
+else { RG.news('Halle: the USPD votes to join the International', 3); RG.ecci('zinoviev', 8); RG.ledger('At Halle the USPD voted to join the International' + (Q.uspd_split == 2 ? ', almost whole.' : '.'), 'e20_halle'); }
+RG.directiveUpdate();
 !}
 
 = The Vote

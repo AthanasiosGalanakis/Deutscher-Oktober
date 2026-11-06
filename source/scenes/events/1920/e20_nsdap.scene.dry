@@ -7,6 +7,7 @@ max-visits: 1
 on-arrival: {!
 Q.nsdap_name = 'NSDAP';
 Q.nsdap_relation = 0;
+RG.news('In Munich, the German Workers\' Party becomes the NSDAP', 1);
 !}
 
 = A Meeting in a Beer Hall

@@ -13,6 +13,7 @@ Q.kapd_relation = 20;
 Q.kapd_seats = 0;
 Q.district_berlin_members -= 1.5;
 Q.district_hamburg_members -= 0.5;
+RG.news('Expelled Left Radicals found the Communist Workers\' Party', 3);
 !}
 
 = The KAPD
@@ -47,6 +48,8 @@ Q.militancy += 3;
 Q.offensive_satisfaction += 6;
 Q.unionist_satisfaction -= 5;
 Q.lean_offensive += 2;
+RG.ecci('bukharin', 4);
+RG.ecci('lenin', -3);
 !}
 
 In Berlin and on the Hamburg docks, our cells and theirs agree to stand together in strikes. The Zentrale's moderates grumble that we are rewarding a split.
@@ -70,6 +73,8 @@ Q.kapd_relation -= 10;
 Q.independence -= 4;
 Q.luxemburgist_satisfaction += 3;
 Q.lean_luxemburgist += 1;
+RG.ecci('lenin', 4);
+RG.ecci('zinoviev', 3);
 !}
 
 We write to the Executive of the International: a party that refuses parliament and the unions does not belong in it. Zinoviev replies that Moscow will hear both sides.

@@ -5,10 +5,21 @@ tags: event
 view-if: year = 1920 and month = 9 and crisis = 0 and ending_id = 0
 max-visits: 1
 priority: 2
+on-arrival: {!
+Q.e20_cond_dir = 0;
+if (Q.comintern_member == 1 && Q.twenty_one_conditions != 3) {
+    Q.e20_cond_dir = 1;
+    RG.directive({id: 'conditions21', title: 'The Twenty-One Conditions',
+        text: 'Carry the conditions of the International into the USPD at Halle. Break with the reformists and the centrists, and place the party\'s press and its deputies under the discipline of the International.',
+        from: 'zinoviev', months: 3,
+        goals: [{q: 'e20_halle_won', op: '>=', v: 1}, {q: 'independence', op: '<=', v: 45}],
+        reward: {subsidy: 1, favour: 12}, punish: 'rival', announce: false});
+}
+!}
 
 = The Battle for the USPD
 
-The USPD delegates came home from Moscow divided. Däumig and Stoecker want to accept the conditions and join the International. Crispien and Dittmann call them a dictatorship of Moscow, and Hilferding writes in *Freiheit* that the conditions would hand the German workers' movement over to the Russian state. Every USPD branch in Germany is voting on it, one by one, before the party congress at Halle in October. [? if uspd_in_government = 1 : The USPD's ministers in Legien's cabinet know that the conditions would force them out of it. ?]
+The USPD delegates came home from Moscow divided. Däumig and Stoecker want to accept the conditions and join the International. Crispien and Dittmann call them a dictatorship of Moscow, and Hilferding writes in *Freiheit* that the conditions would hand the German workers' movement over to the Russian state. Every USPD branch in Germany is voting on it, one by one, before the party congress at Halle in October. [? if e20_cond_dir = 1 : Zinoviev's telegram to the Zentrale is short: the conditions must carry at Halle, and the Executive will judge the German section by the result. ?] [? if uspd_in_government = 1 : The USPD's ministers in Legien's cabinet know that the conditions would force them out of it. ?]
 
 In Italy, four hundred thousand metalworkers have occupied their factories. Many USPD members ask why their own party is still arguing.
 
@@ -26,6 +37,8 @@ Q.uspd_score += 1;
 Q.uspd_relation += 4;
 Q.luxemburgist_satisfaction += 5;
 Q.lean_luxemburgist += 2;
+RG.comply(15);
+RG.ecci('radek', 4);
 !}
 
 Our people meet the USPD left in back rooms and say little in public. In Halle-Merseburg and Berlin, the left wins branch after branch.
@@ -39,6 +52,9 @@ Q.militancy += 3;
 Q.offensive_satisfaction += 8;
 Q.unionist_satisfaction -= 4;
 Q.lean_offensive += 2;
+RG.comply(30);
+RG.ecci('zinoviev', 6);
+RG.ecci('radek', -4);
 !}
 
 *Die Rote Fahne* calls the USPD right the agents of the bourgeoisie inside the working class. The USPD left wins votes in the cities. In the small towns, the members rally to the old leaders.
@@ -57,6 +73,9 @@ Q.uspd_relation += 8;
 Q.worker_support += 2;
 Q.unionist_satisfaction += 6;
 Q.lean_unionist += 2;
+RG.comply(15);
+RG.ecci('radek', 4);
+RG.ecci('lenin', 2);
 !}
 
 In the Leuna works and the Berlin machine shops, our cells and the USPD's run common strike committees on wages and on the price of bread. The USPD members begin to think of us as comrades.
@@ -74,6 +93,8 @@ Q.uspd_score += 1;
 Q.independence -= 6;
 Q.offensive_satisfaction += 4;
 Q.lean_offensive += 1;
+RG.comply(35);
+RG.ecci('zinoviev', 6);
 !}
 
 The International's couriers bring money for the USPD left's newspapers and travel funds for its speakers. The USPD right calls them "Moscow's roubles", and it is not wrong.

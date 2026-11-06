@@ -1,0 +1,116 @@
+title: The VKPD Elects its Zentrale
+subtitle: The united party chooses its leaders
+new-page: true
+tags: event
+view-if: congress_unification = 2
+max-visits: 1
+priority: 9
+on-arrival: {!
+RG.congressEnd();
+var code = {luxemburgist: 1, offensive: 2, unionist: 3};
+Q.e20_lead_choice = code[Q.congress_result] || 1;
+Q.e20_slate_won = Q.congress_won;
+// does the USPD left come over whole? It needs Däumig's chair, or a congress that did not humiliate it
+var whole = Q.uspd_split != 3 && (Q.e20_daumig_deal == 1 || Q.congress_result == 'luxemburgist' || Q.congress_result == 'unionist') && Q.congress_bitterness < 14;
+Q.e20_unif_whole = whole ? 1 : 0;
+if (Q.uspd_split == 3) { Q.e20_unif_whole = 2; }
+!}
+
+= The VKPD Elects its Zentrale
+
+The new Zentrale is elected on the last day, by secret ballot, while the old USPD and KPD delegates watch each other count. [? if e20_lead_choice = 1 : Paul Levi and Ernst Däumig's slate is elected. ?][? if e20_lead_choice = 2 : The Left's slate is elected. ?][? if e20_lead_choice = 3 : Brandler's slate of union men is elected. ?] [? if e20_slate_won = 1 : It was ours: [+ congress_votes_for +]% of the delegates voted for it. ?][? if e20_slate_won = 0 : It was not ours. Our slate had [+ congress_votes_for +]% of the delegates. ?] [? if congress_close_call = 1 : A few dozen ballots decided it. ?]
+
+[? if e20_unif_whole = 1 : The newcomers accept the result. Däumig shakes hands on the platform with whoever he is told to, and the USPD left comes over whole, branches, presses and all. ?][? if e20_unif_whole = 0 : The USPD's union men leave the hall before the singing. They did not come to be outvoted by people who call them reformists, and some of their branches will go back to Crispien's party. ?][? if e20_unif_whole = 2 : The union is small enough that nobody fights over it for long. ?]
+
+- @unite: Continue...
+
+@unite
+title: The VKPD
+new-page: true
+on-arrival: {!
+Q.vkpd_formed = 1;
+var add = {berlin: 45, hamburg: 24, bremen: 6, ruhr: 60, saxony: 48, thuringia: 25, bavaria: 12, halle: 62};
+var f = Q.uspd_split == 2 ? 1.7 : (Q.uspd_split == 3 ? 0.25 : 1);
+if (!Q.e20_unif_added) {
+    // the Left Radical path: the newcomers arrive now
+    for (var d in add) {
+        Q['district_' + d + '_members'] += add[d] * f;
+        Q['district_' + d + '_loyalty'] = Math.round((Q['district_' + d + '_loyalty'] + 50) / 2);
+    }
+    Q.e20_unif_added = 1;
+    Q.e20_unif_whole = 1;
+    if (Q.uspd_split != 3) {
+        Q.district_halle_faction = Q.e20_lead_choice == 3 ? 'unionist' : 'offensive';
+        Q.district_berlin_faction = Q.e20_lead_choice == 3 ? 'luxemburgist' : 'offensive';
+    }
+} else if (Q.e20_unif_whole == 0) {
+    // part of the newcomers go back to the USPD
+    for (var d1 in add) {
+        Q['district_' + d1 + '_members'] -= 0.22 * add[d1] * f;
+        Q['district_' + d1 + '_loyalty'] -= 4;
+    }
+    Q.uspd_relation -= 8;
+    Q.unity -= 4;
+    RG.news('Some Independent branches refuse to join the VKPD', 2);
+}
+if (Q.e20_lead_choice == 2) {
+    Q.district_ruhr_faction = 'offensive';
+}
+if (Q.e20_lead_choice == 3) {
+    Q.district_thuringia_faction = 'unionist';
+    Q.district_saxony_faction = 'unionist';
+}
+if (Q.ultraleft_gone) {
+    for (var d2 of Q.districts) {
+        if (Q['district_' + d2 + '_faction'] == 'ultraleft') {
+            Q['district_' + d2 + '_faction'] = Q.leading_faction;
+        }
+    }
+}
+if (Q.uspd_split == 2) {
+    var moved = Math.round(Q.uspd_seats * (Q.e20_unif_whole == 0 ? 0.65 : 0.85));
+    Q.kpd_seats += moved;
+    Q.uspd_seats -= moved;
+    if (Q.e20_unif_whole != 0) {
+        Q.uspd_exists = 0;
+        Q.uspd_in_government = 0;
+    }
+}
+Q.e20_left_government = 0;
+if (Q.kpd_in_government && Q.twenty_one_conditions != 2) {
+    Q.kpd_in_government = 0;
+    Q.e20_left_government = 1;
+    Q.government_name = Q.uspd_in_government ? 'Workers\' government (SPD, USPD)' : 'Legien cabinet (SPD, unions)';
+}
+Q.worker_support += Q.uspd_split == 3 ? 3 : 8;
+var total = 0;
+for (var d3 of Q.districts) {
+    total += Q['district_' + d3 + '_members'];
+}
+Q.e20_members_display = Math.round(total);
+Q.unity -= 5;
+Q.resources += 2;
+// who leads, and what Moscow makes of it
+if (Q.e20_lead_choice == 1) {
+    RG.setRole('levi', 'Co-chair of the VKPD, with Däumig');
+    RG.ecci('radek', 5); RG.ecci('lenin', 4); RG.ecci('zinoviev', -5);
+} else if (Q.e20_lead_choice == 2) {
+    RG.setRole('fischer', 'Zentrale of the VKPD');
+    RG.ecci('zinoviev', 10); RG.ecci('bukharin', 8); RG.ecci('radek', -4);
+} else {
+    RG.setRole('brandler', 'Chair of the VKPD');
+    RG.ecci('radek', 10); RG.ecci('lenin', 6); RG.ecci('zinoviev', -4);
+}
+RG.news('VKPD founded: ' + Q.e20_members_display + ' thousand members', 3);
+RG.ledger('The VKPD was founded in December 1920 with ' + Q.e20_members_display + ' thousand members' + (Q.e20_unif_whole == 0 ? ', though part of the USPD left stayed away.' : '.'), 'e20_vkpd');
+!}
+
+= The VKPD
+
+The congress ends with the *Internationale*, sung by a thousand voices. The VKPD has [+ e20_members_display +] thousand members, by the Zentrale's own count, and the count is not much exaggerated.
+
+[? if e20_lead_choice = 1 : Paul Levi and Ernst Däumig are co-chairs. Clara Zetkin, Brandler, Thalheimer, Stoecker and Koenen sit beside them in the Zentrale. Levi's speech warns that a mass party cannot be led like a sect, nor sent into battle on command. ?][? if e20_lead_choice = 2 : The Left and the USPD's radicals hold the Zentrale. Their programme is short: the offensive, as soon as the party is ready. Levi stays in the Zentrale, outvoted. ?][? if e20_lead_choice = 3 : Brandler and the union men hold the Zentrale. Their first circular tells every member to join a union and every cell to fight for wages, hours and bread. ?]
+
+[? if e20_left_government = 1 : Under the International's conditions, our ministers leave Legien's cabinet. ?]
+
+The old KPD had tens of thousands of members. The new party has hundreds of thousands, with all the habits they learned in the USPD. Making one party of them will be the work of the coming year.

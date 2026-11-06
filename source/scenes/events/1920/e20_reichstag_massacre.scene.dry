@@ -5,6 +5,11 @@ tags: event
 view-if: year = 1920 and month = 1
 max-visits: 1
 priority: 3
+on-arrival: {!
+RG.districtSync();
+RG.district('berlin', {repression: 8, militancy: 6});
+RG.news('Security police fire on the crowd outside the Reichstag: forty-two dead', 3);
+!}
 
 = Blood on the Königsplatz
 
@@ -30,6 +35,9 @@ Q.offensive_satisfaction += 8;
 Q.luxemburgist_satisfaction -= 3;
 Q.lean_offensive += 2;
 Q.district_berlin_loyalty -= 3;
+RG.districtSync();
+if (Q.district_berlin_militancy >= 45) { RG.startStrike('berlin'); }
+RG.ecci('bukharin', 3);
 !}
 
 Our call goes out from a cellar print shop. Some Berlin factories stop for a day, most do not, and a dozen more of our people are arrested at the gates.
@@ -50,6 +58,7 @@ Q.worker_support += 3;
 Q.unionist_satisfaction += 8;
 Q.offensive_satisfaction -= 4;
 Q.lean_unionist += 2;
+RG.ecci('radek', 3);
 !}
 
 Behind the coffins walk delegations from the USPD, from the metalworkers and from our party. The police keep their distance. Many workers notice who walked together.

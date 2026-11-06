@@ -64,6 +64,20 @@ if (holds) {
         Q.ending_id = 3;
     }
 }
+RG.districtSync();
+if (Q.ruhr_red_army == 2) {
+    RG.news('The Red Army throws back the Freikorps on the Lippe', 3);
+    RG.district('ruhr', {guards: 8, loyalty: 4});
+} else if (Q.ruhr_peaceful) {
+    RG.news('Ruhr Red Army hands in its guns: no white terror', 3);
+    RG.district('ruhr', {guards: -10, repression: -4});
+    RG.endStrike('ruhr', 'won');
+    RG.ledger('The Ruhr Red Army disarmed in peace in April 1920, under the Bielefeld terms.', 'e20_ruhr_peace');
+} else {
+    RG.news('White terror in the Ruhr: the Reichswehr shoots its prisoners', 3);
+    RG.district('ruhr', {guards: -20, repression: 30, militancy: -10});
+    RG.endStrike('ruhr', 'crushed');
+}
 !}
 
 = The Fate of the Ruhr
@@ -112,6 +126,7 @@ Q.district_ruhr_members += 1;
 Q.district_ruhr_loyalty += 8;
 Q.luxemburgist_satisfaction += 6;
 Q.lean_luxemburgist += 2;
+RG.district('ruhr', {loyalty: 3});
 !}
 
 False papers, safe houses in Holland, train tickets to Saxony. Most of our Ruhr leaders survive the courts-martial.
@@ -183,6 +198,11 @@ Q.offensive_satisfaction += 12;
 Q.ultraleft_satisfaction += 6;
 Q.unionist_satisfaction -= 10;
 Q.lean_offensive += 3;
+RG.ecci('bukharin', 8);
+RG.ecci('zinoviev', 6);
+RG.ecci('lenin', -3);
+RG.news('Soviet Republic of the Ruhr proclaimed in Essen', 3);
+RG.ledger('The Soviet Republic of the Ruhr was proclaimed in Essen.', 'e20_ruhr_soviet');
 !}
 
 In the Essen town hall, the central council proclaims the Soviet Republic of the Ruhr. Moscow sends its greetings. Berlin declares the proclamation null and void, and has no army that can enforce it.
@@ -203,6 +223,8 @@ Q.uspd_relation += 6;
 Q.unionist_satisfaction += 8;
 Q.offensive_satisfaction -= 6;
 Q.lean_unionist += 2;
+RG.ecci('radek', 4);
+RG.ecci('lenin', 3);
 !}
 
 The councils keep the pits and the defence units; the towns keep their mayors. It is an armed truce with the Republic, written down on paper.

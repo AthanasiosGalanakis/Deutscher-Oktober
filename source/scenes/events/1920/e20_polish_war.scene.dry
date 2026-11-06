@@ -5,12 +5,23 @@ tags: event
 view-if: year = 1920 and month = 7 and crisis = 0 and ending_id = 0
 max-visits: 1
 priority: 3
+on-arrival: {!
+RG.news('Red Army crosses into Poland: munitions trains roll across Germany', 3);
+Q.e20_polish_dir = 0;
+if (Q.comintern_member == 1) {
+    Q.e20_polish_dir = 1;
+    RG.directive({id: 'munitions', title: 'Not one train for Piłsudski',
+        text: 'The Executive calls on the German section to stop every train and every ship that carries munitions to White Poland, by every means.',
+        from: 'lenin', months: 1, goals: [{q: 'warsaw_bonus', op: '>=', v: 1}],
+        reward: {funds: 2, favour: 12}, punish: 'rebuke', announce: false});
+}
+!}
 
 = The Red Army Marches West
 
 In April, Piłsudski's Poland invaded the Ukraine and took Kiev. Now the Red Army has thrown it back. In July, Tukhachevsky's armies take Minsk and Vilna and cross into ethnic Poland. "Over the corpse of White Poland lies the road to world conflagration," his order of the day says. In a few weeks the Red Army may stand on the border of East Prussia.
 
-The German government declares its neutrality. Trains full of French munitions for Poland still roll across Germany, and ships unload them in Danzig. The dockers of Danzig have refused to touch them, and railwaymen in Saxony and the Rhineland are stopping the trains on their own.
+The German government declares its neutrality. Trains full of French munitions for Poland still roll across Germany, and ships unload them in Danzig. The dockers of Danzig have refused to touch them, and railwaymen in Saxony and the Rhineland are stopping the trains on their own. [? if e20_polish_dir = 1 : A telegram from Lenin himself has reached the Zentrale: not one train for Piłsudski. Moscow will want to know by the end of the month what we did. ?]
 
 - @unions: Block the munitions with the unions and the USPD.
 - @committees: Build our own control committees on the railways.
@@ -33,6 +44,8 @@ Q.spd_relation += 2;
 Q.worker_support += 2;
 Q.unionist_satisfaction += 8;
 Q.lean_unionist += 2;
+RG.comply(30);
+RG.ecci('radek', 3);
 !}
 
 The transport workers' union declares a ban on war material for Poland. The USPD calls meetings in every city: not one shell for the White Guards.
@@ -53,6 +66,10 @@ Q.offensive_satisfaction += 4;
 Q.ultraleft_satisfaction += 4;
 Q.lean_offensive += 1;
 Q.lean_ultraleft += 1;
+RG.comply(35);
+RG.districtSync();
+RG.district('halle', {militancy: 5});
+RG.district('thuringia', {militancy: 4});
 !}
 
 Our railwaymen form control committees at the junctions of Halle, Erfurt and Cologne, and search every train bound east. Two trains of shells end up in a canal.
@@ -74,6 +91,9 @@ Q.red_guards_strength += 2;
 Q.offensive_satisfaction += 10;
 Q.luxemburgist_satisfaction -= 6;
 Q.lean_offensive += 2;
+RG.comply(45);
+RG.ecci('bukharin', 6);
+RG.ecci('lenin', 3);
 !}
 
 In East Prussia and Silesia, our members dig up the rifles of March. The district leaders draw up lists of bridges, railway stations and police barracks.
@@ -86,6 +106,10 @@ Q.worker_support += 1;
 Q.offensive_satisfaction -= 6;
 Q.luxemburgist_satisfaction += 6;
 Q.lean_luxemburgist += 2;
+RG.comply(15);
+RG.ecci('lenin', -8);
+RG.ecci('radek', -6);
+RG.ecci('trotsky', 2);
 !}
 
 We call for peace with Soviet Russia and an end to the munitions trains. We also say, plainly, that the German revolution must be made by German workers, and cannot be carried in on the Red Army's bayonets. Radek calls it pacifism.

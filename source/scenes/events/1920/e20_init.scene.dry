@@ -30,7 +30,17 @@ var start = {
     e20_split_lost: 0, e20_ul_won: 0, e20_wg_survives: 0, e20_kpd_seats_display: 0,
     e20_rising_strength: 0, e20_rising_held: 0, e20_attacked: 0, e20_halle_bonus: 0,
     e20_uspd_ministers_left: 0, e20_newcomers: 0, e20_lead_choice: 0,
-    e20_left_government: 0, e20_members_display: 0, e20_bread: 0
+    e20_left_government: 0, e20_members_display: 0, e20_bread: 0,
+    // the unification congress
+    e20_slate: 0, e20_slate_won: 0, e20_unif_whole: 0, e20_unif_added: 0, e20_unif_add: 0,
+    e20_daumig_deal: 0, e20_cg_daumig_done: 0, e20_levi_free: 0,
+    // Moscow's directives
+    e20_polish_dir: 0, e20_cond_dir: 0, e20_halle_won: 0,
+    // new events
+    e20_hoelz_line: 0, e20_hoelz_caught: 0,
+    e20_committee_line: 0, e20_committee_d: 0, e20_committee_name: 0, e20_committee_trade: 0, e20_committee_ours: 0,
+    e20_committee_faction: 0, e20_committee_nb: 0, e20_committee_nb_name: 0, e20_committee_rep: 0, e20_committee_ok: 0,
+    e20_quarrel_line: 0, e20_quarrel_zin: 0, e20_quarrel_rad: 0, e20_quarrel_zin_ahead: 0
 };
 for (var k in start) {
     if (Q[k] === undefined) {

@@ -5,6 +5,10 @@ tags: event
 view-if: year = 1919 and month = 2 and crisis = 0
 max-visits: 1
 priority: 0.5
+on-arrival: {!
+RG.news('Kurt Eisner shot dead in Munich', 3);
+RG.district('bavaria', {militancy: 10});
+!}
 
 = Eisner Is Murdered
 

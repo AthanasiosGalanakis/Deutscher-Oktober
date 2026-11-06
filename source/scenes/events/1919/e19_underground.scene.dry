@@ -61,6 +61,14 @@ Communists turn up as treasurers of workers' cycling clubs, as factory councillo
 
 @moscow
 subtitle: Costs some independence. The money is real.
-on-arrival: underground_line = 4; resources += 2; independence -= 6; offensive_satisfaction += 3; luxemburgist_satisfaction -= 2; lean_offensive += 1
+on-arrival: {!
+Q.underground_line = 4;
+Q.resources += 2;
+Q.independence -= 6;
+Q.offensive_satisfaction += 3;
+Q.luxemburgist_satisfaction -= 2;
+Q.lean_offensive += 1;
+RG.ecci('zinoviev', 5);
+!}
 
 A courier from Moscow arrives with diamonds sewn into his coat lining. They will be sold in Amsterdam, and the party's organisers will be paid for a few months.
