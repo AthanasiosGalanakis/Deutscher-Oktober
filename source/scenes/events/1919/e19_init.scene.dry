@@ -8,79 +8,38 @@ Q.e19_init_done = 1;
 // only set what is not set yet, so test presets are not overwritten
 var start = {
     // shared flags (see the writing guide)
-    jogiches_alive: 1,
-    bavaria_soviet: 0,
-    heidelberg_outcome: 0,
-    kapd_split: 0,
-    levi_chair: 0,
-    versailles_signed: 0,
-    constitution_adopted: 0,
+    jogiches_alive: 1, bavaria_soviet: 0, heidelberg_outcome: 0, kapd_split: 0, levi_chair: 0,
+    versailles_signed: 0, constitution_adopted: 0,
     // who chairs the Zentrale, for text
     party_chair: 'Rosa Luxemburg',
-    // the January uprising
-    crisis_january: 0,
-    jan_line: 0,
-    jan_talks: 0,
-    january_outcome: 0,
-    jan_arms_done: 0,
-    jan_garrison_done: 0,
-    jan_strike_done: 0,
-    jan_hide_done: 0,
-    lux_risk: 0,
-    lieb_risk: 0,
+    // the Crisis tab lines, shared by every crisis
+    crisis_line_1: 0, crisis_line_2: 0, crisis_line_3: 0, crisis_momentum_label: 0,
+    // the January rising: buildings against Noske's volunteers, and the leaders in hiding
+    crisis_january: 0, jan_line: 0, january_outcome: 0,
+    jan_arms_done: 0, jan_strike_done: 0, jan_hide_done: 0,
+    e19_buildings: 6, e19_noske: 2, e19_arms: 0, e19_hide: 0, e19_lieb_committee: 1,
+    e19_talks: 0, e19_seen: 0, e19_buried: 0, e19_left: 0,
     // spring 1919
-    radek_prison: 0,
-    rote_fahne_banned: 0,
-    bremen_line: 0,
-    ruhr_line: 0,
-    halle_line: 0,
-    march_line: 0,
-    // Bavaria
-    bav_started: 0,
-    crisis_bavaria: 0,
-    bav_prep: 0,
-    levine_sent: 0,
-    bav_power: 0,
-    bav_peasants: 0,
-    bav_solidarity: 0,
-    bav_negotiated: 0,
-    bav_red_army_done: 0,
-    bav_bread_done: 0,
-    bav_solidarity_done: 0,
-    bav_talks_done: 0,
-    bav_talks: 0,
-    bav_hostages: 1,
-    bav_result: 0,
-    levine_escape: 0,
-    levine_alive: 1,
-    liebknecht_march_death: 0,
+    radek_prison: 0, rote_fahne_banned: 0, bremen_line: 0, ruhr_line: 0, halle_line: 0, march_line: 0,
+    e19_ruhr_cells: 0, e19_jogiches_report: 0, liebknecht_march_death: 0,
+    // Bavaria: the army, the food and the days until the Whites arrive
+    bav_started: 0, crisis_bavaria: 0, bav_prep: 0, levine_sent: 0, bav_power: 0,
+    bav_peasants: 0, bav_solidarity: 0, bav_negotiated: 0, bav_talks: 0, bav_hostages: 1, bav_result: 0,
+    bav_red_army_done: 0, bav_bread_done: 0, bav_solidarity_done: 0, bav_talks_done: 0,
+    levine_escape: 0, levine_alive: 1,
+    e19_bav_army: 2, e19_bav_food: 18, e19_bav_whites: 24, e19_bav_clean: 0, e19_bav_trained: 0,
+    e19_bav_hungry: 0, e19_bav_advance: 0, e19_bav_ring: 0, e19_bav_score: 0,
     // summer
-    underground_line: 0,
-    versailles_line: 0,
-    natbol_line: 0,
+    underground_line: 0, versailles_line: 0, natbol_line: 0, e19_apparatus: 0, e19_council_lists: 0,
+    e19_eberlein_line: 0,
     // Heidelberg
-    heid_mandates: 0,
-    heid_radek: 0,
-    heid_natbol: 0,
-    heid_left: 0,
-    heid_support: 0,
-    heid_for: 0,
-    heid_against: 0,
-    heid_pass: 0,
-    heid_members_lost: 0,
-    heid_fight: 0,
-    heid_already: 0,
-    heid_lost_names: 0,
-    heid_split_share: 0.7,
-    e19_split_done: 0,
-    leipzig_line: 0,
-    // Heidelberg as a congress
+    heid_mandates: 0, heid_radek: 0, heid_natbol: 0, heid_left: 0, heid_support: 0, heid_for: 0,
+    heid_against: 0, heid_pass: 0, heid_members_lost: 0, heid_already: 0, heid_lost_names: 0,
+    heid_split_share: 0.7, e19_split_done: 0, leipzig_line: 0,
     heid_motion: 0, heid_cg_mandates: 0, heid_cg_thesis: 0, heid_cg_radek: 0, heid_cg_rooms: 0,
-    heid_raided: 0, heid_speaker_name: 0, heid_speaker_power: 1, heid_ul_won: 0, heid_open_votes: 0,
-    // the summer conference on the boycott
-    e19_conf_seen: 0, e19_conf_outcome: 0,
-    // new events
-    e19_eberlein_line: 0, e19_wildcat_line: 0, e19_rescue_line: 0, e19_rescue_name: 0, e19_rescue_ok: 0, e19_rescue_id: 0, e19_rescue_role: 0
+    heid_raided: 0, heid_speaker_name: 0, heid_speaker_power: 1, heid_ul_won: 0,
+    // a prisoner's escape
+    e19_rescue_line: 0, e19_rescue_name: 0, e19_rescue_ok: 0, e19_rescue_id: 0
 };
 for (var k in start) {
     if (Q[k] === undefined) {

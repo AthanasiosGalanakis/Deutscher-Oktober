@@ -13,37 +13,32 @@ tags: congress
 
 = Police in Heidelberg
 
-A comrade from the railway station brings word that plain-clothes men from Karlsruhe have been asking about a "conference of the gymnastics club". The congress has already moved twice. The next hall is in Mannheim, across the river, and it will take a day to get there.
-
-[? if congress_ahead = 1 : We are ahead, with [+ congress_votes_for +]% of the hall. ?][? if congress_ahead = 0 : The [+ congress_leader_name +] are ahead, with [+ congress_leader_votes +]% of the hall. ?]
+A comrade from the railway station brings word that plain-clothes men from Karlsruhe have been asking about a "conference of the gymnastics club". The next hall is across the river in Mannheim, a day away. [? if congress_ahead = 1 : We are ahead, with [+ congress_votes_for +]% of the hall. ?][? if congress_ahead = 0 : The [+ congress_leader_name +] are ahead. ?]
 
 - @vote_now: Close the debate, and vote tonight.
 - @move: Move to Mannheim, and give the debate another day.
-- @guards: Post lookouts, and carry on here.
+- @lookouts: Post lookouts, and carry on here.
 
 @vote_now
-subtitle: Locks in the hall as it stands. The losers will say the debate was cut short.
+subtitle: The hall as it stands. The losers will say the debate was cut short.
 on-arrival: {!
 RG.congress.closeEarly();
 RG.congress.bitter(3);
 !}
 
-The chairman moves the closure. The vote will be taken tonight, with the lamps turned down.
-
 @move
-subtitle: Costs 1 fund. One more session, and the waverers have time to think.
+subtitle: Costs 1 fund for the train fares. One more session.
 choose-if: resources >= 1
 unavailable-subtitle: We have no money for the train fares.
 on-arrival: {!
 Q.resources -= 1;
 RG.congress.extend(1);
-Q.unity += 1;
 !}
 
-The delegates leave in twos and threes on the evening trains. In Mannheim the debate starts again, angrier and better informed.
+The delegates leave in twos and threes on the evening trains.
 
-@guards
-subtitle: Costs nothing, if nothing happens. If the police come, the delegates will scatter.
+@lookouts
+subtitle: Costs nothing if nothing happens. Pieck thinks the police come about one time in three.
 on-arrival: {!
 if (Math.random() < 0.3) {
     RG.congress.closeEarly();
@@ -54,4 +49,4 @@ if (Math.random() < 0.3) {
 }
 !}
 
-[? if heid_raided = 1 : The police arrive at dawn. Most delegates are out through the kitchen, but the congress must vote at once, wherever it can find a room. ?][? if heid_raided = 0 : Young comrades on bicycles watch the roads all day. Nobody comes. ?]
+[? if heid_raided = 1 : The police arrive at dawn. Most delegates get out through the kitchen, but the congress must vote at once, wherever it can find a room. ?][? if heid_raided = 0 : Young comrades on bicycles watch the roads all day. Nobody comes. ?]

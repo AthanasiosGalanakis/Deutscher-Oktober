@@ -1,5 +1,5 @@
 title: The Strike Committee Says No
-subtitle: A district strike committee defies the Zentrale
+subtitle: A district strike committee defies the Zentrale.
 new-page: true
 tags: event
 view-if: year >= 1919 and year <= 1920 and time >= 6 and crisis = 0 and congress = 0 and ending_id = 0 and strike_count >= 1 and e20_committee_line = 0
@@ -19,82 +19,51 @@ Q.e20_committee_rep = Q.sys_target_repression;
 
 = The Strike Committee Says No
 
-In [+ e20_committee_name +], [+ e20_committee_trade +] have been out for weeks. The strike committee is elected in the works, and our comrades sit on it, [? if e20_committee_ours = 1 : most of them loyal to the Zentrale ?][? if e20_committee_ours = 0 : most of them followers of the [+ e20_committee_faction +], not of the Zentrale ?]. The Zentrale has told them that the strike cannot win alone and must be ended in good order before the police end it for them.
+In [+ e20_committee_name +], [+ e20_committee_trade +] have been out for weeks. Our comrades sit on the strike committee, [? if e20_committee_ours = 1 : most of them loyal to the Zentrale. ?][? if e20_committee_ours = 0 : most of them followers of the [+ e20_committee_faction +]. ?] The Zentrale has told them the strike cannot win alone and must be ended in good order.
 
-The committee has voted the Zentrale's letter down, and printed the vote. It wants the party to call out the neighbouring districts instead. [? if e20_committee_rep >= 55 : The Security Police are already in the town in force. ?]
+The committee has voted the Zentrale's letter down and printed the vote. [? if e20_committee_rep >= 55 : The Security Police are in the town in force. ?]
 
-- @back: Back the committee: the strikers know their own fight.
-- @spread: Call on the neighbouring districts to come out in solidarity.
-- @order: Order our comrades off the committee, and the strike ended.
-- @envoy: Send a member of the Zentrale to lead the strike.
-
-@back
-subtitle: The district's loyalty grows, and the Zentrale's authority shrinks. The strike goes on.
-on-arrival: {!
-Q.e20_committee_line = 1;
-RG.district(Q.e20_committee_d, {loyalty: 8, militancy: 4, repression: 4});
-Q.unity -= 3;
-Q[Q.leading_faction + '_satisfaction'] -= 3;
-Q.offensive_satisfaction += 4;
-Q.lean_offensive += 1;
-!}
-
-The Zentrale publishes a short note: the comrades in [+ e20_committee_name +] are the best judges of their own struggle. The committee reads it out at the gates, to cheers. In other districts, secretaries wonder what else they may decide for themselves.
+- @spread: Call out [+ e20_committee_nb_name +] in solidarity.
+- @order: Order our comrades off the committee.
+- @envoy: Send a member of the Zentrale to settle the strike.
 
 @spread
-subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The Left's answer. A bigger strike, or a bigger defeat.
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] A bigger strike, or a bigger defeat.
 view-if: e20_committee_nb = 1
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
-if (Q.lock_councils == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_councils == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.e20_committee_line = 2;
 RG.spreadStrike(Q.e20_committee_d);
 RG.district(Q.e20_committee_d, {loyalty: 6, repression: 6});
-Q.repression += 2;
-Q.offensive_satisfaction += 6;
-Q.unionist_satisfaction -= 4;
-Q.lean_offensive += 2;
-RG.ecci('bukharin', 3);
+Q.lean_offensive += 1;
 !}
 
-Our couriers carry the committee's appeal to [+ e20_committee_nb_name +]. By the end of the week the works there are out too, and the police have twice as many pickets to break.
+By the end of the week the works in [+ e20_committee_nb_name +] are out too, and the police have twice as many pickets to break.
 
 @order
-subtitle: The Spartacist discipline. The strike ends, the district is bitter, and the party keeps its word to itself.
+subtitle: The strike ends. The district will remember who left it.
 on-arrival: {!
 Q.e20_committee_line = 3;
 RG.endStrike(Q.e20_committee_d);
 RG.district(Q.e20_committee_d, {loyalty: -14, members: -0.04});
 Q.unity += 2;
-Q.luxemburgist_satisfaction += 4;
-Q.offensive_satisfaction -= 4;
-Q.lean_luxemburgist += 1;
 !}
 
-Our comrades resign from the committee, and the strike crumbles within days. In [+ e20_committee_name +], the workers who went back say the communists left them alone at the gate. Some tear up their cards.
+Our comrades resign from the committee, and the strike crumbles within days. Some of the men who went back tear up their party cards.
 
 @envoy
-subtitle: Costs 1 fund. The Right's way: take the strike in hand, win what can be won, and end it with a settlement.
+subtitle: Costs 1 fund. A settlement, perhaps a decent one.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds to send anyone.
 on-arrival: {!
 Q.e20_committee_line = 4;
 Q.resources -= 1;
-if (Math.random() < 0.55) {
-    RG.endStrike(Q.e20_committee_d, 'won');
-    Q.e20_committee_ok = 1;
-} else {
-    RG.endStrike(Q.e20_committee_d);
-    Q.e20_committee_ok = 0;
-}
+Q.e20_committee_ok = Math.random() < 0.55 ? 1 : 0;
+RG.endStrike(Q.e20_committee_d, Q.e20_committee_ok ? 'won' : undefined);
 RG.district(Q.e20_committee_d, {loyalty: 3});
-Q.worker_support += 2;
-Q.unionist_satisfaction += 5;
-Q.lean_unionist += 2;
+Q.lean_unionist += 1;
 !}
 
-[? if e20_committee_ok = 1 : The Zentrale's man sits down with the employers and the union officials, and comes out with a wage rise and no victimisations. The committee grumbles, and takes it. ?][? if e20_committee_ok = 0 : The Zentrale's man negotiates for three days and comes out with a promise of arbitration. The strike ends without a victory, but without a rout. ?]
+[? if e20_committee_ok = 1 : The Zentrale's man comes out of three days with the employers holding a wage rise and a promise of no victimisations. The committee grumbles, and takes it. ?][? if e20_committee_ok = 0 : The Zentrale's man comes back with a promise of arbitration. The strike ends without a victory, and without a rout. ?]

@@ -1,5 +1,5 @@
 title: A Way Out of Prison
-subtitle: Comrades plan to free a party leader
+subtitle: Comrades plan to free a party leader.
 new-page: true
 tags: event
 view-if: year <= 1920 and time >= 4 and crisis = 0 and congress = 0 and e19_rescue_line = 0 and (comrades_in_prison >= 2 or (comrades_in_prison >= 1 and comrade_radek != 2))
@@ -13,90 +13,50 @@ for (var i = 0; i < Q.comrades.length; i++) {
 }
 Q.e19_rescue_id = c ? c.id : 0;
 Q.e19_rescue_name = c ? c.name : 'one of our district secretaries';
-Q.e19_rescue_role = c ? c.role : 'district secretary';
 Q.e19_rescue_ok = 0;
 !}
 
 = A Way Out of Prison
 
-**[+ e19_rescue_name +]** ([+ e19_rescue_role +]) has been in prison for weeks, held under the state of siege without a date for trial. The district committee has been to see the warders. Two of them are union men, one owes money, and the prisoner is moved to the court building in Moabit every Thursday in a closed van with two policemen.
+**[+ e19_rescue_name +]** has been held for weeks under the state of siege, with no date for a trial. Every Thursday the prisoner is taken to the court building in Moabit in a closed van with two policemen. Two of the warders are union men, and one owes money.
 
-The young comrades of the district want to stop the van. The lawyers want to go to the courts. The prisoner has sent out a note: "Do nothing stupid on my account."
+The young comrades want to stop the van. The prisoner has sent out a note: "Do nothing stupid on my account."
 
 - @van: Stop the van in the street.
-- @warders: Buy the warders, and get the prisoner across the border.
-- @courts: Fight in the courts, and make the case public.
-- @wait: Do nothing that gives the police an excuse.
+- @warders: Pay the warders, and get the prisoner across the border.
+- @wait: Send parcels, and nothing else.
 
 @van
-subtitle: The Left's way. If it works, the whole working class hears of it. If it fails, someone may be shot.
+subtitle: A little better than even odds. If it goes wrong, the police may shoot.
 on-arrival: {!
 Q.e19_rescue_line = 1;
-var ok = Math.random() < 0.55;
-Q.e19_rescue_ok = ok ? 1 : 0;
-if (ok && Q.e19_rescue_id) {
-    RG.free(Q.e19_rescue_id, {news: Q.e19_rescue_name + ' freed from a police van in Berlin', priority: 3});
-} else if (Q.e19_rescue_id && Math.random() < 0.3) {
-    RG.kill(Q.e19_rescue_id, {news: Q.e19_rescue_name + ' shot "while trying to escape"', priority: 3});
+var r = Math.random();
+if (r < 0.55) {
+    Q.e19_rescue_ok = 1;
+    if (Q.e19_rescue_id) { RG.free(Q.e19_rescue_id, {news: Q.e19_rescue_name + ' freed from a police van in Berlin', priority: 3}); }
+} else if (r < 0.7 && Q.e19_rescue_id) {
     Q.e19_rescue_ok = 2;
+    RG.kill(Q.e19_rescue_id, {news: Q.e19_rescue_name + ' shot "while trying to escape"', priority: 3});
 }
-Q.repression += 4;
-Q.militancy += 3;
-RG.districtSync();
-RG.district('berlin', {repression: 6});
-Q.offensive_satisfaction += 6;
-Q.luxemburgist_satisfaction -= 3;
 Q.lean_offensive += 2;
-RG.ecci('bukharin', 3);
+RG.district('berlin', {repression: 6});
 !}
 
-[? if e19_rescue_ok = 1 : The van is stopped by a coal cart at a corner in Moabit. Two men with pistols open the doors, and [+ e19_rescue_name +] disappears into the crowd. The papers call it an outrage. The factories call it a good day. ?][? if e19_rescue_ok = 0 : The police have been warned. The van takes another road, and three of our young comrades are arrested at the corner with revolvers in their pockets. ?][? if e19_rescue_ok = 2 : The police were waiting. In the shooting, [+ e19_rescue_name +] is hit by a police bullet in the back. The official report says the prisoner was trying to escape, which for once is true. ?]
+[? if e19_rescue_ok = 1 : A coal cart blocks a corner in Moabit. Two men with pistols open the van, and [+ e19_rescue_name +] disappears into the crowd. ?][? if e19_rescue_ok = 0 : The police have been warned. The van takes another road, and three of our young comrades are arrested at the corner with revolvers in their pockets. ?][? if e19_rescue_ok = 2 : The police were waiting. [+ e19_rescue_name +] is shot in the back. The official report says the prisoner was trying to escape, which for once is true. ?]
 
 @warders
-subtitle: Costs 2 funds. The Spartacist way: quiet, and it works. The prisoner will be abroad for a while.
-choose-if: resources >= 2
+subtitle: [? if e19_apparatus = 1 : The apparatus has its own people in Moabit. It costs nothing. ?][? if e19_apparatus = 0 : Costs 2 funds. ?] The prisoner will be abroad for a while.
+choose-if: e19_apparatus = 1 or resources >= 2
 unavailable-subtitle: We have no money to pay anyone.
 on-arrival: {!
 Q.e19_rescue_line = 2;
-Q.resources -= 2;
-Q.e19_rescue_ok = 1;
-if (Q.e19_rescue_id) {
-    RG.exile(Q.e19_rescue_id, {news: Q.e19_rescue_name + ' escapes from prison and flees abroad', priority: 2});
-}
-Q.luxemburgist_satisfaction += 4;
+if (!Q.e19_apparatus) { Q.resources -= 2; }
+if (Q.e19_rescue_id) { RG.exile(Q.e19_rescue_id, {news: Q.e19_rescue_name + ' escapes from prison and flees abroad', priority: 2}); }
 Q.lean_luxemburgist += 1;
 !}
 
-A cell door is left unlocked on a Sunday night. [+ e19_rescue_name +] walks out in a warder's coat, and is in Vienna by Wednesday. The party will need its comrade back one day, with new papers and a new name.
-
-@courts
-subtitle: The Right's way, and a lawyer's. Slow, legal and public. It may take months.
-on-arrival: {!
-Q.e19_rescue_line = 3;
-Q.worker_support += 2;
-Q.uspd_relation += 3;
-if (Q.e19_rescue_id) {
-    if (Math.random() < 0.6) {
-        RG.free(Q.e19_rescue_id, {news: 'Court frees ' + Q.e19_rescue_name + ': no case to answer', priority: 2});
-        Q.e19_rescue_ok = 1;
-    } else {
-        RG.arrest(Q.e19_rescue_id, 4, {quiet: true});
-        Q.e19_rescue_ok = 0;
-    }
-}
-Q.unionist_satisfaction += 4;
-Q.lean_unionist += 1;
-!}
-
-[? if e19_rescue_ok = 1 : A party lawyer takes the case, and the judge, embarrassed by the papers, finds that the state of siege does not cover it. [+ e19_rescue_name +] is free. ?][? if e19_rescue_ok = 0 : The court sets a date for trial in four months' time. The case is in every workers' paper, and the prisoner gets more letters than the Zentrale. ?]
+A cell door is left unlocked on a Sunday night. [+ e19_rescue_name +] walks out in a warder's coat and is in Vienna by Wednesday.
 
 @wait
-subtitle: The prisoner asked for it. The district will think the Zentrale does not look after its own.
-on-arrival: {!
-Q.e19_rescue_line = 4;
-Q.repression -= 2;
-Q.unity -= 2;
-Q.offensive_satisfaction -= 4;
-!}
-
-We send food parcels, books and the party's greetings, and nothing else. The district committee says it will remember this when its own people are taken.
+subtitle: The district will say the Zentrale does not look after its own.
+on-arrival: e19_rescue_line = 4; unity -= 2; offensive_satisfaction -= 4

@@ -10,73 +10,52 @@ RG.news('Hungarian Soviet Republic falls; Romanian troops in Budapest', 3);
 
 = Radek's Salon
 
-On 1 August the Hungarian Soviet Republic fell. Béla Kun has fled to Vienna, and Romanian troops are in Budapest. Of the soviet republics of 1919, [? if bavaria_soviet = 2 : only Munich and Soviet Russia ?][? if bavaria_soviet != 2 : only Soviet Russia ?] remain.
+On 1 August the Hungarian Soviet Republic fell, and Romanian troops are in Budapest. In Moabit Karl Radek has been moved to a comfortable cell. The government wants a channel to Moscow, and his visitors now include industrialists, diplomats and nationalist officers as well as our own comrades.
 
-Karl Radek, still in Moabit, has been moved to a comfortable cell. The German government wants a channel to Moscow, and so his visitors now include industrialists, diplomats, Turkish pashas and nationalist officers, as well as our own comrades. He reads everything and writes long letters to the Zentrale.
+Radek agrees with [+ party_chair +] that the party must stand in elections and work in the unions. He also thinks that throwing out the Left Radicals would cost the party its best fighters. He offers to write to the coming congress.
 
-Radek agrees with [+ party_chair +] that the party must stand in elections and work in the unions. He also thinks that throwing the Left Radicals out would be a disaster: the party would lose its best fighters and most of its members. He offers to write to the coming party congress.
-
-- @theses: Ask Radek to write for the Zentrale's theses.
-- @unity: Ask Radek to argue for unity above all.
+- @theses: Ask him to write for the Zentrale's theses.
+- @unity: Ask him to argue for unity above all.
 - @keep_out: Keep Radek out of the party's affairs.
-- @join: Join the International now, through Radek.
+- @join: Join the International through Radek.
 
 @theses
-subtitle: The Spartacist line, with Moscow's weight behind it. Costs a little independence.
+subtitle: Moscow's name behind the theses. The letter will have a second half we did not ask for.
 on-arrival: {!
 Q.heid_radek = 1;
 Q.independence -= 3;
-Q.luxemburgist_satisfaction += 4;
+Q.lean_luxemburgist += 1;
 Q.ultraleft_satisfaction -= 4;
-Q.lean_luxemburgist += 2;
 RG.ecci('radek', 8);
-RG.ecci('lenin', 4);
 !}
-
-Radek writes that the boycott of parliament and the unions is the mistake of a young party, and that the congress must say so. He adds that it must say so without expelling anyone. The Zentrale reads the first half aloud.
 
 @unity
-subtitle: The Right's preference: a united party first, the argument later.
+subtitle: The Left Radicals will start quoting him.
 on-arrival: {!
 Q.heid_radek = 2;
-Q.independence -= 2;
-Q.unionist_satisfaction += 4;
-Q.ultraleft_satisfaction += 3;
 Q.lean_unionist += 2;
+Q.ultraleft_satisfaction += 3;
 RG.ecci('radek', 6);
-RG.ecci('zinoviev', 2);
 !}
 
-Radek's letter to the congress will be all about unity: the Bolsheviks also had their boycotters, and they did not throw them out. The Left Radicals start quoting him.
-
 @keep_out
-subtitle: The party's quarrels are German quarrels. The Left is disappointed.
+subtitle: The party's quarrels are German quarrels. Radek will remember.
 on-arrival: {!
 Q.heid_radek = 0;
 Q.independence += 5;
-Q.offensive_satisfaction -= 4;
-Q.luxemburgist_satisfaction += 2;
-Q.lean_luxemburgist += 1;
 RG.ecci('radek', -10);
-RG.ecci('zinoviev', -4);
 !}
 
-The Zentrale thanks Radek for his advice and does not ask for more. In Moabit, Radek turns back to his industrialists.
+In Moabit Radek turns back to his industrialists.
 
 @join
-subtitle: The Left's wish. Lenin's International without us is a wound that must close.
+subtitle: The party becomes a section of the International, like everyone else.
 view-if: comintern_member = 0
 on-arrival: {!
 Q.comintern_member = 1;
 Q.independence -= 6;
-Q.world_revolution += 4;
-Q.offensive_satisfaction += 8;
-Q.luxemburgist_satisfaction -= 4;
 Q.lean_offensive += 2;
 RG.ecci('zinoviev', 8);
-RG.ecci('lenin', 5);
 RG.ecci('radek', 5);
 RG.news('German party joins the Communist International', 3);
 !}
-
-Radek's letter to Moscow goes out with the next courier. By September the German party is a section of the Communist International, like everyone else.

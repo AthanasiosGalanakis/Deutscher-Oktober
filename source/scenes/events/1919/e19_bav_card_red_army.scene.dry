@@ -1,6 +1,6 @@
 title: The Red Army of Bavaria
 subtitle: Egelhofer needs men, rifles and officers.
-view-if: crisis_bavaria = 1 and bav_red_army_done = 0
+view-if: crisis_bavaria = 1 and bav_red_army_done = 0 and bav_power != 2
 on-arrival: month_actions += 1; bav_red_army_done = 1
 frequency: 100
 is-card: true
@@ -9,26 +9,39 @@ tags: crisis
 
 = The Red Army of Bavaria
 
-Munich has a few thousand armed workers, some regiments of the old garrison that have elected their officers, and a great many speeches. Egelhofer wants every worker armed. The former officers who have come over want ranks, drill and obedience. The councils want the bourgeoisie disarmed first.
+Munich has a few thousand armed workers, some regiments of the old garrison that elected their own officers, and a great many speeches. Egelhofer wants every worker armed. The former officers who came over want ranks and drill.
 
 - @arm_all: Arm every worker who will take a rifle.
-- @discipline: Give the army officers and discipline.
+- @officers: Give the army officers and discipline.
 - @disarm: Disarm the bourgeoisie and take hostages.
 
 @arm_all
-subtitle: The Left's answer, and Egelhofer's. Many rifles, little training.
-on-arrival: crisis_momentum += 8; red_guards_strength += 4; red_guards_arms += 4; militancy += 4; offensive_satisfaction += 5; lean_offensive += 2
+subtitle: Many rifles, little training.
+on-arrival: {!
+Q.e19_bav_army += 8;
+Q.lean_offensive += 2;
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
+!}
 
-Rifles from the barracks are handed out at factory gates against a membership card or a council stamp. By the end of the week the Red Army has twenty thousand names on its lists.
+Rifles are handed out at the factory gates against a council stamp. By the end of the week the Red Army has twenty thousand names on its lists.
 
-@discipline
-subtitle: The Spartacist and the Right's choice: a smaller army that can actually fight.
-on-arrival: crisis_momentum += 6; red_guards_strength += 2; red_guards_arms += 6; luxemburgist_satisfaction += 3; unionist_satisfaction += 3; ultraleft_satisfaction -= 4; lean_luxemburgist += 1; lean_unionist += 1
-
-Elected officers get the right to give orders in battle. The anarchists protest. The battalions that train behave like soldiers when the shooting starts.
+@officers
+subtitle: A smaller army that will stand when the shooting starts. The anarchists will protest.
+on-arrival: {!
+Q.e19_bav_army += 4;
+Q.e19_bav_trained = 1;
+Q.lean_luxemburgist += 1;
+Q.ultraleft_satisfaction -= 4;
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
+!}
 
 @disarm
-subtitle: The Left Radicals' class war. It strengthens us now, and gives the Whites their atrocity stories.
-on-arrival: crisis_momentum += 6; red_guards_arms += 5; repression += 4; bav_hostages = 1; ultraleft_satisfaction += 5; offensive_satisfaction += 3; lean_ultraleft += 2
+subtitle: Rifles from the villas of Bogenhausen, and hostages the Whites will hear about.
+on-arrival: {!
+Q.e19_bav_army += 5;
+Q.bav_hostages = 1;
+Q.lean_ultraleft += 2;
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
+!}
 
-Red Guards search the villas of Bogenhausen for weapons and take the owners away for questioning. Some of them are not released.
+Red Guards search the villas for weapons and take their owners away for questioning. Some are not released.

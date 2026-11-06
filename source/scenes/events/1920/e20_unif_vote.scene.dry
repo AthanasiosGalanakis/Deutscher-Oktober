@@ -1,5 +1,5 @@
 title: The VKPD Elects its Zentrale
-subtitle: The united party chooses its leaders
+subtitle: The united party chooses its leaders.
 new-page: true
 tags: event
 view-if: congress_unification = 2
@@ -18,9 +18,9 @@ if (Q.uspd_split == 3) { Q.e20_unif_whole = 2; }
 
 = The VKPD Elects its Zentrale
 
-The new Zentrale is elected on the last day, by secret ballot, while the old USPD and KPD delegates watch each other count. [? if e20_lead_choice = 1 : Paul Levi and Ernst Däumig's slate is elected. ?][? if e20_lead_choice = 2 : The Left's slate is elected. ?][? if e20_lead_choice = 3 : Brandler's slate of union men is elected. ?] [? if e20_slate_won = 1 : It was ours: [+ congress_votes_for +]% of the delegates voted for it. ?][? if e20_slate_won = 0 : It was not ours. Our slate had [+ congress_votes_for +]% of the delegates. ?] [? if congress_close_call = 1 : A few dozen ballots decided it. ?]
+The new Zentrale is elected on the last day by secret ballot. [? if e20_lead_choice = 1 : Paul Levi and Ernst Däumig's slate wins. ?][? if e20_lead_choice = 2 : The Left's slate wins. ?][? if e20_lead_choice = 3 : Brandler's slate of union men wins. ?] [? if e20_slate_won = 1 : It was ours, with [+ congress_votes_for +]% of the delegates. ?][? if e20_slate_won = 0 : It was not ours. Our slate had [+ congress_votes_for +]% of the delegates. ?] [? if congress_close_call = 1 : A few dozen ballots decided it. ?]
 
-[? if e20_unif_whole = 1 : The newcomers accept the result. Däumig shakes hands on the platform with whoever he is told to, and the USPD left comes over whole, branches, presses and all. ?][? if e20_unif_whole = 0 : The USPD's union men leave the hall before the singing. They did not come to be outvoted by people who call them reformists, and some of their branches will go back to Crispien's party. ?][? if e20_unif_whole = 2 : The union is small enough that nobody fights over it for long. ?]
+[? if e20_unif_whole = 1 : Däumig shakes hands on the platform, and the USPD left comes over whole. ?][? if e20_unif_whole = 0 : The USPD's union men leave the hall before the singing, and some of their branches will go back to Crispien's party. ?][? if e20_unif_whole = 2 : The union is small enough that nobody fights over it for long. ?]
 
 - @unite: Continue...
 
@@ -107,10 +107,8 @@ RG.ledger('The VKPD was founded in December 1920 with ' + Q.e20_members_display 
 
 = The VKPD
 
-The congress ends with the *Internationale*, sung by a thousand voices. The VKPD has [+ e20_members_display +] thousand members, by the Zentrale's own count, and the count is not much exaggerated.
+The congress ends with the *Internationale*. The VKPD has [+ e20_members_display +] thousand members by the Zentrale's count, and the count is not much exaggerated.
 
-[? if e20_lead_choice = 1 : Paul Levi and Ernst Däumig are co-chairs. Clara Zetkin, Brandler, Thalheimer, Stoecker and Koenen sit beside them in the Zentrale. Levi's speech warns that a mass party cannot be led like a sect, nor sent into battle on command. ?][? if e20_lead_choice = 2 : The Left and the USPD's radicals hold the Zentrale. Their programme is short: the offensive, as soon as the party is ready. Levi stays in the Zentrale, outvoted. ?][? if e20_lead_choice = 3 : Brandler and the union men hold the Zentrale. Their first circular tells every member to join a union and every cell to fight for wages, hours and bread. ?]
+[? if e20_lead_choice = 1 : Levi and Däumig are co-chairs, with Zetkin, Brandler, Thalheimer, Stoecker and Koenen beside them. Levi tells the congress that a mass party cannot be sent into battle on command. ?][? if e20_lead_choice = 2 : The Left and the USPD's radicals hold the Zentrale, and their programme is the offensive, as soon as the party is ready. Levi stays on the Zentrale, outvoted. ?][? if e20_lead_choice = 3 : Brandler's first circular tells every member to join a union and every cell to fight for wages, hours and bread. ?]
 
 [? if e20_left_government = 1 : Under the International's conditions, our ministers leave Legien's cabinet. ?]
-
-The old KPD had tens of thousands of members. The new party has hundreds of thousands, with all the habits they learned in the USPD. Making one party of them will be the work of the coming year.
