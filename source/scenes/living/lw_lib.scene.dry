@@ -60,7 +60,7 @@ L.CODE = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4};
 
 // ------------------------------------------------------------ comrades
 // fates the historical writers own, and Moscow's man: never touched here
-L.EXCL = ['luxemburg', 'liebknecht', 'jogiches', 'levi', 'levine', 'radek', 'hoelz'];
+L.EXCL = ['luxemburg', 'liebknecht', 'jogiches', 'levi', 'levine', 'radek', 'hoelz', 'thalmann', 'brandler', 'fischer'];
 // comrades who might plausibly walk out on the party
 L.DEFECTORS = ['meyer', 'walcher', 'frolich', 'eberlein', 'laufenberg', 'wolffheim', 'ruhle', 'schroder', 'munzenberg', 'thalheimer'];
 L.STARS = ['zetkin', 'fischer', 'thalmann', 'brandler', 'ruhle', 'laufenberg', 'maslow', 'thalheimer', 'pieck'];
