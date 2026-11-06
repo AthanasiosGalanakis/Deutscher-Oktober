@@ -11,7 +11,6 @@ return !!(RG.lw && RG.lw.ready('m_lenin'));
 on-arrival: {!
 if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
 RG.lw.fire('m_lenin');
-// Lenin's advice depends on who leads: 1 Spartacists, 2 Left, 3 Right, 4 Left Radicals
 var rivals = RG.present().filter(function (f) { return f != Q.leading_faction; });
 rivals.sort(function (a, b) { return RG.num(Q[b + '_strength']) - RG.num(Q[a + '_strength']); });
 Q.lw_rival = rivals.length ? rivals[0] : 0;
@@ -20,56 +19,42 @@ Q.lw_rival_name = rivals.length ? RG.fname(rivals[0]) : 0;
 
 = A Letter from Lenin
 
-The letter is handwritten, in German, on squared paper torn from a notebook, and it has come by courier through Riga. It is addressed "To the Zentrale of the German Communist Party, for the comrades only". It is signed **Lenin**.
+The letter is handwritten in German on squared paper torn from a notebook, and it has come by courier through Riga. It is signed **Lenin**.
 
-[? if lw_lead = 2 : Lenin is worried. He has read the Zentrale's resolutions, and he finds in them a great deal of revolutionary impatience and very little arithmetic. "Win the majority of the working class first," he writes. "A party that tries to jump over the masses lands on its face." ?][? if lw_lead = 4 : Lenin is blunt. A party that refuses to work in the unions and in parliament because they are reactionary is not radical, he writes, but childish, and it leaves the workers to the reformists. ?][? if lw_lead = 1 or lw_lead = 3 : Lenin is warm. He praises the Zentrale's patience and its work in the factories, and then asks, in three underlined lines, whether patience has not become a habit. "Be ready," he writes. "The moment does not send a telegram." ?]
+[? if lw_lead = 2 : He has read the Zentrale's resolutions and finds in them a great deal of revolutionary impatience and very little arithmetic. "Win the majority of the working class first," he writes. ?][? if lw_lead = 4 : A party that refuses to work in the unions and in parliament is not radical, he writes, but childish, and it leaves the workers to the reformists. ?][? if lw_lead = 1 or lw_lead = 3 : He praises the Zentrale's work in the factories, and then asks, in three underlined lines, whether patience has not become a habit. ?] He ends by asking for facts: wages, prices, and the strength of the unions district by district.
 
-He ends, as he often does, by asking for facts: wages, prices, the strength of the unions district by district.
-
-- @publish: Publish the letter in the party press.
-- @zentrale: Read it to the Zentrale, and act on it quietly.
-- @reply: Reply, and argue with him.
-- @weapon: Use it against the [+ lw_rival_name +].
+- @publish: Print the letter in Die Rote Fahne.
+- @weapon: Quote it against the [+ lw_rival_name +].
+- @reply: Answer him, and argue.
 
 @publish
-subtitle: Lenin's authority behind his advice, for the whole party to see. Lenin is pleased; the current he criticises is not.
+subtitle: Lenin's authority behind his advice, for the whole party to see. The current he criticises will not like it.
 on-arrival: {!
-RG.ecci('lenin', 7);
-if (Q.lw_lead == 2) { RG.lw.lean('unionist', 2, 5); RG.lw.lean('offensive', 0, -6); Q.militancy -= 2; }
+RG.ecci('lenin', 8);
+if (Q.lw_lead == 2) { RG.lw.lean('unionist', 2, 5); RG.lw.lean('offensive', 0, -6); }
 else if (Q.lw_lead == 4) { RG.lw.lean('luxemburgist', 2, 4); RG.lw.lean('ultraleft', 0, -6); }
-else { RG.lw.lean('offensive', 1, 4); Q.militancy += 2; Q.unity += 1; }
+else { RG.lw.lean('offensive', 1, 4); Q.militancy += 3; }
 RG.news('Lenin writes to the German workers', 2);
 !}
 
-The letter fills the front page of Die Rote Fahne, with a photograph of the author. Every current in the party finds in it what it was looking for, but the current it was meant for finds it first.
-
-@zentrale
-subtitle: Lenin's advice without the fanfare. He is mildly pleased; the party hears nothing.
-on-arrival: {!
-RG.ecci('lenin', 3);
-Q.unity += 2;
-!}
-
-The Zentrale reads the letter aloud, twice, and passes a resolution that takes its advice without mentioning it. The courier takes back forty pages of statistics.
-
-@reply
-subtitle: The German party argues with Lenin as an equal. Our independence grows; Lenin is curious, not angry.
-on-arrival: {!
-Q.independence += 4;
-RG.ecci('lenin', -2);
-RG.lw.lean(Q.leading_faction, 1, 4);
-!}
-
-The reply is respectful and firm: the Zentrale sees the German situation differently, and explains why. Lenin writes back a month later, two lines in the margin of a newspaper cutting: "Perhaps. We shall see."
+The letter fills the front page, with a photograph of the author.
 
 @weapon
-subtitle: The rival current is beaten over the head with Lenin's name. The party is bitter; Lenin dislikes being used.
+subtitle: The [+ lw_rival_name +] are beaten with Lenin's name. Lenin dislikes being used.
 view-if: lw_rival
 on-arrival: {!
 RG.lw.lean(Q.leading_faction, 1, 5);
-RG.lw.lean(Q.lw_rival, -1, -6);
-Q.unity -= 3;
-RG.ecci('lenin', -2);
+RG.lw.lean(Q.lw_rival, -1, -8);
+RG.ecci('lenin', -4);
 !}
 
-Quotations from the letter, cut to fit, appear in the Zentrale's circulars against the [+ lw_rival_name +]. The [+ lw_rival_name +] ask to see the whole letter, and are refused.
+Quotations from the letter, cut to fit, appear in the Zentrale's circulars. The [+ lw_rival_name +] ask to see the whole letter, and are refused.
+
+@reply
+subtitle: The German party argues with Lenin as an equal. He is curious, not angry.
+on-arrival: {!
+Q.independence += 5;
+RG.lw.lean(Q.leading_faction, 1, 4);
+!}
+
+Lenin writes back a month later, two lines in the margin of a newspaper cutting: "Perhaps. We shall see."

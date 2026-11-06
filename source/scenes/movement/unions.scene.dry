@@ -1,22 +1,26 @@
 title: The Trade Unions
 new-page: true
-view-if: crisis = 0 and unions_timer <= 0
-on-arrival: unions_timer = 3; month_actions += 1
+view-if: crisis = 0 and congress = 0 and unions_timer <= 0
+on-arrival: {!
+Q.unions_timer = 3;
+Q.month_actions += 1;
+Q.c_union_expelled = 0;
+!}
 frequency: 300
 is-card: true
 tags: movement
 
 = The Trade Unions
 
-[? if year <= 1920 : Millions of workers have poured into the Free Trade Unions since the war, and their leaders back Ebert. ?][? if year >= 1921 : The ADGB has eight million members, and its leaders expel communists who organise against them. ?] [? if ultraleft_gone = 0 : The Left Radicals say the old unions are dead and must be replaced by revolutionary workers' unions; others say the party must go where the workers are. ?][? if ultraleft_gone = 1 and kapd_exists = 1 : The KAPD and its General Workers' Union say the old unions must be smashed. Some of our own members agree. ?][? if ultraleft_gone = 1 and kapd_exists = 0 : The expelled Left Radicals say the old unions must be smashed. Some of those who stayed agree. ?]
+[? if year <= 1920 : Millions of workers have poured into the Free Trade Unions since the war, and their leaders back Ebert. ?][? if year >= 1921 : The ADGB has eight million members, and its leaders expel communists who organise against them. ?] [? if ultraleft_gone = 0 : The Left Radicals say the old unions are dead and must be replaced. ?][? if ultraleft_gone = 1 : The KAPD and its General Workers' Union say the old unions must be smashed. Some of our own members agree. ?]
 
 - @inside: Work inside the existing unions.
-- @fractions: Organise communist fractions in every union.
+- @fractions: Organise disciplined communist fractions in every branch.
 - @outside: Build revolutionary unions outside them.
 - @easy_discard
 
 @inside
-subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Wins workers and the USPD's respect; angers the radicals.
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Slow, unglamorous work. Worker support grows steadily.
 choose-if: lock_union_work < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids work inside the old unions.
 on-arrival: {!
@@ -25,19 +29,13 @@ if (Q.lock_union_work == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.worker_support += 6;
-Q.uspd_relation += 3;
-Q.unionist_satisfaction += 10;
-Q.offensive_satisfaction -= 3;
-if (!Q.ultraleft_gone) {
-    Q.ultraleft_satisfaction -= 10;
-}
 Q.lean_unionist += 2;
 !}
 
-Communists stand in union elections and speak at every branch meeting. It is slow, unglamorous work.
+Communists stand in union elections and speak at every branch meeting.
 
 @fractions
-subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Disciplined communist groups inside the unions. The bureaucrats strike back.
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Some branches fall to us. The party's union department expects expulsions in return.
 view-if: year >= 1921
 choose-if: lock_union_work < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids work inside the old unions.
@@ -46,33 +44,31 @@ if (Q.lock_union_work == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-Q.worker_support += 3;
-Q.spd_relation -= 4;
-Q.offensive_satisfaction += 3;
-Q.unionist_satisfaction += 3;
-if (Q.comintern_member) {
-    Q.independence -= 2;
+Q.worker_support += 4;
+RG.ecci('zinoviev', 4);
+if (Math.random() < 0.5) {
+    Q.c_union_expelled = 1;
+    Q.spd_relation -= 6;
+    for (var d of Q.districts) {
+        Q['district_' + d + '_members'] *= 0.97;
+    }
 }
-Q.lean_offensive += 1;
-Q.lean_unionist += 1;
 !}
 
-Every communist in a union belongs to a fraction that meets before the branch meeting and votes as one, as the Red International of Labour Unions demands. Some branches fall to us. Some of our people are expelled.
+Every communist in a union belongs to a fraction that meets before the branch meeting and votes as one. [? if c_union_expelled = 1 : The metalworkers' executive expels two hundred of our people in a single week, and some of them leave the party too. ?]
 
 @outside
-subtitle: [? if ultraleft_gone = 0 : The Left Radicals' line. ?][? if ultraleft_gone = 1 : The Left's impatient wing approves. ?] Splits the workforce.
+subtitle: Small, militant unions, and a split workforce.
 on-arrival: {!
-Q.worker_support += 2;
 Q.militancy += 4;
-Q.unionist_satisfaction -= 10;
+Q.worker_support -= 2;
 if (!Q.ultraleft_gone) {
     Q.ultraleft_satisfaction += 10;
     Q.lean_ultraleft += 2;
 } else {
-    Q.offensive_satisfaction += 5;
-    Q.kapd_relation += 4;
+    Q.kapd_relation += 6;
     Q.lean_offensive += 1;
 }
 !}
 
-The new unions are small, militant and proud of it.
+The comrades tear up their union books in the canteen and found a works union of their own, with a red card and no officials.

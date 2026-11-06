@@ -14,68 +14,46 @@ var c = RG.lw.fire('c_trial');
 RG.lw.setC('cm', c);
 c.lw_tried = Q.time;
 Q.lw_name = RG.pick(['the State Court in Leipzig', 'the regional court in ' + RG.pick(RG.lw.TOWNS[c.district || 'berlin']), 'the special court in Berlin-Moabit']);
-RG.news('Trial of ' + c.name + ' opens before ' + Q.lw_name);
 !}
 
 = In the Dock
 
-**[+ lw_cm_name +]** is brought up from the cells to face [+ lw_name +]. The charge is preparing high treason. The public gallery is full of workers who queued since dawn, and of plain-clothes police who did not need to queue.
-
-The presiding judge served as a reserve officer in the war, and says so. The prosecutor has a file of speeches and leaflets an inch thick. Our lawyer has one question for the Zentrale before the trial begins: what kind of defence does the party want?
+**[+ lw_cm_name +]** is brought up from the cells to face [+ lw_name +] on a charge of preparing high treason. The presiding judge served as a reserve officer in the war, and says so. The public gallery is full of workers who queued since dawn. Our lawyer wants to know what kind of defence the party wants.
 
 - @tribune: Turn the dock into a tribune.
 - @legal: Fight the case on the law, point by point.
-- @refuse: Refuse to recognise a class court.
 - @plea: Advise a plea and a promise of good conduct.
 
 @tribune
-subtitle: A great speech, a longer sentence. The workers will read every word. The Left and the Spartacists both cheer.
+subtitle: A great speech and a longer sentence. Every worker will read it.
 on-arrival: {!
 var c = RG.comrade(Q.lw_cm);
 if (c && c.until > 0) { c.until += 5; }
-Q.worker_support += 3;
-Q.militancy += 2;
+Q.worker_support += 4;
 RG.news(Q.lw_cm_name + ' in court: "I accuse this Republic"', 2);
-RG.lw.lean('offensive', 1, 3);
-RG.lw.lean('luxemburgist', 1, 3);
 !}
 
-[+ lw_cm_name +] speaks for three hours, about the war, the murders of January and the officers who were never tried. The judge interrupts eleven times. The speech is printed as a pamphlet the next week, and the sentence is long.
+[+ lw_cm_name +] speaks for three hours about the war, the murders of January and the officers who were never tried. The judge interrupts eleven times. The speech is sold as a pamphlet the next week.
 
 @legal
-subtitle: A careful defence. An acquittal is possible; the speech will be forgotten.
+subtitle: The prosecution's file is thin. Our lawyer thinks an acquittal is possible, not likely.
 on-arrival: {!
-if (Math.random() < 0.45) {
+if (Math.random() < 0.4) {
     Q.lw_out = 1;
     RG.free(Q.lw_cm, {news: Q.lw_cm_name + ' acquitted', priority: 2});
 } else {
     Q.lw_out = 2;
 }
-RG.lw.lean('unionist', 1, 3);
 !}
 
-Our lawyer takes the prosecution's file apart: dates that do not match, a police witness who was in another city. [? if lw_out = 1 : The court acquits for lack of evidence. [+ lw_cm_name +] walks out into the arms of the crowd. ?][? if lw_out = 2 : The court convicts all the same, on a lesser count. The sentence stands. ?]
-
-@refuse
-subtitle: Defiance from first to last. A longer sentence, and the hard men of the party approve.
-on-arrival: {!
-var c = RG.comrade(Q.lw_cm);
-if (c && c.until > 0) { c.until += 3; }
-Q.militancy += 3;
-Q.worker_support += 1;
-if (Q.ultraleft_gone) { RG.lw.lean('offensive', 1, 4); } else { RG.lw.lean('ultraleft', 1, 4); RG.lw.lean('offensive', 1, 1); }
-!}
-
-[+ lw_cm_name +] turns away from the bench and says nothing for the whole trial, except, at the end, that the proletariat will judge its judges. The court is cleared twice.
+[? if lw_out = 1 : The court acquits for lack of evidence, and [+ lw_cm_name +] walks out into the arms of the crowd. ?][? if lw_out = 2 : The court convicts on a lesser count. ?]
 
 @plea
-subtitle: Freedom soon, and a stain. The comrade's current is ashamed, and the party a little smaller in the workers' eyes.
+subtitle: Freedom soon, and a stain. The comrade's current is ashamed.
 on-arrival: {!
 RG.free(Q.lw_cm, {news: Q.lw_cm_name + ' released after a plea'});
-Q.worker_support -= 1;
 var c = RG.comrade(Q.lw_cm);
-if (c) { RG.lw.lean(c.faction, -1, -6); }
-Q.unity -= 1;
+if (c) { RG.lw.lean(c.faction, -1, -8); }
 !}
 
-The lawyer reads out a short statement: [+ lw_cm_name +] regrets any words that went too far, and respects the constitution. The court is satisfied. The party's paper prints the release, and not the statement.
+The lawyer reads a short statement: [+ lw_cm_name +] regrets any words that went too far. The party paper prints the release, and not the statement.

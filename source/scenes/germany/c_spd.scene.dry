@@ -1,24 +1,26 @@
 title: The Social Democrats
 new-page: true
-view-if: crisis = 0 and c_spd_timer <= 0 and time >= 2
-on-arrival: c_spd_timer = 4; month_actions += 1
+view-if: crisis = 0 and congress = 0 and c_spd_timer <= 0 and time >= 2
+on-arrival: {!
+Q.c_spd_timer = 4;
+Q.month_actions += 1;
+Q.c_spd_answer = 0;
+!}
 frequency: 250
 is-card: true
 tags: germany
 
 = The Social Democrats
 
-[? if year = 1919 : The SPD governs. Its leaders, Ebert, Scheidemann and Noske, sent the Freikorps against the workers of Berlin, and our comrades are dead. But millions of workers still vote for it, and many of them are ashamed. ?][? if year >= 1920 and year <= 1921 : The SPD is still the largest workers' party in Germany, and its unions hold the factories. Its members are tired of governing with the bourgeois parties and getting nothing for it. ?][? if year >= 1922 : The SPD is the party of the Republic, and of eight million trade unionists. Its leaders fear us more than they fear the right, and its members are not sure they agree. ?]
-
-How should the party speak to the social democratic workers?
+[? if year = 1919 : The SPD governs. Ebert, Scheidemann and Noske sent the Freikorps against the workers of Berlin. Millions of workers still vote for it, and many of them are ashamed. ?][? if year >= 1920 and year <= 1921 : The SPD is still the largest workers' party in Germany, and its unions hold the factories. Its members are tired of governing with the bourgeois parties for nothing. ?][? if year >= 1922 : The SPD is the party of the Republic and of eight million trade unionists. Its leaders fear us more than the right, and its members are not sure they agree. ?]
 
 - @offer: Offer the SPD joint action on wages and against the right.
-- @below: Appeal to the SPD's members over the heads of their leaders.
-- @expose: Expose the crimes of the SPD leaders.
+- @below: Appeal to its members over the heads of their leaders.
+- @expose: Print the record of the SPD leaders.
 - @easy_discard
 
 @offer
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] An open offer, made in public. The Right's line; the Left calls it capitulation.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] [? if spd_in_government = 1 : While they sit in the cabinet, the leaders are likely to refuse. ?][? if spd_in_government = 0 : Out of office, they may accept. ?]
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any deal with the social democrats.
 on-arrival: {!
@@ -26,42 +28,39 @@ if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-Q.spd_relation += 8;
-Q.worker_support += 3;
-Q.unionist_satisfaction += 5;
-Q.offensive_satisfaction -= 4;
+var p = Q.spd_in_government ? 0.2 : 0.55;
+if (Math.random() < p) {
+    Q.c_spd_answer = 1;
+    Q.spd_relation += 12;
+    Q.worker_support += 4;
+    RG.news('SPD and Communists agree on joint action', 2);
+} else {
+    Q.c_spd_answer = 2;
+    Q.spd_relation += 3;
+}
 Q.lean_unionist += 2;
 !}
 
-[? if year = 1921 and month <= 3 : It is the policy of the Open Letter of January, pressed further. ?] The SPD executive refuses, as expected. Several of its local branches accept.
+[? if c_spd_answer = 1 : The SPD executive accepts, to everyone's surprise, its own included. Joint meetings are called in every big town. ?][? if c_spd_answer = 2 : The SPD executive refuses. Several of its local branches accept anyway. ?]
 
 @below
-subtitle: A united front from below. Some SPD workers come over; their leaders are furious.
+subtitle: A few hundred social democrats come over. Their leaders are furious.
 on-arrival: {!
-Q.spd_relation -= 3;
-Q.worker_support += 3;
+Q.spd_relation -= 4;
 for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 1.02;
+    Q['district_' + d + '_members'] *= 1.03;
 }
-Q.offensive_satisfaction += 2;
 Q.lean_offensive += 1;
 !}
 
-Our leaflets at the SPD's own meetings ask its members why their ministers sit with the industrialists. A few hundred tear up their cards.
+Our leaflets at the SPD's own meetings ask its members why their ministers sit with the industrialists.
 
 @expose
-subtitle: Burns the bridges. The radicals cheer.
+subtitle: The bridges burn. The SPD's workers feel insulted too.
 on-arrival: {!
-Q.spd_relation -= 8;
-Q.militancy += 4;
-Q.offensive_satisfaction += 5;
-if (!Q.ultraleft_gone) {
-    Q.ultraleft_satisfaction += 5;
-    Q.lean_ultraleft += 1;
-} else {
-    Q.lean_offensive += 1;
-}
-Q.unionist_satisfaction -= 3;
+Q.spd_relation -= 10;
+Q.militancy += 5;
+Q.lean_offensive += 1;
 !}
 
-Die Rote Fahne prints the names of the workers shot by the Freikorps, and beside them the name of the minister who signed the order to fire.
+Die Rote Fahne prints the names of the workers shot by the Freikorps, and beside them the name of the minister who signed the order.

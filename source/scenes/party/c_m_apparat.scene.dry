@@ -1,62 +1,66 @@
 title: The M-Apparat
 new-page: true
-view-if: crisis = 0 and c_m_apparat_timer <= 0 and year >= 1921
-on-arrival: c_m_apparat_timer = 5; month_actions += 1
+view-if: crisis = 0 and congress = 0 and c_m_apparat_timer <= 0 and year >= 1921
+on-arrival: {!
+Q.c_m_apparat_timer = 5;
+Q.month_actions += 1;
+Q.c_m_found = 0;
+!}
 frequency: 150
 is-card: true
 tags: party_affairs
 
 = The M-Apparat
 
-The party has a secret department now: the military-political apparatus, known to the few who know of it as the M-Apparat. It collects intelligence on the Reichswehr and the right, trains instructors for the workers' militias, and keeps lists of weapons. [? if comintern_member = 1 : Officers sent by the Red Army's staff advise it, and Moscow pays for much of it. ?]
+The party has a secret military department, known to the few who know of it as the M-Apparat. It trains instructors for the red guards, watches the Reichswehr and keeps lists of weapons. [? if comintern_member = 1 : Officers of the Red Army's staff advise it, and Moscow pays for most of it. ?]
 
-[? if march_action = 1 : After March, everyone agrees the party was not ready to fight. They do not agree on what to do about it. ?] [? if c_m_apparat_built >= 2 : The apparatus has grown large enough that the police have started looking for it. ?]
+[? if c_m_apparat_built = 0 : For now it is small enough to hide. ?][? if c_m_apparat_built = 1 : It has grown, and more people know of it than should. ?][? if c_m_apparat_built >= 2 : It is large now, and the Zentrale suspects the political police already have a man inside. ?]
 
-- @build: Expand the apparatus.
-- @inward: Turn it to protecting the party.
-- @small: Keep it small, and under the Zentrale's control.
+- @build: Expand it.
+- @inward: Turn it against the police spies in our own ranks.
+- @wind_up: Wind it up.
 - @easy_discard
 
 @build
-subtitle: Costs 1 fund. More arms and trained men; more police attention. The Left approves.
+subtitle: Costs 1 fund. More arms and trained men. The bigger it grows, the likelier the police find it.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
 Q.resources -= 1;
 Q.c_m_apparat_built += 1;
-Q.red_guards_arms += 6;
-Q.red_guards_strength += 1;
-Q.repression += 3 + Q.c_m_apparat_built;
-Q.offensive_satisfaction += 6;
-Q.luxemburgist_satisfaction -= 3;
-if (Q.comintern_member) {
-    Q.independence -= 3;
+if (Math.random() < 0.15 * Q.c_m_apparat_built) {
+    Q.c_m_found = 1;
+    Q.red_guards_arms = Math.max(0, Q.red_guards_arms - 10);
+    Q.repression += 10;
+    Q.c_m_apparat_built = 0;
+    RG.news('Police uncover communist arms network', 3);
+    RG.ledger('The police uncovered the M-Apparat.', 'm_apparat_found');
+} else {
+    Q.red_guards_arms += 8;
+    Q.red_guards_strength += 1;
+    Q.lean_offensive += 1;
 }
-Q.lean_offensive += 2;
 !}
 
-Instructors are trained in a forest lodge in Thuringia, and arms are bought from Reichswehr quartermasters who need the money. Every new cell is another secret that can be betrayed.
+[? if c_m_found = 0 : Instructors are trained at a forest lodge in Thuringia, and rifles are bought from quartermasters who need the money. ?][? if c_m_found = 1 : The police raid the forest lodge, three depots and a flat in Charlottenburg with the lists. The apparatus is gone, and the papers have its name. ?]
 
 @inward
-subtitle: Watch the Freikorps, spot the informers. The party is harder to strike.
+subtitle: The party is harder to strike for a while.
 on-arrival: {!
-Q.repression -= 4;
-Q.red_guards_loyalty += 5;
+Q.repression -= 6;
 Q.unity += 2;
-Q['lean_' + Q.leading_faction] += 1;
 !}
 
-The apparatus turns its attention to the police spies inside our own districts. Two are found in Berlin, one in Halle. The right-wing leagues' meeting places are watched.
+Two police informers are found in Berlin and one in Halle. They are not seen at meetings again.
 
-@small
-subtitle: The Spartacists are relieved; the Left calls it cowardice.
+@wind_up
+subtitle: No secrets left to betray. The Left calls it cowardice.
+view-if: c_m_apparat_built >= 1
 on-arrival: {!
-Q.unity += 3;
-Q.independence += 2;
-Q.luxemburgist_satisfaction += 4;
-Q.offensive_satisfaction -= 4;
-Q.militancy -= 2;
+Q.c_m_apparat_built = 0;
+Q.independence += 3;
+Q.offensive_satisfaction -= 6;
 Q.lean_luxemburgist += 1;
 !}
 
-The Zentrale decides that a party of workers does not need a general staff. The apparatus is reduced to a few couriers and a filing cabinet.
+The apparatus is reduced to a few couriers and a filing cabinet, and the filing cabinet is burned.

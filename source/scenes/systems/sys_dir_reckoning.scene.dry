@@ -24,7 +24,7 @@ Q.sys_outcome = 0;
 - @appeal: Appeal to Lenin.
 
 @thank
-subtitle: Moscow is pleased. The Left approves.
+subtitle: Moscow is pleased.
 view-if: directive_result = 1
 on-arrival: {!
 RG.ecci('all', 3);
@@ -74,10 +74,10 @@ RG.ecci('all', 4);
 Q[Q.leading_faction + '_satisfaction'] -= 4;
 !}
 
-The Zentrale accepts the Executive's criticism "in the spirit of international discipline". Our own people read it twice and do not like it either time.
+The Zentrale accepts the Executive's criticism "in the spirit of international discipline". Our own people do not like it.
 
 @reply
-subtitle: Our independence grows, and the Spartacists cheer. Moscow will remember.
+subtitle: The Spartacists cheer. Moscow will remember it.
 view-if: directive_result = 3
 on-arrival: {!
 Q.independence += 5;
@@ -87,7 +87,7 @@ Q.offensive_satisfaction -= 4;
 Q.lean_luxemburgist += 1;
 !}
 
-We answer in the Rote Fahne: a communist party is not a regiment, and the Executive is not its general staff. Half the party cheers, and the other half counts the cost.
+We answer in the Rote Fahne: a communist party is not a regiment, and the Executive is not its general staff.
 
 @appeal
 subtitle: Lenin might overrule the Executive. It is a gamble with Zinoviev's temper.
@@ -107,4 +107,4 @@ if (Math.random() < 0.6) {
 }
 !}
 
-We write to Lenin directly. [? if sys_outcome = 1 : Lenin replies in his own hand: the German comrades have made mistakes, but the Executive has made more. The worst of the punishment is quietly lifted. ?][? if sys_outcome = 2 : Lenin replies that he has every confidence in the Executive, and that the German comrades should have more. ?]
+We write to Lenin directly. [? if sys_outcome = 1 : Lenin replies in his own hand: the German comrades have made mistakes, but the Executive has made more. The worst of the punishment is lifted. ?][? if sys_outcome = 2 : Lenin replies that he has every confidence in the Executive, and that the German comrades should have more. ?]

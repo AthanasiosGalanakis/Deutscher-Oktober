@@ -17,9 +17,9 @@ tags: germany
 
 = The Interior Ministry
 
-The police in **[+ lw_d_name +]** answer to the Interior Ministry of [+ lw_land +]. [? if lw_n = 1 : The minister is a social democrat, as most of them are, and his officials send the security police into the workers' districts with the same instructions they had under the Kaiser. ?][? if lw_n = 0 : In Bavaria, the ministry and the police president of Munich work hand in glove with the citizens' militias and the nationalist leagues. ?]
+The police in **[+ lw_d_name +]** answer to the Interior Ministry of [+ lw_land +]. [? if lw_n = 1 : The minister is a social democrat, and his officials work from the same instructions they had under the Kaiser. ?][? if lw_n = 0 : In Bavaria, the ministry and the Munich police work hand in glove with the citizens' militias. ?]
 
-This month, the ministry has banned all open-air meetings in [+ lw_town +] and the surrounding district, and the police are enforcing it with their truncheons.
+This month the ministry has banned all open-air meetings in [+ lw_town +] and the country around it.
 
 - @appeal: Appeal through the social democratic deputies.
 - @expose: Publish the ministry's secret instructions.
@@ -28,7 +28,7 @@ This month, the ministry has banned all open-air meetings in [+ lw_town +] and t
 - @easy_discard
 
 @appeal
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A word from their own party may move the minister. It works better outside Bavaria. The Right's way.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] [? if lw_n = 1 : A word from his own party will probably move the minister. ?][? if lw_n = 0 : The Bavarian ministry is unlikely to listen. ?]
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids asking the social democrats for anything.
 on-arrival: {!
@@ -41,28 +41,26 @@ if (Q.lw_n == 1 ? Math.random() < 0.7 : Math.random() < 0.25) {
     Q.lw_out = 2;
 }
 Q.spd_relation += 3;
-RG.lw.lean('unionist', 1, 4);
+Q.lean_unionist += 1;
 !}
 
 [? if lw_out = 1 : Social democratic deputies, embarrassed by letters from their own members, question the minister in the Landtag. The ban is lifted "in view of the calmer situation". ?][? if lw_out = 2 : The deputies promise to raise it. The minister promises to look into it. The ban stays. ?]
 
 @expose
-subtitle: Costs 1 fund. A leak from the ministry, on the front page. The police are embarrassed into caution. The Spartacist way.
+subtitle: Costs 1 fund. A clerk in the ministry will sell us the police instructions.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
 Q.resources -= 1;
-Q.worker_support += 2;
-RG.district(Q.lw_d, {repression: -6});
-Q.stability -= 1;
+RG.district(Q.lw_d, {repression: -10});
 RG.news('Communists publish secret police orders for ' + Q.lw_land, 2);
 RG.lw.lean('luxemburgist', 1, 4);
 !}
 
-A clerk in the ministry, for a price, has copied the instructions to the police: lists of communists to be watched, the names of informers' handlers, and a paragraph on cooperation with the nationalist leagues. The paper prints the lot.
+The instructions list the communists to be watched, the names of the informers' handlers, and a paragraph on cooperation with the nationalist leagues. The paper prints the lot.
 
 @defy
-subtitle: Thousands in the square, banned or not. The district is fired up, and the police will answer.
+subtitle: [? if lw_d_mil >= 50 : The district is angry enough to fill the square. ?][? if lw_d_mil < 50 : If too few come, the police will charge. ?]
 on-arrival: {!
 if (Q.lw_d_mil >= 50 || Math.random() < 0.35) {
     Q.lw_out = 1;
@@ -77,7 +75,7 @@ RG.lw.lean('offensive', 2, 4);
 [? if lw_out = 1 : Twenty thousand come to the square. The police look at the crowd, and then at each other, and stay in their lorries. ?][? if lw_out = 2 : Two thousand come. The police charge. By nightfall, the cells of [+ lw_town +] are full. ?]
 
 @truce
-subtitle: Calm streets, and room to organise. The Left calls it a deal with the class enemy.
+subtitle: Calm streets and room to organise. The Left will call it a deal with the class enemy.
 on-arrival: {!
 RG.district(Q.lw_d, {repression: -7, militancy: -4});
 RG.lw.lean('unionist', 1, 2);

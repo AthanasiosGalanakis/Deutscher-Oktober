@@ -1,0 +1,29 @@
+title: The First Graduates
+subtitle: The party school's first class goes back to the districts.
+new-page: true
+tags: event
+view-if: c_school_due > 0 and time >= c_school_due and crisis = 0 and congress = 0
+max-visits: 3
+on-arrival: {!
+Q.c_school_due = 0;
+var f = {1: 'luxemburgist', 2: 'offensive', 3: 'unionist'}[Q.c_school_class] || 'luxemburgist';
+if (Q[f + '_gone']) { f = Q.leading_faction; }
+Q.c_school_fname = Q.faction_names[f];
+// the graduates go home to the four biggest districts and take them with them
+var ds = Q.districts.slice().sort(function (a, b) {
+    return Q['district_' + b + '_members'] - Q['district_' + a + '_members'];
+});
+for (var i = 0; i < 4; i++) {
+    var d = ds[i];
+    Q['district_' + d + '_loyalty'] += (Q['district_' + d + '_faction'] == Q.leading_faction) ? 6 : 2;
+}
+Q['lean_' + f] += 3;
+Q[f + '_satisfaction'] += 5;
+Q.unity += 2;
+!}
+
+= The First Graduates
+
+Thirty young workers have finished the course at the party school. They go home as district instructors, and within a month they are running the evening classes and the district papers.
+
+They teach what they were taught. In the districts, the [+ c_school_fname +] gain ground.

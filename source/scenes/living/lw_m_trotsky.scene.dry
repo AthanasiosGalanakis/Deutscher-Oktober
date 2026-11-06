@@ -16,17 +16,14 @@ Q.lw_n = Q.time >= 48 ? 1 : 0;
 
 = The Red Army's Advice
 
-Two men in good civilian suits have come to Berlin with a letter from **Trotsky**, the People's Commissar for War. They are officers of the Red Army, one a former Tsarist staff captain, the other a Latvian who has fought the whole civil war. They have looked at the party's arms, its red guards and its maps.
-
-Their verdict is professional and unsparing: [? if lw_n = 1 : the party has men but not an army, weapons but not ammunition, and no plan that would survive the first day. They propose a military apparatus on Red Army lines, with sector commanders, depots and a general staff, and they ask for a date. ?][? if lw_n = 0 : a rising now would be crushed in a week. Trotsky's advice is to build in silence: cadres, depots, contacts in the Reichswehr, and to keep the party out of street fighting it cannot win. ?]
+Two men in good civilian suits have come to Berlin with a letter from **Trotsky**, the People's Commissar for War. They are officers of the Red Army, and they have looked at the party's arms, its red guards and its maps. Their verdict: [? if lw_n = 1 : the party has men but not an army, weapons but not ammunition, and no plan that would survive the first day. They propose a military apparatus on Red Army lines, with sector commanders, depots and a general staff, and they ask for a date. ?][? if lw_n = 0 : a rising now would be crushed in a week. Trotsky's advice is to build in silence: cadres, depots, contacts in the Reichswehr, and to keep the party out of street fighting it cannot win. ?]
 
 - @accept: Accept the officers and their plan.
 - @money: Take the money for arms, and keep our own commanders.
-- @patience: Take Trotsky's advice on patience.
 - @decline: Thank them, and send them home.
 
 @accept
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Real military preparation. The red guards grow stronger and more obedient; the police will hear of it.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Real military preparation, and a military department the Zentrale will not fully control.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids preparing a rising.
 on-arrival: {!
@@ -37,41 +34,25 @@ Q.repression += 3;
 Q.independence -= 4;
 RG.ecci('trotsky', 10);
 RG.lw.lean('offensive', 2, 5);
-RG.lw.lean('unionist', -1, -3);
 !}
 
-The officers stay. Within a month, the party's red guards have sector commanders, couriers, and depots in allotments and churchyards across the country, and the Zentrale has a military department it does not entirely control.
+The officers stay. Within a month the red guards have sector commanders, couriers and depots in allotments and churchyards across the country.
 
 @money
-subtitle: Arms without masters. Trotsky is half pleased; our independence is kept.
+subtitle: 1 fund, and rifles. The red guards stay under their own district leaders.
 on-arrival: {!
-Q.red_guards_arms += 4;
+Q.red_guards_arms += 5;
 Q.resources += 1;
-RG.ecci('trotsky', 3);
-RG.lw.lean('offensive', 1, 2);
+RG.ecci('trotsky', 2);
 !}
 
-The officers leave a sum in dollars and a list of addresses in Hamburg where rifles can be bought off Dutch ships. The red guards stay under their own district leaders.
-
-@patience
-subtitle: Build in silence. The cautious currents are pleased; the impatient are not.
-on-arrival: {!
-RG.ecci('trotsky', 3);
-Q.militancy -= 2;
-Q.red_guards_loyalty += 3;
-RG.lw.lean('unionist', 1, 3);
-RG.lw.lean('luxemburgist', 1, 2);
-RG.lw.lean('offensive', 0, -3);
-!}
-
-The Zentrale circulates the officers' memorandum to the district leaderships, under the heading "Not yet". The arms caches grow slowly. Nobody marches.
+The officers leave a sum in dollars and a list of addresses in Hamburg where rifles can be bought off Dutch ships.
 
 @decline
 subtitle: No Russian officers in the German party. Trotsky is offended.
 on-arrival: {!
-RG.ecci('trotsky', -8);
-Q.independence += 4;
-RG.lw.lean('luxemburgist', 1, 3);
+RG.ecci('trotsky', -10);
+Q.independence += 5;
 !}
 
 The officers are given dinner, the thanks of the Zentrale and two tickets for the night train to Stettin, where a ship leaves for Petrograd.

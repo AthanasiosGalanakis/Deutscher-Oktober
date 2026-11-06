@@ -48,7 +48,7 @@ RG.stall(2);
 We cable back with questions: which organisations, which methods, which month. The answer will take weeks, and [+ directive_from_name +] will not enjoy writing it.
 
 @refuse
-subtitle: Our independence grows. Moscow will answer, and the Left will be angry.
+subtitle: Moscow will answer, and the Left will be angry.
 on-arrival: {!
 RG.defy();
 Q.luxemburgist_satisfaction += 6;
@@ -56,7 +56,7 @@ Q.offensive_satisfaction -= 6;
 Q.lean_luxemburgist += 2;
 !}
 
-The Zentrale replies that it has read the Executive's views with interest, and that the German party will decide German tactics. It is the kind of letter that is read aloud in Moscow, slowly.
+The Zentrale replies that it has read the Executive's views with interest, and that the German party will decide German tactics.
 
 @file
 subtitle: Nothing happens yet. The time Moscow gave us is running.
@@ -64,4 +64,4 @@ on-arrival: {!
 Q.directive_stance = 0;
 !}
 
-The telegram goes into the file. Everybody in the Zentrale has read it, and nobody mentions it at the next meeting.
+The telegram goes into the file. Nobody mentions it at the next meeting.

@@ -18,70 +18,49 @@ RG.news(Q.lw_paper_cap + ' banned for ' + Q.lw_n + ' weeks', 2);
 
 = Banned
 
-A police officer with a typed order came to the printing works this morning: **[+ lw_paper_cap +]** is banned for [+ lw_n +] weeks, under the emergency decree, for an article "endangering public order". The article was about the police in [+ lw_d_name +].
-
-The formes are sealed and the bundles of today's edition are on a lorry to the police headquarters. The printers are standing in the yard, smoking, waiting for someone to tell them whether they will be paid this week.
-
-A party without its paper is a party that cannot speak to its members, and in [+ lw_d_name +] the paper is the party.
+A police officer with a typed order came to the printing works this morning: **[+ lw_paper_cap +]** is banned for [+ lw_n +] weeks under the emergency decree, for an article about the police in [+ lw_d_name +]. The formes are sealed, and the printers are standing in the yard waiting to hear whether they will be paid this week.
 
 - @rename: Bring it out tomorrow under another name.
-- @underground: Print it in secret and hand it out at the gates.
 - @court: Fight the ban in the courts.
 - @printers: Call out the printers of the city.
 
 @rename
-subtitle: The old trick: a new title, the same paper. Readers love it; the police will try again.
+subtitle: Readers love the trick. The police will try again, harder.
 on-arrival: {!
-Q.worker_support += 1;
-RG.district(Q.lw_d, {loyalty: 3, repression: 3});
-RG.news('Banned communist paper reappears under a new name in ' + Q.lw_town);
-RG.lw.lean('luxemburgist', 1, 3);
+RG.district(Q.lw_d, {loyalty: 5, repression: 5});
 !}
 
-The next morning a new paper appears on the streets of [+ lw_town +], with a new name, the same editor, the same typeface and, on the front page, the article that got the old one banned.
-
-@underground
-subtitle: An illegal paper costs members and carries risk. It cannot be banned. The Left's preference.
-on-arrival: {!
-RG.district(Q.lw_d, {members: -0.03, loyalty: 6, militancy: 3});
-Q.red_guards_loyalty += 2;
-RG.lw.lean('offensive', 1, 4);
-!}
-
-A hand press goes into a cellar under a laundry. The paper comes out on two sheets, smudged, twice a week, and is handed out at the works gates by young comrades who run when they see a helmet.
+The next morning a new paper appears in [+ lw_town +], with a new name, the same editor and, on the front page, the article that got the old one banned.
 
 @court
-subtitle: Costs 1 fund. The ban may be lifted, and the decree tested. The Right's way.
+subtitle: Costs 1 fund. Our lawyers think the decree will not stand up, more likely than not.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
 Q.resources -= 1;
 if (Math.random() < 0.55) {
     Q.lw_out = 1;
-    RG.district(Q.lw_d, {repression: -6});
-    RG.news('Court lifts the ban on ' + Q.lw_paper);
+    RG.district(Q.lw_d, {repression: -8});
 } else {
     Q.lw_out = 2;
 }
 RG.lw.lean('unionist', 1, 3);
 !}
 
-[? if lw_out = 1 : The administrative court finds that the article criticised the police but did not endanger anyone. The paper is back after nine days. ?][? if lw_out = 2 : The court upholds the ban, and adds the costs. The paper is back when the ban runs out, and not before. ?]
+[? if lw_out = 1 : The administrative court lifts the ban after nine days. ?][? if lw_out = 2 : The court upholds the ban and adds the costs. ?]
 
 @printers
-subtitle: If the printers stop, no paper in the city appears, not even the bourgeois ones.
+subtitle: If the compositors stop, no paper in the city appears. If they do not, ours are sacked.
 on-arrival: {!
 if (Q.lw_d_mil >= 55 || Math.random() < 0.3) {
     Q.lw_out = 1;
-    RG.district(Q.lw_d, {repression: -5, militancy: 4});
+    RG.district(Q.lw_d, {repression: -6, militancy: 5});
     Q.worker_support += 2;
 } else {
     Q.lw_out = 2;
-    RG.district(Q.lw_d, {repression: 4});
-    Q.worker_support -= 1;
+    RG.district(Q.lw_d, {members: -0.03});
 }
 RG.lw.lean('offensive', 1, 2);
-RG.lw.lean('luxemburgist', 1, 1);
 !}
 
-[? if lw_out = 1 : The compositors of [+ lw_town +] stop work at noon. The next morning, no newspaper at all appears in the city, and on the third day the ban is quietly withdrawn. ?][? if lw_out = 2 : The printers' union says it does not strike for party papers. Our own compositors come out alone, and are replaced. ?]
+[? if lw_out = 1 : The next morning no newspaper at all appears in [+ lw_town +]. On the third day the ban is withdrawn. ?][? if lw_out = 2 : The printers' union says it does not strike for party papers. Our compositors come out alone, and are replaced. ?]

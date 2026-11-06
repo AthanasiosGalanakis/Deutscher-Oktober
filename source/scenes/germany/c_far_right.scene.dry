@@ -1,30 +1,40 @@
 title: The Nationalist Right
 new-page: true
-view-if: crisis = 0 and c_far_right_timer <= 0 and time >= 3
-on-arrival: c_far_right_timer = 4; month_actions += 1
+view-if: crisis = 0 and congress = 0 and c_far_right_timer <= 0 and time >= 3
+on-arrival: {!
+Q.c_far_right_timer = 4;
+Q.month_actions += 1;
+Q.c_far_right_out = 0;
+// the right marches where we are strongest in the streets
+RG.target('guards');
+!}
 frequency: 200
 is-card: true
 tags: germany
 
 = The Nationalist Right
 
-[? if year <= 1920 : The Freikorps officers who murdered Luxemburg and Liebknecht are heroes in the officers' clubs. Anti-Bolshevik leagues, financed by industrialists, paper the cities with posters of Bolsheviks with knives in their teeth. ?][? if year >= 1921 and year <= 1922 : The Freikorps have gone underground into rifle clubs and labour companies, and the murderers of Organisation Consul pick off the Republic's ministers one by one. ?][? if year >= 1923 : In Munich, a former corporal named Adolf Hitler draws thousands to the beer halls, and his storm troopers break up workers' meetings across Bavaria. ?][? if nsdap_exists = 1 and year < 1923 : In Munich, the [+ nsdap_name +] is one small sect among many. ?]
+[? if year <= 1920 : The Freikorps officers who murdered Luxemburg and Liebknecht are heroes in the officers' clubs, and industrialists pay for posters of Bolsheviks with knives in their teeth. ?][? if year >= 1921 and year <= 1922 : The Freikorps have gone underground into rifle clubs and labour companies, and the killers of Organisation Consul pick off the Republic's ministers one by one. ?][? if year >= 1923 : In Munich, a former corporal named Adolf Hitler fills the beer halls, and his storm troopers break up workers' meetings across Bavaria. ?]
 
-This month they marched through a workers' district, and a comrade was beaten half to death.
+This month they marched through a workers' district of **[+ sys_target_name +]**, and a comrade was beaten half to death.
 
-- @break_up: Break up their meetings.
-- @joint: Form joint defence committees with the social democrats.
-- @expose: Expose their paymasters in industry and the Reichswehr.
+- @break_up: Break up their next meeting.
+- @joint: Form defence committees with the social democrats.
+- @expose: Publish the names of their paymasters.
 - @easy_discard
 
 @break_up
-subtitle: Fists and chair legs. The right is driven off the streets, for now. The Left's line.
-on-arrival: militancy += 5; repression += 4; red_guards_strength += 0.5; red_guards_loyalty += 3; offensive_satisfaction += 5; lean_offensive += 2
+subtitle: The red guards of [+ sys_target_name +] drive them off the streets there, and the police arrest our side.
+on-arrival: {!
+RG.district(Q.sys_target, {militancy: 6, repression: 6, guards: 0.4});
+Q.red_guards_loyalty += 4;
+Q.lean_offensive += 1;
+!}
 
-Our young workers fill the front rows of the next nationalist meeting. It ends after ten minutes, in the street, with the police arresting mostly our side.
+Our young workers fill the front rows of the next nationalist meeting. It ends after ten minutes, in the street.
 
 @joint
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Workers of every party defend each other's meetings. The Right's line.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Workers of every party guard each other's halls.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any deal with the social democrats.
 on-arrival: {!
@@ -32,18 +42,24 @@ if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-Q.spd_relation += 5;
-Q.worker_support += 2;
-Q.red_guards_strength += 0.5;
-Q.unionist_satisfaction += 4;
-Q.offensive_satisfaction -= 2;
+Q.spd_relation += 6;
 Q.lean_unionist += 2;
 !}
 
-In the district, the SPD's hall stewards had no use for us yesterday. Today they stand at the same door when the nationalists come.
+The SPD's hall stewards had no use for us yesterday. Today they stand at the same door when the nationalists come.
 
 @expose
-subtitle: Names, cheques and arms depots in the party press. The Republic is shaken a little.
-on-arrival: worker_support += 2; stability -= 1; spd_relation += 1; luxemburgist_satisfaction += 3; lean_luxemburgist += 1
+subtitle: If our information holds, the government is shamed. If it does not, we face a libel suit. The editors think it is even odds.
+on-arrival: {!
+if (Math.random() < 0.5) {
+    Q.c_far_right_out = 1;
+    Q.stability -= 3;
+    Q.worker_support += 3;
+    RG.news('Communists name the industrialists who pay the nationalist leagues', 2);
+} else {
+    Q.c_far_right_out = 2;
+    Q.resources = Math.max(0, Q.resources - 1);
+}
+!}
 
-Die Rote Fahne prints the list of firms that pay the leagues, and the addresses of the Reichswehr depots that arm them. The government promises an investigation.
+[? if c_far_right_out = 1 : Die Rote Fahne prints the list of firms that pay the leagues, with the cheque numbers. The government promises an inquiry. ?][? if c_far_right_out = 2 : Two of the names are wrong. The court fines the paper, and the leagues have their own headline for a week. ?]

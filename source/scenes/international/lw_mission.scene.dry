@@ -17,9 +17,9 @@ tags: international
 
 = A Mission Abroad
 
-Requests have piled up on the Zentrale's table. [? if comintern_member = 1 : The Executive wants a German comrade in Moscow for some months, to sit on its commissions and explain Germany to people who think they understand it already. ?][? if comintern_member = 0 : The left socialists of Vienna want a German comrade to help them, and to explain what is happening in Germany. ?] The comrades in [+ lw_where2 +] ask for someone to help them build a party, and a paper, out of the wreckage of the old socialist one.
+[? if comintern_member = 1 : The Executive wants a German comrade in Moscow for some months, to sit on its commissions. ?][? if comintern_member = 0 : The left socialists of Vienna want a German comrade to help them. ?] The comrades in [+ lw_where2 +] ask for someone to help them build a party and a paper.
 
-A mission abroad is an honour and a long absence. A comrade abroad is not in prison, and not in the Zentrale's meetings either. Sometimes that is the point.
+A comrade abroad is not in prison, and not in the Zentrale's meetings either. Sometimes that is the point.
 
 - @first: Send [+ lw_ab1_name +] to [+ lw_where +].
 - @second: Send [+ lw_ab2_name +] to [+ lw_where2 +].
@@ -27,7 +27,7 @@ A mission abroad is an honour and a long absence. A comrade abroad is not in pri
 - @easy_discard
 
 @first
-subtitle: A comrade of the [+ lw_ab1_fname +]. [? if comintern_member = 1 : Moscow gets to know the German party, and the German party's voice there grows. ?][? if comintern_member = 0 : The left abroad hears our case. ?] The [+ lw_ab1_fname +] lose a leader at home for a while.
+subtitle: Of the [+ lw_ab1_fname +]. Gone for half a year. [? if comintern_member = 1 : The Executive gets to know us. ?]
 view-if: lw_ab1_has = 1
 on-arrival: {!
 RG.lw.sendAbroad(Q.lw_ab1, RG.lw.rnd(4, 6), Q.lw_where);
@@ -40,7 +40,7 @@ Q.unity += 1;
 [+ lw_ab1_name +] leaves on the night train for [+ lw_where +], with a briefcase of reports and a list of people to see.
 
 @second
-subtitle: A comrade of the [+ lw_ab2_fname +]. The movement abroad gains a German organiser, and the party's quarrels lose a voice.
+subtitle: Of the [+ lw_ab2_fname +]. Gone for some months, and the quarrels at home lose a voice.
 view-if: lw_ab2_has = 1
 on-arrival: {!
 RG.lw.sendAbroad(Q.lw_ab2, RG.lw.rnd(3, 5), Q.lw_where2);
@@ -50,10 +50,10 @@ RG.lw.lean(c.faction, 0, -3);
 Q.unity += 2;
 !}
 
-[+ lw_ab2_name +] goes to [+ lw_where2 +] with a forged passport and a box of German pamphlets to be translated, and writes back every week about comrades who argue even more than ours.
+[+ lw_ab2_name +] goes to [+ lw_where2 +] with a forged passport and a box of German pamphlets to be translated.
 
 @third
-subtitle: A comrade of the [+ lw_ab3_fname +]. A short trip: some goodwill abroad, a short absence at home.
+subtitle: Of the [+ lw_ab3_fname +]. Back in two months.
 view-if: lw_ab3_has = 1
 on-arrival: {!
 RG.lw.sendAbroad(Q.lw_ab3, 2, Q.lw_where2);
@@ -61,4 +61,4 @@ Q.world_revolution += 1;
 Q.unity += 1;
 !}
 
-[+ lw_ab3_name +] spends a fortnight in [+ lw_where2 +], speaks at four meetings through an interpreter, and comes home with a cold and some new ideas.
+[+ lw_ab3_name +] speaks at four meetings in [+ lw_where2 +] through an interpreter.
