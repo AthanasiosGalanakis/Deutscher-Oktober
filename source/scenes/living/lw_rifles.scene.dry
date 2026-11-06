@@ -1,0 +1,93 @@
+title: Rifles in the Allotment
+subtitle: A red guard unit is caught with arms.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('rifles'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('rifles');
+Q.lw_n = RG.lw.rnd(6, 19);
+Q.red_guards_arms -= 2;
+RG.district(Q.lw_d, {guards: -0.3, repression: 3});
+RG.news('Arms cache found in ' + Q.lw_town + ': ' + Q.lw_n + ' workers held', 2);
+!}
+
+= Rifles in the Allotment
+
+A police patrol in **[+ lw_town +]** stopped a handcart on a Sunday morning. Under the cabbages were forty rifles, wrapped in oilcloth, and two boxes of ammunition stamped with the eagle of the old army. By the evening the police had dug up the allotment shed behind it and arrested [+ lw_n +] men of the district's red guard.
+
+The nationalist papers have the photographs on their front pages: the rifles laid out in rows, and the men in their caps, looking at the floor. [? if lw_d_ours = 0 : The guard's commanders follow the [+ lw_d_fname +], and did not ask Berlin before they started collecting arms. ?]
+
+The men's wives have come to the district office to ask what the party will do.
+
+- @disown: Disown them as provocateurs.
+- @defend: Defend them in court as defenders of the Republic.
+- @hide: Move the rest of the arms before the police find them.
+- @free: Get the men out of the police station tonight.
+
+@disown
+subtitle: The police lose interest, and the social democrats approve. The red guards will not forgive it.
+on-arrival: {!
+RG.district(Q.lw_d, {repression: -6, loyalty: -4});
+Q.red_guards_loyalty -= 8;
+Q.spd_relation += 3;
+RG.lw.lean('unionist', 1, 2);
+RG.lw.lean('offensive', -1, -5);
+!}
+
+The Zentrale's statement says the party has nothing to do with private arsenals. The men get two years each. In the guard, they say the party has a short memory for the people who were ready to fight for it.
+
+@defend
+subtitle: Costs 1 fund. A trial about the Republic's armed enemies, not ours. The Spartacists' argument.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds.
+on-arrival: {!
+Q.resources -= 1;
+Q.worker_support += 2;
+RG.district(Q.lw_d, {repression: -3, loyalty: 4});
+Q.red_guards_loyalty += 4;
+if (Math.random() < 0.4) { Q.lw_out = 1; }
+RG.lw.lean('luxemburgist', 1, 4);
+!}
+
+Our lawyer asks the court why workers may not keep the rifles that the Freikorps and the citizens' militias keep by the thousand. [? if lw_out = 1 : The jury acquits. In [+ lw_town +], the men are carried home on shoulders. ?][? if lw_out = 0 : The men are convicted anyway, but the question is in every paper, and the sentences are short. ?]
+
+@hide
+subtitle: The guard keeps most of its weapons. The police will search harder. The Left's answer.
+on-arrival: {!
+Q.red_guards_arms += 3;
+Q.red_guards_loyalty += 3;
+RG.district(Q.lw_d, {repression: 5});
+RG.lw.lean('offensive', 1, 4);
+RG.lw.lean('unionist', 0, -2);
+!}
+
+That night, other handcarts move through [+ lw_town +], under other cabbages. By the time the police come back with a list of addresses, the floorboards are nailed down again and the rifles are in a churchyard vault.
+
+@free
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] A raid on the police station. The guard's honour is saved, and the state will answer with force.
+choose-if: lock_uprising < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed action.
+on-arrival: {!
+RG.lw.against('uprising');
+if (Math.random() < 0.55) {
+    Q.lw_out = 1;
+    Q.red_guards_loyalty += 10;
+    RG.district(Q.lw_d, {militancy: 6, repression: 10});
+    RG.news('Armed workers storm the police station in ' + Q.lw_town, 2);
+} else {
+    Q.lw_out = 2;
+    RG.district(Q.lw_d, {militancy: 3, repression: 14, guards: -0.4, members: -0.03});
+    RG.news('Shooting at the police station in ' + Q.lw_town + ': attack beaten off', 2);
+}
+Q.stability -= 2;
+if (Q.ultraleft_gone) { RG.lw.lean('offensive', 2, 5); } else { RG.lw.lean('ultraleft', 2, 5); RG.lw.lean('offensive', 1, 2); }
+RG.lw.lean('unionist', -1, -5);
+!}
+
+[? if lw_out = 1 : Thirty men with pistols walk into the police station at midnight and walk out with their comrades. The prisoners are hidden in a mining village by dawn. ?][? if lw_out = 2 : The police were waiting. After ten minutes of shooting, the guard falls back, carrying two wounded. The next day the security police arrive by train. ?]

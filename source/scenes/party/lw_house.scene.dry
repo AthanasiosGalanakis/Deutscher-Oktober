@@ -1,0 +1,64 @@
+title: A House for the Party
+new-page: true
+view-if: crisis = 0 and congress = 0 and lw_house_timer <= 0 and time >= 4
+on-arrival: {!
+Q.lw_house_timer = 8;
+Q.month_actions += 1;
+Q.lw_house_played = (Q.lw_house_played || 0) + 1;
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.card();
+// the biggest district that still meets in back rooms
+RG.lw.setD(RG.lw.best(function (d) { return true; }, function (d) { return RG.lw.dv(d, 'members') + Math.random() * 1.5; }));
+!}
+frequency: 150
+is-card: true
+tags: party_affairs
+
+= A House for the Party
+
+The party in **[+ lw_d_name +]** has [+ lw_d_members +] thousand members and no home. The district committee meets in the back room of a pub in [+ lw_town +], whose landlord is a social democrat and listens at the door. The paper is edited in a kitchen; the files are in a laundry basket.
+
+Now a building has come on the market: a former brewery hall by the railway, with a big room for meetings, offices upstairs and a cellar nobody needs to know about.
+
+- @buy: Buy the hall.
+- @share: Share the trade union house.
+- @occupy: Occupy an empty building in the name of the workers.
+- @easy_discard
+
+@buy
+subtitle: Costs 2 funds. A home of its own: the district grows and holds together. The Spartacists approve.
+choose-if: resources >= 2
+unavailable-subtitle: We do not have the funds.
+on-arrival: {!
+Q.resources -= 2;
+RG.district(Q.lw_d, {members: 0.06, loyalty: 8});
+Q.unity += 1;
+RG.news('Communists open a party house in ' + Q.lw_town);
+RG.lw.lean('luxemburgist', 1, 3);
+!}
+
+The hall gets a red flag on the roof, a library in the gallery and a canteen where a meal costs half what it costs in town. On Saturday nights there are dances, and on Sunday mornings there are classes.
+
+@share
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Rooms in the union house, among the reformists. Cheap, and close to the workers. The Right's choice.
+choose-if: lock_union_work < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids working inside the reformist unions.
+on-arrival: {!
+RG.lw.against('union_work');
+RG.district(Q.lw_d, {members: 0.03, loyalty: 3});
+Q.worker_support += 2;
+Q.spd_relation += 1;
+RG.lw.lean('unionist', 1, 3);
+!}
+
+The party rents three rooms on the second floor of the trade union house. Our people meet the union officials on the stairs every day, and the workers who come for their strike pay walk past our door.
+
+@occupy
+subtitle: A bold gesture. The district is fired up, and the police will come for the building sooner or later. The Left's way.
+on-arrival: {!
+RG.district(Q.lw_d, {members: 0.03, militancy: 4, repression: 6});
+RG.news('Communists occupy an empty building in ' + Q.lw_town);
+RG.lw.lean('offensive', 1, 4);
+!}
+
+One night the comrades of [+ lw_town +] break the seals on an empty barracks of the old army and move in with a duplicating machine and a banner: "Requisitioned for the working class". It lasts until the police find enough men to clear it, and the district talks about it for years.

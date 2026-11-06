@@ -1,0 +1,49 @@
+title: Living world setup
+view-if: lw_init_done = 0
+tags: event
+priority: 100
+max-visits: 1
+on-arrival: {!
+Q.lw_init_done = 1;
+var rnd = function (lo, hi) { return lo + Math.floor(Math.random() * (hi - lo + 1)); };
+// the gate: no living-world event before April 1919
+if (Q.lw_next === undefined) { Q.lw_next = 4; }
+var start = {
+    lw_pick_time: -1, lw_due: 0, lw_count: 0, lw_out: 0, lw_lead: 1, lw_abroad_count: 0,
+    lw_d: 0, lw_d_name: 0, lw_town: 0, lw_works: 0, lw_pit: 0, lw_paper: 0, lw_land: 0, lw_d_trade: 0,
+    lw_d_faction: 0, lw_d_fname: 0, lw_d_fcode: 0, lw_d_ours: 0, lw_d_mil: 0, lw_d_rep: 0, lw_d_loyal: 0,
+    lw_d_strike: 0, lw_d_strike_months: 0, lw_d_guards: '0', lw_d_members: '0', lw_d_bavaria: 0, lw_nb: 0, lw_nb_name: 0,
+    lw_where: 0, lw_where2: 0, lw_ecci: 0, lw_ecci_name: 0, lw_rival: 0, lw_rival_name: 0, lw_rival_code: 0,
+    lw_patron: 0, lw_patron_name: 0, lw_name: 0, lw_name_cap: 0, lw_pit_town: 0, lw_paper_cap: 0, lw_amount: 0, lw_dead: 0, lw_n: 0, lw_months: 0, lw_ret_gone: 0, lw_ret_moscow: 0, lw_ret_turned: 0, lw_ret_new: 0
+};
+var slots = ['dc', 'cm', 'cm2', 'ab1', 'ab2', 'ab3'];
+for (var s of slots) {
+    var p = 'lw_' + s;
+    start[p] = 0; start[p + '_name'] = 0; start[p + '_role'] = 0; start[p + '_fname'] = 0;
+    start[p + '_fcode'] = 0; start[p + '_star'] = 0; start[p + '_dname'] = 0; start[p + '_ours'] = 0; start[p + '_has'] = 0;
+}
+for (var k in start) {
+    if (Q[k] === undefined) { Q[k] = start[k]; }
+}
+if (!Q.lw_fired || typeof Q.lw_fired !== 'object') { Q.lw_fired = {}; }
+if (!Q.lw_abroad || typeof Q.lw_abroad !== 'object') { Q.lw_abroad = {}; }
+// each event starts on its own cooldown, so the first year does not get them all at once
+var ev = ['strike_fund', 'rogue_leader', 'raid', 'rifles', 'defy_vote', 'council_election', 'mine_disaster',
+    'lockout', 'hunger_riot', 'paper_banned', 'recruits', 'informer', 'shooting', 'red_town',
+    'c_arrest', 'c_trial', 'c_hunger', 'c_jailbreak', 'c_amnesty', 'c_quarrel', 'c_defection', 'c_assassin', 'c_return',
+    'm_zinoviev', 'm_radek', 'm_bukharin', 'm_trotsky', 'm_lenin', 'm_suitcase', 'm_envoy', 'm_patron'];
+for (var e of ev) {
+    if (Q['lw_' + e + '_next'] === undefined) {
+        Q['lw_' + e + '_next'] = (e == 'c_return') ? 0 : rnd(3, 14);
+    }
+}
+// the living-world cards: post_event decrements every name in Q.timers each month
+var timers = ['lw_house', 'lw_campaign', 'lw_cells', 'lw_safehouse', 'lw_ministry', 'lw_couriers', 'lw_mission', 'lw_court'];
+if (Array.isArray(Q.timers)) {
+    for (var t of timers) {
+        if (Q.timers.indexOf(t) < 0) { Q.timers.push(t); }
+        if (Q[t + '_timer'] === undefined) { Q[t + '_timer'] = rnd(1, 4); }
+    }
+}
+!}
+go-to: post_event

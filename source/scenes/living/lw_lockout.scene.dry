@@ -1,0 +1,87 @@
+title: The Gates Are Locked
+subtitle: Employers lock out their workers.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('lockout'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('lockout');
+Q.lw_n = RG.lw.rnd(4, 22);
+RG.news('Lockout at ' + Q.lw_works.replace(/^the /, '') + ': ' + Q.lw_n + ',000 shut out', 2);
+!}
+
+= The Gates Are Locked
+
+On Monday morning, the workers of **[+ lw_works +]** found the gates chained and a notice on them: the works are closed until further notice, and will reopen for those who sign a new contract, with longer hours and without the works council. [+ lw_n +] thousand men and women stand in the street in [+ lw_town +].
+
+The employers' association in [+ lw_d_name +] has planned this for months. They want to break the district before it strikes on its own terms. [? if year >= 1922 : With the mark falling every week, a lockout of a month is a famine for the families. ?]
+
+- @occupy: Climb the gates and occupy the works.
+- @kitchens: Open soup kitchens and hold out.
+- @arbitrate: Take it to the state arbitrator.
+- @strike: Call the whole district out.
+
+@occupy
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The works in the workers' hands, for as long as they can hold them. The state will not wait long.
+choose-if: lock_councils < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids occupations.
+on-arrival: {!
+RG.lw.against('councils');
+if (Math.random() < 0.4 + Q.lw_d_mil / 250) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {militancy: 7, repression: 7, members: 0.05, loyalty: 4});
+    Q.worker_support += 2;
+    RG.news('Workers occupy ' + Q.lw_works.replace(/^the /, ''), 2);
+} else {
+    Q.lw_out = 2;
+    RG.district(Q.lw_d, {militancy: 3, repression: 10, members: -0.04});
+    RG.news('Security police clear the occupied works in ' + Q.lw_town, 2);
+}
+if (Q.ultraleft_gone) { RG.lw.lean('offensive', 2, 5); } else { RG.lw.lean('ultraleft', 1, 4); RG.lw.lean('offensive', 1, 3); }
+!}
+
+[? if lw_out = 1 : The workers climb the gates at dawn and run up the red flag over the boiler house. The works council takes the keys. After nine days the employers reopen on the old contract, and the occupiers march out singing. ?][? if lw_out = 2 : The works are occupied for three days. On the fourth, the security police come in armoured cars, and the occupiers leave with their hands on their heads. ?]
+
+@kitchens
+subtitle: Costs 1 fund. The families eat, and the workforce holds together. The Spartacist way.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds.
+on-arrival: {!
+Q.resources -= 1;
+RG.district(Q.lw_d, {loyalty: 7, members: 0.04});
+Q.worker_support += 2;
+if (Math.random() < 0.5) { Q.lw_out = 1; }
+RG.lw.lean('luxemburgist', 1, 4);
+!}
+
+The soup kitchens open in the union hall and two church halls, with peas from the farmers' cooperative and bread from a sympathetic baker. [? if lw_out = 1 : After five weeks, the employers' association loses its nerve and reopens on the old terms. ?][? if lw_out = 0 : After six weeks, the workers go back on a compromise. Nobody signs the new contract, and nobody forgets who fed them. ?]
+
+@arbitrate
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] A quick compromise, and calmer streets. The Left will call it surrender.
+choose-if: lock_union_work < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids working through the reformist unions.
+on-arrival: {!
+RG.lw.against('union_work');
+RG.district(Q.lw_d, {militancy: -5});
+Q.worker_support += 1;
+Q.spd_relation += 2;
+RG.lw.lean('unionist', 2, 5);
+RG.lw.lean('offensive', 0, -3);
+!}
+
+The arbitrator splits the difference: an hour more a week, and the works council stays. The gates open after twelve days. It is not a defeat, and it does not feel like a victory.
+
+@strike
+subtitle: The lockout becomes a strike of the whole district. The fight grows, and so does the risk.
+on-arrival: {!
+RG.startStrike(Q.lw_d);
+RG.district(Q.lw_d, {militancy: 4, repression: 4});
+RG.lw.lean('offensive', 1, 4);
+!}
+
+If the bosses can shut one works, the district can shut them all. By Thursday, [+ lw_d_trade +] are out in solidarity, and the lockout is the smallest part of it.

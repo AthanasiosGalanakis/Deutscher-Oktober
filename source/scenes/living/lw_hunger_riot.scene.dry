@@ -1,0 +1,84 @@
+title: Hunger Riots
+subtitle: Women storm the markets as the mark falls.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('hunger_riot'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('hunger_riot');
+RG.district(Q.lw_d, {militancy: 4});
+RG.news('Hunger riots in ' + Q.lw_town + ': shops plundered', 2);
+!}
+
+= Hunger Riots
+
+In **[+ lw_town +]**, on market day, the price of potatoes doubled between the morning and the afternoon. [? if bread_price : A loaf costs [+ bread_price +]. ?] By two o'clock the women of the workers' streets had overturned the stalls, and by four they were in the shops, taking butter, lard and shoes. A grocer fired a pistol into the air. The police came late, and on horseback.
+
+Our women's group was in the crowd, like everyone else. Now the district committee in [+ lw_d_name +] asks what the party wants: lead it, stop it, or use it.
+
+- @control: Form control committees to fix fair prices.
+- @warehouses: Lead the crowds to the hoarders' warehouses.
+- @condemn: Condemn the looting, and demand bread from the state.
+- @arm: Arm the unemployed squads to defend the crowds.
+
+@control
+subtitle: The anger gets an organisation. Shopkeepers sell at the committee's price, or explain why not. The Right's idea, and the Spartacists like it.
+on-arrival: {!
+Q.worker_support += 3;
+RG.district(Q.lw_d, {members: 0.04, loyalty: 4, repression: 2});
+RG.news('Price control committees set up in ' + Q.lw_town);
+RG.lw.lean('unionist', 1, 4);
+RG.lw.lean('luxemburgist', 1, 2);
+!}
+
+The next morning, committees of housewives, works councillors and unemployed men go from shop to shop with a price list. Most shopkeepers sell at it. Two who refuse find their windows painted with the word "profiteer".
+
+@warehouses
+subtitle: The hoarded food goes to the workers' streets. So do the police. The Left's answer.
+view-if: offensive_gone = 0
+on-arrival: {!
+RG.district(Q.lw_d, {militancy: 7, repression: 8, members: 0.03});
+Q.worker_support += 1;
+Q.stability -= 2;
+if (Math.random() < 0.4) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {members: -0.02});
+    RG.news('Police fire on crowds at food warehouses in ' + Q.lw_town, 2);
+}
+RG.lw.lean('offensive', 2, 5);
+RG.lw.lean('unionist', -1, -3);
+!}
+
+Our people lead the crowd to the cold store by the railway, where the wholesalers keep what they will sell next month at next month's price. The doors give way. [? if lw_out = 1 : The police open fire on the loading ramp. Three women are killed. ?][? if lw_out = 0 : By midnight the sides of bacon have been shared out street by street. ?]
+
+@condemn
+subtitle: Respectable and safe. The social democrats approve; the hungry do not.
+on-arrival: {!
+Q.worker_support -= 2;
+Q.spd_relation += 3;
+RG.district(Q.lw_d, {repression: -3, loyalty: -3});
+RG.lw.lean('unionist', 1, 1);
+RG.lw.lean('offensive', -1, -4);
+!}
+
+The district committee's statement deplores the plundering of small shopkeepers and demands that the city council open its stores. The women of [+ lw_town +] read it, and some of them tear up their party cards.
+
+@arm
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Squads of the unemployed with clubs and pistols. A step towards civil war.
+choose-if: lock_uprising < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids arming the crowds.
+on-arrival: {!
+RG.lw.against('uprising');
+RG.district(Q.lw_d, {guards: 0.5, militancy: 6, repression: 10});
+Q.stability -= 2;
+RG.news('Armed unemployed squads in the streets of ' + Q.lw_town, 2);
+if (Q.ultraleft_gone) { RG.lw.lean('offensive', 2, 4); } else { RG.lw.lean('ultraleft', 1, 3); RG.lw.lean('offensive', 1, 3); }
+RG.lw.lean('unionist', -1, -4);
+!}
+
+By the weekend, men of the unemployed committees walk beside the crowds with clubs under their coats, and some with pistols. The police no longer ride into the workers' streets. They wait at the end of them, with machine guns.

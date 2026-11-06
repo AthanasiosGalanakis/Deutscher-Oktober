@@ -1,0 +1,82 @@
+title: Shots in the Square
+subtitle: The police fire on a demonstration.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('shooting'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('shooting');
+Q.lw_dead = RG.lw.rnd(3, 14);
+RG.district(Q.lw_d, {militancy: 6, members: -0.01});
+RG.news('Police fire on demonstrators in ' + Q.lw_town + ': ' + Q.lw_dead + ' dead', 3);
+RG.ledger('The police killed ' + Q.lw_dead + ' demonstrators in ' + Q.lw_town + '.', 'lw_shoot_' + Q.lw_d);
+!}
+
+= Shots in the Square
+
+The demonstration in **[+ lw_town +]** was against the price of bread and the arrest of three works councillors. Ten thousand marched to the town hall. Someone threw a stone, or a bottle, or nothing at all: the witnesses do not agree. The security police on the steps opened fire with rifles, and then with a machine gun.
+
+[+ lw_dead +] are dead, among them a girl of fifteen and a man who had come out to see what the noise was. Dozens are wounded in the hospital, under police guard.
+
+The town is silent tonight. Tomorrow it will want an answer, and so will [+ lw_d_name +].
+
+- @strike: Call a general strike in the district.
+- @funeral: Bury the dead together with all the workers' parties.
+- @inquiry: Demand a public inquiry and the trial of the officers.
+- @defence: Form armed defence squads for the next demonstration.
+
+@strike
+subtitle: The district stops for its dead. The state will see what the workers can do, and answer.
+on-arrival: {!
+RG.startStrike(Q.lw_d);
+RG.district(Q.lw_d, {militancy: 4, repression: 4, loyalty: 4});
+RG.lw.lean('offensive', 2, 5);
+!}
+
+By ten in the morning, nothing moves in [+ lw_d_name +]: no trams, no works, no pits. The strike committee meets in the town hall square, where the blood has not been washed off.
+
+@funeral
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A common grief, and a common front. The Right's line, and many workers' wish.
+choose-if: lock_united_front < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids any joint action with the social democrats.
+on-arrival: {!
+RG.lw.against('united_front');
+Q.spd_relation += 5;
+Q.uspd_relation += 4;
+Q.worker_support += 3;
+RG.district(Q.lw_d, {repression: -3});
+RG.lw.lean('unionist', 2, 5);
+RG.lw.lean('offensive', 0, -3);
+!}
+
+The coffins are carried through [+ lw_town +] under the flags of three parties and every union. Fifty thousand walk behind them. At the graveside, a social democrat and a communist speak from the same cart.
+
+@inquiry
+subtitle: The Republic is put on trial for its police. Worker support grows. The Spartacist line.
+on-arrival: {!
+Q.worker_support += 2;
+Q.stability -= 1;
+RG.district(Q.lw_d, {repression: -4, loyalty: 3});
+RG.lw.lean('luxemburgist', 2, 4);
+!}
+
+Our lawyers collect a hundred statements from witnesses and print them as a pamphlet. The inquiry, when it comes, finds that the police acted in self-defence. The pamphlet sells forty thousand copies.
+
+@defence
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Next time, the workers will shoot back. The red guard grows, and so does the danger.
+choose-if: lock_uprising < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed squads.
+on-arrival: {!
+RG.lw.against('uprising');
+RG.district(Q.lw_d, {guards: 0.6, militancy: 4, repression: 6});
+Q.red_guards_loyalty += 3;
+RG.lw.lean('offensive', 2, 5);
+RG.lw.lean('unionist', -1, -4);
+!}
+
+The young men who carried the wounded from the square come to the district office the next day, asking for rifles. The district finds some. The next demonstration in [+ lw_town +] marches with a guard on both flanks.

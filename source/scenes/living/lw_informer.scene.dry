@@ -1,0 +1,84 @@
+title: The Informer
+subtitle: A police spy in a district committee.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('informer'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('informer');
+Q.lw_name = RG.pick(['the district treasurer', 'the chairman of the youth group', 'the comrade who runs the duplicating machine', 'a member of the district committee', 'the head of the district\'s red guard']);
+!}
+
+= The Informer
+
+For months, the police in **[+ lw_d_name +]** have known too much: the date of every meeting, the names of the speakers, where the leaflets were printed. Now a comrade who works as a cleaner at police headquarters in [+ lw_town +] has seen a receipt for forty marks a month, signed by [+ lw_name +].
+
+He has been in the party since 1918. He carried the banner at the funerals. He has a wife and three children in a flat by the gasworks, and he does not yet know that we know.
+
+- @expose: Expose him publicly.
+- @feed: Leave him in place and feed him false information.
+- @expel: Expel him quietly.
+- @guards: Hand him over to the red guard.
+
+@expose
+subtitle: The district learns a hard lesson in the open. The police lose their eyes. The Spartacist way.
+on-arrival: {!
+RG.district(Q.lw_d, {repression: -5, loyalty: 3});
+Q.worker_support += 1;
+RG.news('Police informer unmasked in the ' + Q.lw_d_name + ' party');
+RG.lw.lean('luxemburgist', 1, 3);
+!}
+
+His photograph and the receipt are on the front page of [+ lw_paper +], with the headline "Forty marks a month". He leaves the city within a week. The police find another informer within a month, but it takes them longer.
+
+@feed
+subtitle: The police chase shadows for a while. A dangerous game, and the Zentrale's apparatus likes it.
+on-arrival: {!
+if (Math.random() < 0.7) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {repression: -10});
+} else {
+    Q.lw_out = 2;
+    RG.district(Q.lw_d, {repression: 4});
+}
+RG.lw.lean('offensive', 1, 3);
+!}
+
+[? if lw_out = 1 : For three months the police raid empty cellars, arrest the wrong printers and stake out meetings that never take place. Then they stop believing him. ?][? if lw_out = 2 : He notices that he is being told different things from everyone else, and goes straight to his handler. The next raid is a big one. ?]
+
+@expel
+subtitle: No scandal, no drama. The district is shaken, and some wonder what else nobody told them.
+on-arrival: {!
+RG.district(Q.lw_d, {repression: -4, loyalty: -2});
+Q.unity += 1;
+RG.lw.lean('unionist', 1, 2);
+!}
+
+He is expelled at a short meeting, for "conduct unworthy of a party member", and the minutes say nothing more. The rumours say a great deal more.
+
+@guards
+subtitle: The red guard has its own way with traitors. If it goes too far, the party will pay for it in court.
+view-if: offensive_gone = 0 or ultraleft_gone = 0
+on-arrival: {!
+Q.red_guards_loyalty += 4;
+if (Math.random() < 0.35) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {repression: 12, members: -0.03});
+    Q.stability -= 1;
+    Q.worker_support -= 2;
+    RG.news('Body of a police informer found in the canal at ' + Q.lw_town, 2);
+} else {
+    Q.lw_out = 2;
+    RG.district(Q.lw_d, {repression: -6});
+}
+if (Q.ultraleft_gone) { RG.lw.lean('offensive', 1, 3); } else { RG.lw.lean('ultraleft', 1, 3); }
+RG.lw.lean('unionist', -1, -3);
+RG.lw.lean('luxemburgist', -1, -3);
+!}
+
+[? if lw_out = 1 : He is found in the canal a week later. The police arrest six men of the guard, and the nationalist press writes about the Cheka in [+ lw_town +]. ?][? if lw_out = 2 : The guard gives him a beating in a garden shed and a ticket for the night train. He takes it. Nobody in the district ever informs again, as far as anyone knows. ?]
