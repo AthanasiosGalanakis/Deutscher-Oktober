@@ -1,5 +1,5 @@
 title: The Directory
-subtitle: Seeckt takes the power he was given.
+subtitle: Seeckt keeps the emergency powers he was given.
 new-page: true
 tags: event
 view-if: year = 1923 and month = 12 and german_october = 2 and e23_oct_result >= 3 and e23_seeckt_ambition = 1 and e23_directory = 0 and stability < 8 and army_loyalty >= 50 and crisis = 0
@@ -12,36 +12,38 @@ Q.e23_directory = 1;
 Q.kpd_banned = 1;
 Q.chancellor = 'Hans von Seeckt';
 Q.government_name = 'Directory (Seeckt, with Kahr and the industrialists)';
-for (var p of Q.parties) { Q[p + '_in_government'] = 0; }
+Q.parties.forEach(function (p) { Q[p + '_in_government'] = 0; });
 !}
 
 = The Directory
 
-The beaten rising, the putsch in Munich and the ruined currency have done what the Kapp putsch could not. In December the Reichstag is adjourned without a date. General von Seeckt announces a Directory of national men: himself, the industrialist Otto Wiedfeldt, Kahr from Bavaria, a banker, a judge. The President signs, because the army has told him he will.
+In the second week of December the Reichstag is adjourned without a date. Seeckt announces a Directory: himself, the Krupp director Otto Wiedfeldt, Kahr from Munich, a banker and a judge of the Reich Court. Ebert signs the decree after the army tells him what will happen if he does not.
 
-The Directory dissolves the state governments of Saxony and Thuringia for good, places the unions under supervision, and makes membership of the Communist Party a crime punishable by prison. The SPD protests and is banned in Saxony a week later. The Republic of Weimar ends without a shot.
+The Directory dissolves the Saxon and Thuringian Landtags, puts the unions under a state commissioner, and makes membership of our party punishable by five years in prison. The SPD protests in the press. A week later it is banned in Saxony too.
 
-- @underground: Go underground and prepare for a long night.
-- @exile: Send the leadership abroad, and keep the party alive from Prague and Moscow.
+- @underground: Stay in Germany and go underground.
+- @exile: Send the leadership to Prague.
 
 @underground
-subtitle: The party survives as a conspiracy.
+subtitle: The party becomes a conspiracy for as long as the Directory lasts.
 on-arrival: {!
 Q.ending_id = 3;
+Q.e23_dir_choice = 1;
 !}
 
-The Zentrale disappears into safe flats and allotment huts. It will be years before it holds a meeting in daylight again.
+The Zentrale moves into safe flats and allotment huts. It will meet in daylight again only when the generals have gone.
 
 - @end: See how it ends.
 
 @exile
-subtitle: The leaders live; the party at home is on its own.
+subtitle: The leaders stay alive. The cells at home are on their own.
 on-arrival: {!
 Q.ending_id = 3;
+Q.e23_dir_choice = 2;
 Q.independence -= 10;
 !}
 
-The leaders cross into Czechoslovakia by night through the forests of the Erzgebirge. In Germany, the cells carry on without them.
+The leaders cross into Czechoslovakia at night through the woods of the Erzgebirge. The cells in Germany keep on without them.
 
 - @end: See how it ends.
 

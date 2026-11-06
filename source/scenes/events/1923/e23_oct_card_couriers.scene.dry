@@ -1,0 +1,53 @@
+title: The Couriers
+subtitle: When the signal goes out, who will carry it?
+view-if: crisis_october = 1 and e23_rising_phase = 0
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.octTick(Q.crisis_time + 1);
+!}
+frequency: 100
+is-card: true
+new-page: true
+tags: crisis
+
+= The Couriers
+
+The telephones are tapped and the telegraph offices are watched. The signal for the rising, or the order to stand down, will travel by motorcycle and by train, in the heads of a few dozen young comrades. Hamburg is a night's journey from Chemnitz.
+
+- @chain: Set up a chain to every district, with relief riders.
+- @hamburg: Give Hamburg orders to rise at the first word.
+- @leave: Leave it to the district leaders.
+
+@chain
+subtitle: Costs 1 fund. Whatever the Zentrale decides will reach every district in time.
+view-if: e23_oct_couriers != 1
+choose-if: resources >= 1
+unavailable-subtitle: We have no money for the motorcycles.
+on-arrival: {!
+Q.resources -= 1;
+Q.e23_oct_couriers = 1;
+RG.e22.octLines();
+!}
+
+Forty motorcycles are bought in Leipzig under the name of a sports club. Each district gets two riders and a password.
+
+@hamburg
+subtitle: Hamburg will rise with the rest of us. If the rising is called off, it may rise alone.
+view-if: e23_oct_couriers != 2
+on-arrival: {!
+Q.e23_oct_couriers = 2;
+RG.district('hamburg', {militancy: 5});
+RG.e22.octLines();
+!}
+
+The Hamburg district is told to strike at the first courier, without waiting for a second.
+
+@leave
+subtitle: Nothing is spent.
+on-arrival: {!
+Q.e23_oct_couriers = 0;
+RG.e22.octLines();
+!}
+
+The district leaders are told to keep in touch with the Zentrale by whatever means they have.

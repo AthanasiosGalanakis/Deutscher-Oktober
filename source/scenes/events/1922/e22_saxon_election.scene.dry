@@ -10,96 +10,68 @@ var r = RG.election('saxony', {
     base: {spd: 40, kpd: 10, dnvp: 19, dvp: 19, ddp: 8},
     size: 96,
     kpdShare: 10.5,
-    bonus: (Q.e22_reunification == 1 ? 1 : 0) + (Q.e22_inflation_line == 1 ? 0.5 : 0)
+    bonus: (Q.e22_reunification == 1 ? 1 : 0) + (Q.e22_inflation_line == 1 ? 1 : 0)
 });
 Q.e22_sax_spd = r.seats.spd || 0;
-Q.e22_sax_right = (r.seats.dnvp || 0) + (r.seats.dvp || 0) + (r.seats.ddp || 0);
 Q.e22_sax_majority = Q.landtag_saxony_left_majority;
 Q.e22_sax_stood = Q.election_kpd_share > 0 ? 1 : 0;
 Q.e22_sax_gain = Q.election_kpd_seats - 10;
 if (Q.e22_sax_stood) {
     Q.district_saxony_members *= 1 + Math.max(0, Q.election_kpd_share - 6) / 100;
 }
-if (Q.e22_sax_majority) {
-    RG.news('Saxony: the workers\' parties win a majority in the Landtag', 3);
-} else {
-    RG.news('Saxony: no majority for the workers\' parties', 3);
-}
+RG.news(Q.e22_sax_majority ? 'Saxony: a majority for the workers\' parties' : 'Saxony: no majority for the workers\' parties', 3);
 !}
 
 = The Saxon Election
 
-On 5 November Saxony elects a new Landtag. [? if e22_sax_stood = 1 : The party wins [+ election_kpd_share_display +] per cent of the vote and [+ election_kpd_seats +] seats. ?][? if e22_sax_stood = 0 : The party stands no candidates, on principle. ?] The SPD wins [+ e22_sax_spd +], and the bourgeois parties [+ e22_sax_right +] between them. [? if e22_sax_majority = 1 : Together the two workers' parties hold [+ election_left_seats +] of the ninety-six seats. In Saxony, at least, the bourgeois parties can be outvoted. ?][? if e22_sax_majority = 0 : The workers' parties hold [+ election_left_seats +] of the ninety-six seats, short of a majority. The Saxon SPD can govern only with the Democrats, or with our votes and theirs. ?]
+On 5 November Saxony votes. [? if e22_sax_stood = 1 : The party wins [+ election_kpd_share_display +] per cent and [+ election_kpd_seats +] seats, ?][? if e22_sax_stood = 0 : The party stands no candidates, ?] and the SPD [+ e22_sax_spd +]. [? if e22_sax_majority = 1 : Together the two workers' parties have a majority of the ninety-six seats. ?][? if e22_sax_majority = 0 : The workers' parties are short of a majority. ?] [? if e22_sax_gain >= 3 : It is the party's best result anywhere in Germany. ?]
 
-[? if e22_sax_gain >= 3 : It is the party's best result anywhere in Germany, and the Chemnitz district secretaries are photographed for the first time in their lives. ?][? if e22_sax_gain <= -3 : It is a disappointment: the hungry winter has not come to our lists. ?]
+The Saxon SPD is the most left-wing in the country, and many of its members would rather govern with us than with the Democrats. Its leaders want our votes for a Social Democratic government, and ask our price.
 
-The Saxon SPD is the most left-wing in Germany. Its members sing the *Internationale* at their meetings and many of them would rather govern with us than with the Democrats. Its leaders want our votes for a Social Democratic government. They ask what our price is.
-
-[? if luxemburg_alive = 1 : Rosa Luxemburg writes that a workers' majority in one Land is a school, not a revolution, and that the party must not be afraid to sit its exams. ?]
-
-- @tolerate: Support an SPD government, on conditions: control committees, a workers' militia, a purge of the monarchist officials.
-- @ministers: Demand seats in the government: a real workers' government.
+- @tolerate: Support an SPD government, on conditions.
+- @ministers: Ask for seats in the government.
 - @refuse: No support for Social Democratic ministers.
 
 @tolerate
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's road. Saxony becomes our showcase, and our responsibility.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Control committees with legal standing, and an amnesty. Saxony becomes our showcase.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids supporting a Social Democratic government.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('united_front');
 Q.e22_saxon_toleration = 1;
-RG.ecci('radek', 3);
-RG.district('saxony', {militancy: 2});
-Q.spd_relation += 6;
-Q.worker_support += 3;
-Q.district_saxony_loyalty += 6;
-Q.unionist_satisfaction += 6;
-Q.offensive_satisfaction -= 5;
+RG.district('saxony', {loyalty: 6, militancy: 2});
+Q.spd_relation += 5;
 Q.lean_unionist += 2;
 !}
 
-The SPD accepts most of our conditions on paper. A Social Democratic minority government takes office in Dresden with our votes, and the control committees get a legal footing.
+The SPD accepts most of our conditions, on paper. A Social Democratic minority government takes office in Dresden with our votes.
 
 @ministers
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Only possible if the Saxon SPD trusts us. Bold, and Berlin will be alarmed.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Communist ministers a year early. Berlin will be alarmed.
 choose-if: lock_united_front < 2 and spd_relation >= 35 and e22_sax_majority = 1
-unavailable-subtitle: The SPD will not take communist ministers without a majority, or the line forbids it.
+unavailable-subtitle: The Saxon SPD will not take communist ministers without a majority and more trust.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('united_front');
 Q.e22_saxon_toleration = 3;
 Q.saxony_government = 1;
-RG.ledger('Communist ministers entered the Saxon government, a year early.', 'e22_sax_ministers');
+RG.ledger('Communist ministers entered the Saxon government in the autumn of 1922.', 'e22_sax_ministers');
 RG.news('Two communists join the Saxon cabinet', 2);
+RG.district('saxony', {loyalty: 8, repression: 5});
 RG.ecci('radek', 6);
-RG.ecci('zinoviev', -3);
-Q.spd_relation += 4;
-Q.worker_support += 4;
-Q.repression += 4;
-Q.district_saxony_loyalty += 8;
-Q.unionist_satisfaction += 6;
-Q.offensive_satisfaction -= 8;
 Q.lean_unionist += 3;
 !}
 
-After a month of talks, two communists take seats in the Saxon cabinet. It is the first time our party has held ministries anywhere in Germany. The Reichswehr commander in Dresden asks Berlin for instructions.
+After a month of talks two communists take seats in the Saxon cabinet, for labour and for food supply. The Reichswehr commander in Dresden asks Berlin for instructions.
 
 @refuse
-subtitle: The Left's answer. The SPD governs with the Democrats, and blames us.
+subtitle: The SPD governs with the Democrats and blames us.
 on-arrival: {!
 Q.e22_saxon_toleration = 2;
-RG.ecci('radek', -4);
-RG.ecci('zinoviev', 2);
+RG.district('saxony', {loyalty: -6});
 Q.spd_relation -= 6;
-Q.district_saxony_loyalty -= 5;
-Q.offensive_satisfaction += 6;
-Q.unionist_satisfaction -= 8;
 Q.lean_offensive += 2;
 !}
 
-Our deputies vote against every candidate for Minister-President. The Saxon SPD forms a minority government with the Democrats' tolerance, and its members ask our members what they are for.
+Our deputies vote against every candidate for Minister-President. The SPD forms a government with the Democrats, and its members ask ours what they are for.

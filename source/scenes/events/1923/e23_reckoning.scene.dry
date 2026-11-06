@@ -1,33 +1,33 @@
 title: The Reckoning
-subtitle: The Central Committee meets to decide who failed, and who leads.
+subtitle: The Central Committee meets to decide who failed in 1923, and who leads in 1924.
 new-page: true
 tags: event
 view-if: year = 1923 and month = 12 and e23_reckoning = 0 and crisis = 0 and congress = 0
 max-visits: 1
 priority: 2
 on-arrival: {!
-Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.leader();
 Q.e23_right_blamed = (Q.lead_code == 3 && (Q.german_october == 1 || Q.german_october == 2)) ? 1 : 0;
 Q.e23_rk_moscow_left = (Q.moscow_backs == 'offensive') ? 1 : 0;
 Q.e23_rk_three = (Q.unionist_gone == 0 && Q.offensive_gone == 0 && Q.luxemburgist_gone == 0) ? 1 : 0;
+Q.e23_rk_backing = 0;
 !}
 
 = The Reckoning
 
-The Central Committee meets [? if kpd_banned = 1 : in secret, in a flat in Berlin with lookouts on the stairs. ?][? if kpd_banned = 0 : in the Zentrale's offices, under police observation. ?] The agenda has one item: the lessons of 1923.
+[? if kpd_banned = 1 : The Central Committee meets in a flat in Lichtenberg with two comrades on the stairs and a third at the tram stop. ?][? if kpd_banned = 0 : The Central Committee meets in the Zentrale's offices on the Rosenthaler Strasse, with a police car parked opposite. ?] There is one item on the agenda, the lessons of 1923.
 
-[? if german_october = 1 : The rising was called off at Chemnitz, and Hamburg fought alone. The Left says the Zentrale lost its nerve and left Thälmann's men to die. The Right says the Zentrale saved the party from a massacre, and that the masses would not have followed. Moscow, which planned the October, says both. ?][? if german_october = 2 : The rising was fought and lost. The Left says it was betrayed by hesitation, the Right that it should never have been fought. In Moscow Zinoviev and Trotsky blame each other and agree on blaming the German leaders. ?][? if german_october = 0 and e23_october_done = 1 : The party never rose. Some say it missed the chance of a generation. Others say it is still alive because it did not try. ?][? if german_october = 0 and e23_october_done = 0 : Moscow's October never came to Germany. The party spent the year in strikes and committees, and the Left says that is all it will ever do. ?]
+[? if german_october = 1 : The rising was called off at Chemnitz and Hamburg fought alone. Fischer's people say the Zentrale lost its nerve and left Thälmann's men to be shot. Brandler's people say the retreat saved the party. ?][? if german_october = 2 : The rising was fought and lost. The Left says hesitation lost it. The Right says it should never have been called. ?][? if german_october = 3 : The councils hold Berlin, and the Central Committee is arguing about the next stage. Some of the delegates have come straight from the barricades. ?][? if german_october = 0 and e23_october_done = 1 : The party did not rise. Half the room thinks it missed the chance of a generation, and the other half thinks that is why there is still a party. ?][? if german_october = 0 and e23_october_done = 0 : There was no October in Germany. The party spent the year in strikes and committees, and the Left says that is all it will ever do. ?]
 
-[? if e23_right_blamed = 1 : Brandler and Thalheimer led the Zentrale through the October. Fewer and fewer districts stand by them. ?][? if e23_rk_moscow_left = 1 : The Executive has let it be known that it wants the Left to lead. ?][? if e23_quarrel = 2 : Our own delegates in Moscow voted to condemn the October's leaders, and the Central Committee knows it. ?][? if e23_quarrel = 1 : Our delegates in Moscow stood by Radek and the retreat, and some members of the Central Committee are grateful. ?] [? if e23_rk_three = 1 : Between the two camps a middle group is forming around Wilhelm Pieck, Hermann Remmele and Hugo Eberlein. ?]
+[? if e23_right_blamed = 1 : Brandler and Thalheimer led the Zentrale through the October, and fewer districts stand by them each week. ?][? if e23_rk_moscow_left = 1 : The Executive has let it be known that it wants the Left to lead. ?][? if e23_quarrel = 2 : Everyone knows that our delegates in Moscow voted to condemn the leaders of the October. ?][? if e23_quarrel = 1 : Our delegates in Moscow stood by Radek and the retreat. ?] [? if e23_rk_three = 1 : Pieck, Remmele and Eberlein have formed a middle group between the two camps. ?]
 
-The Central Committee will vote on the lessons of 1923, and whoever wins the vote leads the party into 1924. Which resolution does the Zentrale put its name to?
-
-- @right: Brandler's resolution: the retreat was right.
-- @left: The Left's resolution: the Zentrale failed the revolution.
-- @middle: The middle group's resolution: both were wrong.
+- @right: Put our name to Brandler's resolution.
+- @left: Put our name to the Left's resolution.
+- @middle: Put our name to the middle group's resolution.
 
 @right
-subtitle: The Right's defence of its record. [? if e23_right_blamed = 1 : An uphill fight. ?]
+subtitle: The retreat was right, and the united front goes on. [? if e23_right_blamed = 1 : The room is against him. ?]
 view-if: unionist_gone = 0
 on-arrival: {!
 Q.e23_rk_backing = 'unionist';
@@ -37,7 +37,7 @@ Q.lean_unionist += 2;
 - @open: The Central Committee meets.
 
 @left
-subtitle: The Left's indictment. Moscow is likely to approve.
+subtitle: The Zentrale failed the revolution. Moscow will probably agree.
 view-if: offensive_gone = 0
 on-arrival: {!
 Q.e23_rk_backing = 'offensive';
@@ -48,7 +48,7 @@ if (Q.leading_faction != 'offensive') { Q[Q.leading_faction + '_satisfaction'] -
 - @open: The Central Committee meets.
 
 @middle
-subtitle: The centre's compromise. It needs one of the camps to come over.
+subtitle: Both camps were wrong. It needs one of them to come over.
 view-if: luxemburgist_gone = 0
 on-arrival: {!
 Q.e23_rk_backing = 'luxemburgist';
@@ -75,18 +75,21 @@ RG.congressStart({
     ownClose: true
 });
 if (Q.congress_reckoning == 1) {
-    // the districts' verdict on the year, before anyone has spoken
-    if (Q.e23_right_blamed == 1 && Q.offensive_gone == 0) { RG.congress.swayTo('offensive', 0.08); }
-    if (Q.german_october == 0 && Q.e23_october_done == 1 && Q.unionist_gone == 0) { RG.congress.swayTo('unionist', 0.04); }
-    if (Q.german_october == 2 && Q.lead_code == 2 && Q.luxemburgist_gone == 0) { RG.congress.swayTo('luxemburgist', 0.06); }
-    if (Q.e23_quarrel == 2 && Q.offensive_gone == 0) { RG.congress.swayTo('offensive', 0.04); }
-    if (Q.e23_quarrel == 1 && Q.unionist_gone == 0) { RG.congress.swayTo('unionist', 0.03); }
-    RG.congress.tally();
+    var C = RG.congress;
+    if (Q.e23_right_blamed == 1 && Q.offensive_gone == 0) { C.swayTo('offensive', 0.08); }
+    if (Q.german_october == 0 && Q.e23_october_done == 1 && Q.unionist_gone == 0) { C.swayTo('unionist', 0.04); }
+    if (Q.german_october == 2 && Q.lead_code == 2 && Q.luxemburgist_gone == 0) { C.swayTo('luxemburgist', 0.06); }
+    if (Q.e23_hh_rises == 1 && Q.german_october == 1 && Q.offensive_gone == 0) { C.swayTo('offensive', 0.04); }
+    if (Q.e23_cuno_result == 1 && Q.unionist_gone == 0) { C.swayTo('unionist', 0.03); }
+    if (Q.e23_quarrel == 2 && Q.offensive_gone == 0) { C.swayTo('offensive', 0.04); }
+    if (Q.e23_quarrel == 1 && Q.unionist_gone == 0) { C.swayTo('unionist', 0.03); }
+    if (Q.e23_oct_martyr_ok == 1) { C.bitter(4); }
+    C.tally();
 }
 !}
 
 = The Central Committee in Session
 
-Forty members of the Central Committee and the district secretaries take their seats around three tables pushed together. The Zentrale's members have a vote of their own. [? if congress_ahead = 1 : The first soundings give our resolution [+ congress_votes_for +] per cent. ?][? if congress_ahead = 0 and congress_votes_for > 0 : The first soundings give the [+ congress_leader_name +] [+ congress_leader_votes +] per cent, and our resolution [+ congress_votes_for +]. ?][? if congress_ahead = 0 and congress_votes_for = 0 : The first soundings give the [+ congress_leader_name +] [+ congress_leader_votes +] per cent. As things stand, our resolution would not survive the first ballot. ?]
+Forty members of the Central Committee and the district secretaries sit around three tables pushed together. The Zentrale votes as a body. [? if congress_ahead = 1 : The first soundings give our resolution [+ congress_votes_for +] per cent. ?][? if congress_ahead = 0 and congress_votes_for > 0 : The first soundings give the [+ congress_leader_name +] [+ congress_leader_votes +] per cent, and our resolution [+ congress_votes_for +]. ?][? if congress_ahead = 0 and congress_votes_for = 0 : The first soundings give the [+ congress_leader_name +] [+ congress_leader_votes +] per cent, and our resolution would fall on the first ballot. ?]
 
-There will be two sittings, and then the vote.
+There will be two sittings before the vote.

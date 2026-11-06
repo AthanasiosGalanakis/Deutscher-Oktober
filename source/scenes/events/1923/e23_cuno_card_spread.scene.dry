@@ -1,7 +1,16 @@
 title: Spread the Strike
 subtitle: Berlin is out. The rest of Germany is wavering.
 view-if: crisis_cuno = 1
-on-arrival: month_actions += 1
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.cunoTick(Q.crisis_time + 1);
+Q.e23_rail_p = Math.min(0.85, 0.25 + Q.worker_support / 200 + (Q.e22_railway == 1 ? 0.2 : 0));
+Q.e23_rail_odds = RG.e22.odds(Q.e23_rail_p);
+Q.e23_rail_joined = 0;
+Q.e23_cuno_new = 0;
+Q.e23_cuno_has_new = 0;
+!}
 frequency: 100
 is-card: true
 new-page: true
@@ -9,49 +18,52 @@ tags: crisis
 
 = Spread the Strike
 
-The strike is strongest in Berlin and weakest where the unions are strongest. Hamburg's docks are out; its shipyards are not. The Ruhr miners are already on strike against the French. The railwaymen have not moved since their own defeat last year.
+The strike is strongest in Berlin and weakest where the unions are strong. The Ruhr miners are already idle under the French. The railwaymen have not struck since their own defeat in February 1922.
 
-- @railways: Send our best speakers to the railway depots.
-- @provinces: Send couriers to every district with the strike call.
+- @rail: Send our best speakers to the railway depots.
+- @couriers: Send couriers with the strike call to every district.
 - @ruhr: Bring the Ruhr pit committees into the strike.
 
-@railways
-subtitle: If the trains stop, the strike becomes national. A long shot.
+@rail
+subtitle: If the trains stop, the strike is national. The depot secretaries call the chances [+ e23_rail_odds +].
 on-arrival: {!
-RG.spreadStrike('berlin');
-if (Q.worker_support >= 30) {
-    Q.crisis_momentum += 9;
-    Q.e23_rail_joined = 1;
+Q.e23_rail_joined = Math.random() < Q.e23_rail_p ? 1 : 0;
+if (Q.e23_rail_joined) {
+    RG.startStrike('halle', true);
+    Q.e23_cuno_pressure += 15;
 } else {
-    Q.crisis_momentum += 3;
-    Q.e23_rail_joined = 0;
+    Q.e23_cuno_pressure += 3;
 }
-Q.repression += 2;
+RG.e22.cunoLines();
 !}
 
-[? if e23_rail_joined = 1 : The Berlin and Leipzig depots vote to come out. By evening the trains stop on the main lines. ?][? if e23_rail_joined = 0 : The railwaymen listen politely and go back to their engines. A few depots stop work for a day. ?]
+[? if e23_rail_joined = 1 : The depots of Berlin, Halle and Leipzig vote to come out. By evening the trains have stopped on the main lines. ?][? if e23_rail_joined = 1 and e22_railway = 1 : At Lichtenberg the depot men say they remember who came out for them last year. ?][? if e23_rail_joined = 0 : The railwaymen listen and go back to their engines. A few depots stop for a day. ?]
 
-@provinces
-subtitle: Costs 1 fund. The strike spreads more evenly.
+@couriers
+subtitle: Costs 1 fund. The strike reaches the provinces, a day late.
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds for couriers.
+unavailable-subtitle: We have no money for couriers.
 on-arrival: {!
 Q.resources -= 1;
-Q.crisis_momentum += 6;
-Q.worker_support += 2;
-RG.startStrike('halle');
-RG.startStrike('thuringia');
+var a = RG.spreadStrike('berlin');
+var b = RG.spreadStrike('saxony');
+var n = [a, b].filter(function (x) { return x; });
+Q.e23_cuno_new = n.length ? RG.e22.list(n) : 0;
+Q.e23_cuno_has_new = n.length ? 1 : 0;
+Q.e23_cuno_pressure += 3;
+RG.e22.cunoLines();
 !}
 
-Couriers on motorcycles carry the strike call to Stettin, Breslau and Königsberg. The provincial towns come out a day late, but they come out.
+Couriers on motorcycles carry the call to Stettin, Breslau and the small towns. [? if e23_cuno_has_new = 1 : [+ e23_cuno_new +] come out. ?][? if e23_cuno_has_new = 0 : Everywhere that could come out is out already. ?]
 
 @ruhr
-subtitle: The Ruhr Left is eager. The French may take advantage.
+subtitle: The Ruhr is eager. The French will enjoy watching Germans fight Germans.
+view-if: district_ruhr_strike = 0
 on-arrival: {!
-Q.crisis_momentum += 5;
-Q.district_ruhr_loyalty += 4;
-Q.militancy += 3;
-RG.startStrike('ruhr');
+RG.startStrike('ruhr', true);
+RG.district('ruhr', {loyalty: 4, repression: 4});
+Q.e23_cuno_pressure += 4;
+RG.e22.cunoLines();
 !}
 
-The Ruhr pit committees turn their strike against the French into a strike against Cuno. The occupation authorities watch the Germans fight each other with interest.
+The pit committees turn their strike against the French into a strike against Cuno.

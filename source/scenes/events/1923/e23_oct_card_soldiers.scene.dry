@@ -1,7 +1,12 @@
 title: The Soldiers
-subtitle: Will the Reichswehr shoot?
-view-if: crisis_october = 1
-on-arrival: month_actions += 1
+subtitle: The Reichswehr has orders to fire. Not every soldier will.
+view-if: crisis_october = 1 and e23_rising_phase = 1
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.octTick(Q.crisis_time + 1);
+Q.e23_officers_ok = 0;
+!}
 frequency: 100
 is-card: true
 new-page: true
@@ -9,49 +14,51 @@ tags: crisis
 
 = The Soldiers
 
-Seeckt's army is small, professional and chosen for its politics. Its officers are monarchists to a man. Its soldiers are not: many are workers' sons from the same towns as the hundreds, paid in the same worthless marks. The Saxon and Prussian police are another matter again: Social Democrats run them, and many policemen vote SPD.
+Seeckt's officers are monarchists. His soldiers are mostly the sons of farmers and craftsmen, paid in the same marks as everyone else. The Prussian police are run by Social Democrats, and half the constables in Berlin carry an SPD card.
 
 - @leaflets: Flood the barracks with leaflets.
-- @police: Work on the police through their Social Democratic union.
-- @officers: Approach the officers who hate Seeckt.
+- @officers: Buy the officers who hate Seeckt.
+- @police: Talk to the police through their union.
 
 @leaflets
-subtitle: Cheap, and some soldiers read them.
+subtitle: Cheap. Some soldiers will read them.
 on-arrival: {!
-Q.army_loyalty -= 5;
-Q.crisis_momentum += 4;
+Q.army_loyalty -= 4;
 Q.repression += 2;
+RG.e22.octLines();
 !}
 
-The leaflet is short: "Soldier, your mother is starving too." Sentries are doubled in Dresden after one is found in every locker of a battalion.
+The leaflet is four lines long and addressed to the soldier's mother. One is found in every locker of a battalion in Dresden, and the sentries are doubled.
+
+@officers
+subtitle: Costs 1 fund. The apparatus gives it two chances in five.
+choose-if: resources >= 1
+unavailable-subtitle: We have no money.
+on-arrival: {!
+Q.resources -= 1;
+Q.e23_officers_ok = Math.random() < 0.4 ? 1 : 0;
+if (Q.e23_officers_ok) {
+    Q.army_loyalty -= 9;
+    Q.e23_oct_bonus += 2;
+} else {
+    Q.e23_oct_bonus -= 1;
+    Q.independence -= 2;
+}
+RG.e22.octLines();
+!}
+
+[? if e23_officers_ok = 1 : A captain at Döberitz and a major in Leipzig promise that their companies will stay in barracks. On the second day they keep their word. ?][? if e23_officers_ok = 0 : The officers take the money and pass our names to Seeckt's intelligence office. ?]
 
 @police
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Slow and uncertain. If it works, the police stand aside.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] They will not rise. They might not shoot.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+RG.e22.against('united_front');
 Q.police_loyalty -= 6;
-Q.crisis_momentum += (Q.spd_relation >= 35) ? 7 : 3;
+Q.e23_oct_bonus += Q.spd_relation >= 35 ? 2 : 1;
 Q.lean_unionist += 1;
+RG.e22.octLines();
 !}
 
-Police delegates meet our people in a Leipzig back room. They will not join a rising. Some of them say they will not fire on strikers.
-
-@officers
-subtitle: Costs 1 fund. A gamble on the national bolsheviks in uniform.
-choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
-on-arrival: {!
-Q.resources -= 1;
-var ok = Math.random() < 0.4;
-Q.e23_officers_ok = ok ? 1 : 0;
-Q.army_loyalty -= ok ? 8 : 0;
-Q.crisis_momentum += ok ? 8 : -2;
-Q.independence -= 2;
-!}
-
-[? if e23_officers_ok = 1 : A captain in Döberitz and a major in Leipzig promise that their battalions will stay in barracks. ?][? if e23_officers_ok = 0 : The officers take our money and give our names to Seeckt's counter-intelligence. ?]
+Two delegates of the police union meet our people in a back room in Leipzig. They will not join anything. They say that their men will not fire on a picket line.

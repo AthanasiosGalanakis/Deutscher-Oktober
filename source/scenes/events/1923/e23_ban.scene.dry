@@ -1,5 +1,5 @@
 title: Seeckt's Decree
-subtitle: The general with emergency powers turns on the extremes.
+subtitle: The general with emergency powers bans the parties of both extremes.
 new-page: true
 tags: event
 view-if: year = 1923 and month >= 11 and crisis = 0 and e23_ban_done = 0 and beer_hall_putsch = 1
@@ -8,22 +8,19 @@ priority: 2
 on-arrival: {!
 Q.e23_ban_done = 1;
 var ban = (Q.german_october >= 1 || Q.e23_october_path > 0 || Q.militancy >= 50) ? 1 : 0;
+if (Q.e23_red_region > 0 && Q.german_october == 2) { ban = 1; }
 Q.kpd_banned = ban;
 Q.e23_ban_has_arrests = 0;
 if (ban) {
     RG.news('Seeckt bans the Communist Party', 3);
-    for (var bd of Q.districts) { RG.district(bd, {repression: 3, guards: -Q['district_' + bd + '_guards'] * 0.3}); }
+    Q.districts.forEach(function (d) { RG.district(d, {repression: 3, guards: -Q['district_' + d + '_guards'] * 0.3, members: -0.1}); });
     var pool = ['eberlein', 'pieck', 'walcher', 'frolich', 'maslow', 'thalheimer', 'meyer', 'munzenberg'].filter(function (c) { return RG.isFree(c); });
     pool.sort(function () { return Math.random() - 0.5; });
     var taken = pool.slice(0, 2);
     taken.forEach(function (c) { RG.arrest(c, 6, {quiet: true}); });
     Q.e23_ban_arrested = taken.map(function (c) { return RG.comradeName(c); }).join(' and ');
     Q.e23_ban_has_arrests = taken.length ? 1 : 0;
-    if (taken.length) { RG.news(Q.e23_ban_arrested + ' arrested in the first raids', 2); }
-    Q.repression += 15;
-    for (var d of Q.districts) {
-        Q['district_' + d + '_members'] *= 0.9;
-    }
+    Q.repression += 12;
 } else {
     Q.repression += 4;
     RG.news('Seeckt bans the National Socialists; the communists stay legal', 3);
@@ -34,78 +31,59 @@ Q.sa_strength *= 0.6;
 
 = Seeckt's Decree
 
-After the putsch in Munich, President Ebert transfers executive power in the whole Reich to General Hans von Seeckt himself. Seeckt has no wish to be a dictator, he says, only to restore order. On 23 November he bans Hitler's National Socialists and the German Völkisch Freedom Party.
+On the night of the Munich putsch President Ebert hands executive power in the whole Reich to General von Seeckt. On 23 November Seeckt bans the National Socialists and the German Völkisch Freedom Party.
 
-[? if kpd_banned = 1 : He bans the Communist Party of Germany in the same decree. Its offices are closed, its presses sealed, *Die Rote Fahne* forbidden. Its deputies keep their immunity, and nothing else. Thousands of functionaries are arrested in the first week. ?][? if e23_ban_has_arrests = 1 : Among them are [+ e23_ban_arrested +]. ?]
+[? if kpd_banned = 1 : The same decree bans the Communist Party. The police seal the offices and the printing works in a single night, and *Die Rote Fahne* does not appear in the morning. Our deputies keep their immunity. ?][? if e23_ban_has_arrests = 1 : [+ e23_ban_arrested +] are taken in the first raids. ?][? if kpd_banned = 0 : We are not on the list. The party took no part in a rising, the SPD has said it would leave the government over a ban, and Stresemann does not want martyrs. The political police keep their files up to date all the same. ?]
 
-[? if kpd_banned = 0 : He does not ban us. The party took no part in any rising, the SPD has let it be known that it would leave the government over a ban, and Stresemann has no wish to make martyrs. The police keep their lists up to date all the same. ?]
+- @cells: Rebuild the party in cells of five.
+- @courts: Fight the ban in the courts.
+- @defy: Print *Die Rote Fahne* under a new name every week.
+- @recruit: Recruit the workers who have left the SPD.
 
-- @underground: Build the illegal apparatus: cells, couriers, hidden presses.
-- @legal: Fight it in the courts and the Reichstag, with whoever will help.
-- @defy: Defy it openly: our papers appear anyway.
-- @use: Use our legality: recruit the workers the others have lost.
-
-@underground
-subtitle: The party survives as a conspiracy, disciplined and small.
+@cells
+subtitle: A smaller party that can be trusted. The cells will be harder for the police to find.
 view-if: kpd_banned = 1
 on-arrival: {!
-Q.unity += 5;
-Q.red_guards_loyalty += 5;
-RG.ecci('zinoviev', 4);
-Q.worker_support -= 3;
-Q.offensive_satisfaction += 4;
-Q.lean_offensive += 1;
+Q.e23_cells = 1;
+Q.unity += 4;
+Q.districts.forEach(function (d) { RG.district(d, {members: -0.05}); });
 !}
 
-The party splits into cells of five. Leaflets are printed in cellars and handed out at dawn. The membership falls, and those who stay can be trusted.
+Every member knows four others and the courier. The leaflets are printed in a cellar in Moabit and handed out at the factory gates before six.
 
-@legal
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The SPD's left wing and the civil-liberties lawyers help. Slow.
+@courts
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Slow. The SPD's lawyers will help, and Zinoviev will call it legalism.
 view-if: kpd_banned = 1
 choose-if: lock_united_front < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids asking the social democrats for help.
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids asking the Social Democrats for help.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.spd_relation += 5;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('united_front');
 Q.repression -= 5;
-RG.ecci('radek', 3);
+Q.spd_relation += 4;
 RG.ecci('zinoviev', -4);
-Q.unionist_satisfaction += 3;
-Q.lean_unionist += 1;
 !}
 
-[? if levi_split = 1 : Paul Levi, from the SPD benches, is the first to denounce the ban in the Reichstag. ?] Our deputies and their lawyers fight the ban case by case. Some presses are unsealed by the courts within weeks.
+[? if levi_split = 1 : Paul Levi is the first to speak against the ban in the Reichstag, from the SPD benches. ?] A judge in Leipzig unseals two of our presses before Christmas. The rest stay sealed.
 
 @defy
-subtitle: Brave, and the arrests double.
+subtitle: Every edition is seized, and somebody goes to prison for each one.
 view-if: kpd_banned = 1
 on-arrival: {!
 var more = ['fischer', 'thalmann', 'maslow', 'pieck', 'meyer'].filter(function (c) { return RG.isFree(c); });
 if (more.length) { RG.arrest(more[0], 6); }
-for (var dd of Q.districts) { RG.district(dd, {repression: 4, militancy: 3}); }
-Q.repression += 8;
-Q.militancy += 5;
+Q.districts.forEach(function (d) { RG.district(d, {repression: 4, militancy: 3}); });
 Q.worker_support += 2;
-for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 0.95;
-}
 !}
 
-*Die Rote Fahne* appears under a new name every week, and every week the police seize it.
+The paper comes out as *Die Fahne*, then as *Der Rote Stern*, then as *Die Fackel*. The police seize most copies at the station. Enough of them get through.
 
-@use
-subtitle: Recruits the disappointed, from the left and the right.
+@recruit
+subtitle: The SPD members are angry with their own party, and some of them are ready to join.
 view-if: kpd_banned = 0
 on-arrival: {!
-for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 1.05;
-}
+Q.districts.forEach(function (d) { RG.district(d, {members: 0.05}); });
 Q.worker_support += 3;
-Q.unionist_satisfaction += 3;
-Q.luxemburgist_satisfaction += 3;
 !}
 
-With the National Socialists banned and the SPD in disgrace with its own members, our meetings are full all through December.
+All through December our meetings are full of men with SPD badges in their pockets. A good number of them sign the card at the door.

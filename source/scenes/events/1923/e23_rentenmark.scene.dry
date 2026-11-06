@@ -1,5 +1,5 @@
 title: The Rentenmark
-subtitle: The inflation ends, and the bill is presented to the workers.
+subtitle: The inflation is over, and the works are paying for it.
 new-page: true
 tags: event
 view-if: year = 1923 and month = 12 and e23_rentenmark_done = 0 and crisis = 0
@@ -18,57 +18,43 @@ if (Q.e22_workers_gov == 0) {
 
 = The Rentenmark
 
-On 15 November the new Rentenmark went into circulation, one to a trillion old marks, backed on paper by a mortgage on all German land. Hjalmar Schacht stopped the presses. To everyone's surprise, it holds. By December a loaf of bread costs the same in the evening as in the morning.
+The new Rentenmark went into circulation on 15 November at one to a trillion old marks. Schacht stopped the presses, and the new money holds. By December a loaf costs the same in the evening as it did in the morning. [? if e22_workers_gov = 0 : Stresemann lost a vote of confidence on 23 November, and Wilhelm Marx of the Centre governs without the SPD. ?]
 
-[? if e22_workers_gov = 0 : Stresemann lost a vote of confidence on 23 November, and Wilhelm Marx of the Centre now governs without the SPD. ?] The price of stability is paid in the works. Hundreds of thousands of officials are dismissed. The unemployed number in the millions. A decree allows the employers to lengthen the working day, and the eight-hour day, the last gain of November 1918, is gone in all but name.
+The bill comes to the works. The Reich dismisses officials by the hundred thousand, the employers lengthen the working day by decree, and the eight-hour day of November 1918 is gone in most of the country.
 
-The workers who joined the party in the year of hunger are tired. Some are leaving.
-
-- @hours: Fight for the eight-hour day in every works.
-- @unemployed: Organise the unemployed.
-- @consolidate: Consolidate: train the new members, close the gaps.
+- @hours: Fight for the eight-hour day works by works.
+- @unemployed: Organise the unemployed at the labour exchanges.
+- @dues: Collect the dues in the new money.
 
 @hours
-subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] The unions are broke, but the issue is everyone's.
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Most of these strikes will be lost. The workers will remember who led them.
 choose-if: lock_union_work < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids work inside the reformist unions.
 on-arrival: {!
-if (Q.lock_union_work == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('union_work');
 Q.worker_support += 4;
 Q.spd_relation += 3;
-Q.unionist_satisfaction += 4;
 Q.lean_unionist += 1;
 !}
 
-Our factory cells lead a hundred small strikes for the eight-hour day. Most are lost. The workers remember who led them.
+Our factory cells lead a hundred small strikes over the length of the shift. Siemens gives way in one plant and sacks the strike committee in another.
 
 @unemployed
-subtitle: The Left's answer. A new base among the desperate.
+subtitle: A new base in Berlin and the Ruhr, among men with nothing to lose.
 on-arrival: {!
-RG.district('berlin', {militancy: 4});
-RG.district('ruhr', {militancy: 4});
-Q.militancy += 4;
-Q.worker_support += 2;
-Q.district_berlin_members *= 1.04;
-Q.district_ruhr_members *= 1.04;
-Q.offensive_satisfaction += 4;
+RG.district('berlin', {militancy: 4, members: 0.04});
+RG.district('ruhr', {militancy: 4, members: 0.04});
 Q.lean_offensive += 1;
 !}
 
-Committees of the unemployed meet at the labour exchanges in Berlin and the Ruhr. Their marches will become a feature of German winters.
+Committees of the unemployed meet in the queues outside the labour exchanges in Wedding and Gelsenkirchen. The first march on the Berlin town hall is three thousand strong.
 
-@consolidate
-subtitle: The Spartacist answer. Fewer members leave.
+@dues
+subtitle: For the first time in a year the party's money will be worth something. Some members will not pay.
 on-arrival: {!
-Q.unity += 6;
-for (var d of Q.districts) {
-    Q['district_' + d + '_loyalty'] += 3;
-}
-Q.luxemburgist_satisfaction += 4;
-Q.lean_luxemburgist += 1;
+Q.resources += 2;
+Q.districts.forEach(function (d) { RG.district(d, {members: -0.04}); });
 !}
 
-The party schools reopen in back rooms. The new members learn their Marx, and the old ones learn patience.
+The district treasurers go round with the cards. Dues are twenty pfennigs a week, in the new money, and the treasurers write down the names of those who will not pay.
