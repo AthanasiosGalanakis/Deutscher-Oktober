@@ -5,6 +5,9 @@ tags: event
 view-if: year = 1919 and month = 3 and crisis = 0
 max-visits: 1
 priority: 2
+on-arrival: {!
+RG.setRole('eberlein', 'Delegate to Moscow, as "Max Albert"');
+!}
 
 = A New International
 
@@ -18,18 +21,64 @@ Eberlein carries a mandate written by the Zentrale [? if luxemburg_alive = 1 : a
 
 @abstain
 subtitle: The Spartacist line. The party joins anyway, but on its own terms.
-on-arrival: comintern_member = 1; independence += 4; world_revolution += 3; luxemburgist_satisfaction += 4; offensive_satisfaction -= 2; lean_luxemburgist += 2
+on-arrival: {!
+Q.comintern_member = 1;
+Q.independence += 4;
+Q.world_revolution += 3;
+Q.luxemburgist_satisfaction += 4;
+Q.offensive_satisfaction -= 2;
+Q.lean_luxemburgist += 2;
+Q.e19_eberlein_line = 1;
+RG.ecci('zinoviev', -8);
+RG.ecci('bukharin', -4);
+RG.ecci('lenin', -2);
+RG.news('Communist International founded in Moscow; the German delegate abstains', 3);
+!}
 
 On 4 March the congress founds the Communist International. Eberlein abstains, alone. A few weeks later the Zentrale accepts membership: one does not stand outside the International of the Russian revolution. But Moscow has noted who hesitated.
 
 @for
 subtitle: The Left's line, and the Left Radicals': the world revolution cannot wait for the Independents.
-on-arrival: comintern_member = 1; independence -= 6; world_revolution += 6; moscow_subsidy = 1; offensive_satisfaction += 8; ultraleft_satisfaction += 4; luxemburgist_satisfaction -= 5; lean_offensive += 2; lean_ultraleft += 1; lean_luxemburgist -= 1
+on-arrival: {!
+Q.comintern_member = 1;
+Q.independence -= 6;
+Q.world_revolution += 6;
+Q.moscow_subsidy = 1;
+Q.offensive_satisfaction += 8;
+Q.ultraleft_satisfaction += 4;
+Q.luxemburgist_satisfaction -= 5;
+Q.lean_offensive += 2;
+Q.lean_ultraleft += 1;
+Q.lean_luxemburgist -= 1;
+Q.e19_eberlein_line = 2;
+RG.ecci('zinoviev', 12);
+RG.ecci('lenin', 6);
+RG.ecci('bukharin', 8);
+RG.news('Communist International founded in Moscow, with the German party', 3);
+RG.ledger('The German party voted for the founding of the Communist International.', 'e19_ci_for');
+!}
 
 Eberlein reads our telegram aloud and votes yes. The hall rises and sings the Internationale. Zinoviev embraces him, and the first money for the German party leaves Moscow sewn into a courier's coat.
 
 @against
 subtitle: Luxemburg's argument taken to its end, and the Right's hope of the Independents. Moscow will not forget.
-on-arrival: comintern_member = 0; independence += 12; world_revolution -= 4; luxemburgist_satisfaction += 5; unionist_satisfaction += 3; offensive_satisfaction -= 8; ultraleft_satisfaction -= 6; lean_luxemburgist += 2; lean_unionist += 1; lean_offensive -= 1; uspd_relation += 4
+on-arrival: {!
+Q.comintern_member = 0;
+Q.independence += 12;
+Q.world_revolution -= 4;
+Q.luxemburgist_satisfaction += 5;
+Q.unionist_satisfaction += 3;
+Q.offensive_satisfaction -= 8;
+Q.ultraleft_satisfaction -= 6;
+Q.lean_luxemburgist += 2;
+Q.lean_unionist += 1;
+Q.lean_offensive -= 1;
+Q.uspd_relation += 4;
+Q.e19_eberlein_line = 3;
+RG.ecci('all', -10);
+RG.ecci('zinoviev', -10);
+RG.news('German communists vote against the new International', 3);
+RG.ledger('The German party voted against the founding of the Communist International, and stayed outside it.', 'e19_ci_against');
+!}
 
 Eberlein votes no. The congress founds the International all the same, without the German party. Lenin calls it a misunderstanding that time will correct. The Bremen comrades call it a disgrace.

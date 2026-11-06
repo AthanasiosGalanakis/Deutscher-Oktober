@@ -4,6 +4,11 @@ new-page: true
 tags: event
 view-if: year = 1919 and month = 2 and crisis = 0
 max-visits: 1
+on-arrival: {!
+RG.startStrike('ruhr', true);
+RG.district('ruhr', {militancy: 8});
+RG.news('General strike in the Ruhr for the socialisation of the mines', 3);
+!}
 
 = Socialisation in the Ruhr
 
@@ -34,6 +39,9 @@ Q.district_ruhr_members += 0.6;
 Q.district_ruhr_loyalty += 5;
 Q.offensive_satisfaction += 8;
 Q.lean_offensive += 2;
+RG.districtSync();
+RG.district('ruhr', {guards: 1, repression: 10});
+RG.endStrike('ruhr', 'crushed');
 !}
 
 In Bottrop and Hamborn armed miners fight the volunteers street by street. They lose, but the pits now know the party's name.
@@ -42,7 +50,19 @@ In Bottrop and Hamborn armed miners fight the volunteers street by street. They 
 subtitle: The Left Radicals' answer, and the syndicalists'. Inspiring, and isolated.
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids council action.
-on-arrival: ruhr_line = 2; militancy += 6; repression += 5; district_ruhr_members += 0.5; district_ruhr_loyalty += 6; ultraleft_satisfaction += 8; lean_ultraleft += 2; unionist_satisfaction -= 4
+on-arrival: {!
+Q.ruhr_line = 2;
+Q.militancy += 6;
+Q.repression += 5;
+Q.district_ruhr_members += 0.5;
+Q.district_ruhr_loyalty += 6;
+Q.ultraleft_satisfaction += 8;
+Q.lean_ultraleft += 2;
+Q.unionist_satisfaction -= 4;
+RG.districtSync();
+RG.district('ruhr', {repression: 6});
+RG.endStrike('ruhr', 'crushed');
+!}
 
 Pit councils lock out the managers in a dozen mines and run the winding gear themselves. Within two weeks the troops have retaken them all, but the idea has spread.
 
@@ -63,12 +83,21 @@ Q.district_ruhr_members += 0.3;
 Q.unionist_satisfaction += 6;
 Q.ultraleft_satisfaction -= 6;
 Q.lean_unionist += 2;
+RG.endStrike('ruhr');
 !}
 
 The Commission of Nine holds together a little longer. The strike ends without victory, but without a massacre, and the miners of every party have seen us keep our word.
 
 @organise
 subtitle: The Spartacist way: fewer heroics, more members.
-on-arrival: ruhr_line = 4; worker_support += 2; district_ruhr_members += 0.8; district_ruhr_loyalty += 8; luxemburgist_satisfaction += 4; lean_luxemburgist += 1
+on-arrival: {!
+Q.ruhr_line = 4;
+Q.worker_support += 2;
+Q.district_ruhr_members += 0.8;
+Q.district_ruhr_loyalty += 8;
+Q.luxemburgist_satisfaction += 4;
+Q.lean_luxemburgist += 1;
+RG.district('ruhr', {members: 0.05});
+!}
 
 Our organisers go from pit to pit with membership books. When the strike collapses, the new local groups stay.

@@ -24,6 +24,7 @@ The opposition has its own platform, its own meetings and its own friends in the
 @discipline
 subtitle: The Zentrale's authority grows. The opposition will not forget it.
 on-arrival: {!
+RG.ecci(Q.e22_opp == 'offensive' ? 'zinoviev' : 'radek', -5);
 var o = Q.e22_opp;
 Q.e22_berlin_opposition = 1;
 Q[o + '_satisfaction'] -= 12;
@@ -41,6 +42,7 @@ The Central Committee bans factional circulars. The opposition's leaders lose th
 @concede
 subtitle: The opposition becomes the Zentrale's junior partner, and its line weighs on ours.
 on-arrival: {!
+RG.ecci('all', 2);
 var o = Q.e22_opp;
 Q.e22_berlin_opposition = 2;
 Q.junior_faction = o;
@@ -55,6 +57,7 @@ Two of the opposition's leaders take seats in the Zentrale. Its meetings become 
 @moscow
 subtitle: The Executive decides. Independence falls; the quarrel goes quiet for a while.
 on-arrival: {!
+RG.ecci('zinoviev', 6);
 var o = Q.e22_opp;
 Q.e22_berlin_opposition = 3;
 Q.independence -= 6;

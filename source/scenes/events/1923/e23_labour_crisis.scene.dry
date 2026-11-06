@@ -6,6 +6,7 @@ view-if: year = 1923 and month = 8 and e22_workers_gov > 0 and e23_labour_crisis
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('Seeckt demands emergency powers from Ebert', 3);
 Q.e23_labour_crisis_done = 1;
 Q.inflation = Math.min(100, Q.inflation + 5);
 Q.stability -= 6;
@@ -26,6 +27,9 @@ subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] A ge
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids taking up arms.
 on-arrival: {!
+RG.startStrike('berlin', true);
+RG.district('berlin', {guards: 2});
+RG.ledger('The party called the workers out to defend the workers\' government against Seeckt.', 'e23_defend_wg');
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -55,6 +59,8 @@ subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The 
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
+RG.startStrike('berlin', true);
+RG.district('berlin', {militancy: 8});
 if (Q.lock_councils == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

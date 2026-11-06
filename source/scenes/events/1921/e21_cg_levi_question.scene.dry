@@ -1,0 +1,56 @@
+title: The Levi Question
+subtitle: The congress cannot stop talking about the man who is not on the agenda.
+view-if: congress_jena = 1 and congress_closing = 0 and e21_cg_levi_out = 0 and e21_jena_levi_motion = 1
+on-arrival: {!
+Q.month_actions += 1;
+Q.e21_cg_levi_out = 1;
+Q.e21_backing_levi = (Q.congress_backing == 'luxemburgist') ? 1 : 0;
+Q.sys_outcome = 0;
+!}
+frequency: 350
+is-card: true
+new-page: true
+tags: congress
+
+= The Levi Question
+
+[? if levi_in_party = 1 : Paul Levi sits at the end of the Reichstag group's bench, writing. Every speaker who mentions March mentions him. ?][? if levi_in_party = 0 : Paul Levi is not in the hall. He is in Berlin, editing a paper of his own, and he is the only subject the delegates talk about over dinner. ?] The Left wants him named a renegade from the platform. Zetkin wants him [? if levi_in_party = 1 : given back his seat in the Zentrale. ?][? if levi_in_party = 0 : given back his membership book. ?] Most delegates want the question to go away.
+
+- @zetkin: Let Clara Zetkin speak for him.
+- @promise: Promise the Left that Levi will be dealt with.
+- @refer: Refer the question to the Central Committee.
+
+@zetkin
+subtitle: Zetkin carries delegates with her, to Levi's motion. Good for us only if that is our motion.
+choose-if: comrade_zetkin = 1
+unavailable-subtitle: Zetkin is not free to speak.
+on-arrival: {!
+if (Q.luxemburgist_gone != 1) { RG.congress.swayTo('luxemburgist', 0.05 + Math.random() * 0.03); }
+Q.luxemburgist_satisfaction += 4;
+Q.offensive_satisfaction -= 4;
+Q.lean_luxemburgist += 1;
+RG.congress.bitter(2);
+!}
+
+Clara Zetkin speaks for an hour, about Rosa Luxemburg, about the masses, and about the man who was right about March and said so at the wrong time. [+ congress_last_moved +] delegates move towards Levi's friends. [? if e21_backing_levi = 1 : They are our votes now. ?][? if e21_backing_levi = 0 : They are not voting with us. ?]
+
+@promise
+view-if: offensive_gone = 0 and e21_backing_levi = 0
+subtitle: The Left's delegates come over to us. Levi's friends will know what was promised.
+on-arrival: {!
+RG.congress.sway(0.08, 'offensive');
+Q.luxemburgist_satisfaction -= 8;
+Q.offensive_satisfaction += 4;
+RG.congress.bitter(2);
+!}
+
+In a back room of the Volkshaus, the Zentrale tells Fischer's lieutenants that Levi will not be in the next Zentrale, and that his friends will be watched. [+ congress_last_moved +] of the Left's delegates find that they can vote for our motion after all.
+
+@refer
+subtitle: The question goes to a committee, where questions go to sleep. The hall calms down.
+on-arrival: {!
+RG.congress.bitter(-3);
+Q.unity += 2;
+!}
+
+The congress votes to refer the Levi question to the new Central Committee. Nobody is satisfied, and nobody walks out.

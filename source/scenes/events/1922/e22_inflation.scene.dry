@@ -5,6 +5,7 @@ tags: event
 view-if: year = 1922 and month = 8
 max-visits: 1
 on-arrival: {!
+RG.news('A thousand marks to the dollar', 3);
 Q.inflation = Math.min(100, Q.inflation + 6);
 Q.stability -= 4;
 !}
@@ -26,6 +27,8 @@ subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Comm
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
+RG.district('saxony', {militancy: 3, loyalty: 3});
+RG.district('thuringia', {militancy: 3, loyalty: 3});
 if (Q.lock_councils == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -45,6 +48,9 @@ The first control committees appear in Saxony and Thuringia, then in Berlin. The
 subtitle: The Left's answer. The hungry follow us; so do the police.
 view-if: offensive_gone = 0 or ultraleft_gone = 0
 on-arrival: {!
+RG.district('saxony', {militancy: 6, repression: 5});
+RG.district('halle', {militancy: 6, repression: 5});
+RG.district('ruhr', {militancy: 6, repression: 5});
 Q.e22_inflation_line = 2;
 Q.militancy += 8;
 Q.repression += 6;

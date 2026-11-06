@@ -53,6 +53,9 @@ Q.worker_support -= 2;
 Q.e20_split_lost = Q.e20_split_lost.toFixed(1);
 Q.lean_luxemburgist += 2;
 Q.lean_unionist += 1;
+RG.news('Communist Zentrale expels Hamburg and Bremen', 3);
+RG.ecci('lenin', -2);
+RG.ecci('radek', -3);
 !}
 
 The Zentrale expels the Hamburg and Bremen leaders, and their districts walk out with them, about [+ e20_split_lost +] thousand members. Within days, they found the Communist Workers' Party of Germany, the KAPD.
@@ -79,6 +82,8 @@ Q.ultraleft_satisfaction += 20;
 Q.luxemburgist_satisfaction -= 15;
 Q.unionist_satisfaction -= 15;
 Q.lean_ultraleft += 3;
+RG.ecci('lenin', -8);
+RG.ecci('radek', -6);
 !}
 
 The party will not stand in the Reichstag election. The Left Radicals celebrate. In Saxony, Brandler's members ask why they should vote for the USPD instead.
@@ -149,6 +154,9 @@ Q.ultraleft_satisfaction += 4;
 Q.luxemburgist_satisfaction -= 12;
 Q.offensive_satisfaction -= 4;
 Q.lean_ultraleft += 2;
+RG.ecci('lenin', -10);
+RG.ecci('radek', -8);
+RG.ecci('zinoviev', -6);
 !}
 
 Our Hamburg paper calls for a red army of workers and patriotic officers against the Entente. A few officers reply. Radek writes from Moscow that the German communists have lost their minds.
@@ -170,6 +178,8 @@ Q.independence -= 10;
 Q.ultraleft_satisfaction -= 20;
 Q[Q.leading_faction + '_satisfaction'] += 15;
 Q.lean_luxemburgist += 2;
+RG.ecci('lenin', 8);
+RG.ecci('zinoviev', 6);
 !}
 
 The Central Committee accepts Moscow's letter by a narrow vote, and the Left Radical leaders resign from the Zentrale. The party will stand in the election after all.

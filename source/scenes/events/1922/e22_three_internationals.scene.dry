@@ -5,6 +5,9 @@ tags: event
 view-if: year = 1922 and month = 4
 max-visits: 1
 priority: 2
+on-arrival: {!
+RG.news('Three Internationals meet at one table in the Reichstag', 2);
+!}
 
 = The Three Internationals
 
@@ -24,6 +27,8 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids marching with the social democrats.
 on-arrival: {!
+RG.ecci('radek', 5);
+RG.ecci('lenin', 3);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -43,6 +48,8 @@ On 20 April a hundred and fifty thousand march in the Lustgarten under red flags
 subtitle: The Left's reading. Moscow's line in all but name; the SPD is offended.
 view-if: offensive_gone = 0
 on-arrival: {!
+RG.ecci('zinoviev', 4);
+RG.ecci('radek', -3);
 Q.e22_three_int = 2;
 Q.spd_relation -= 6;
 Q.uspd_relation -= 4;
@@ -57,6 +64,7 @@ Our speakers march beside the social democrats and attack them from the platform
 @independent
 subtitle: The Spartacist demand. More independence; Radek is annoyed.
 on-arrival: {!
+RG.ecci('radek', -5);
 Q.e22_three_int = 3;
 Q.independence += 6;
 Q.luxemburgist_satisfaction += 6;

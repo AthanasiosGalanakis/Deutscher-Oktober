@@ -10,6 +10,7 @@ Q.upper_silesia_outcome = 1;
 Q.stability -= 3;
 Q.inflation += 2;
 Q.dnvp_relation -= 2;
+RG.news('Upper Silesia partitioned: the mines go to Poland', 3);
 !}
 
 = The Partition of Upper Silesia

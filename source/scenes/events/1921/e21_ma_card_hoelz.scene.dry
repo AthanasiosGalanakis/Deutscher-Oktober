@@ -1,6 +1,6 @@
 title: Max Hoelz
 subtitle: A Robin Hood with dynamite, and nobody's soldier.
-view-if: crisis_march = 1 and e21_ma_hoelz = 0
+view-if: crisis_march = 1 and e21_ma_hoelz = 0 and comrade_hoelz != 2 and comrade_hoelz != 4
 on-arrival: month_actions += 1
 frequency: 100
 is-card: true
@@ -26,7 +26,8 @@ if (Q.lock_uprising == 1) {
 }
 Q.e21_ma_hoelz = 1;
 Q.crisis_momentum += 8;
-Q.repression += 6;
+RG.district('halle', {guards: 1, repression: 7});
+RG.district('saxony', {militancy: 4, repression: 2});
 Q.luxemburgist_satisfaction -= 8;
 Q.offensive_satisfaction += 5;
 Q.lean_offensive += 2;

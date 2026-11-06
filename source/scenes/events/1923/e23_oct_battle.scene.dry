@@ -6,6 +6,7 @@ view-if: crisis_october = 1 and crisis_time >= 3 and e23_rising_phase = 1 and e2
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('The Reichswehr marches against the rising', 3);
 Q.e23_battle_done = 1;
 Q.e23_red_ruhr = (Q.ruhr_red_army == 2) ? 1 : 0;
 Q.stability -= 8;
@@ -30,6 +31,8 @@ General von Seeckt has a hundred thousand professional soldiers, the police, the
 @saxony
 subtitle: A red base the Reichswehr must besiege. Safer, and slower.
 on-arrival: {!
+RG.district('saxony', {guards: 2, militancy: 5});
+RG.district('thuringia', {guards: 1.5, militancy: 5});
 Q.e23_focus = 1;
 Q.crisis_momentum += (Q.saxony_government == 1) ? 6 : 3;
 Q.district_saxony_loyalty += 6;
@@ -42,6 +45,7 @@ The hundreds dig in along the hills of the Erzgebirge and the Vogtland. Workers'
 @berlin
 subtitle: The boldest throw. If the capital falls, the Reich falls.
 on-arrival: {!
+RG.district('berlin', {militancy: 8, repression: 6});
 Q.e23_focus = 2;
 var roll = Math.floor(Math.random() * 21) - 6;
 Q.crisis_momentum += roll;
@@ -55,6 +59,9 @@ Q.lean_offensive += 2;
 @ruhr
 subtitle: The pits and the docks. Strong where the party is strong.
 on-arrival: {!
+RG.startStrike('ruhr', true);
+RG.startStrike('hamburg', true);
+RG.district('ruhr', {guards: 1.5});
 Q.e23_focus = 3;
 var bonus = 3;
 if (Q.e23_red_ruhr == 1 || Q.district_ruhr_loyalty >= 60) { bonus += 4; }
@@ -72,6 +79,7 @@ subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] 
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an offer to the SPD.
 on-arrival: {!
+RG.ecci('radek', 4);
 if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

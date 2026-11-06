@@ -20,7 +20,8 @@ Q.chancellor = 'Philipp Scheidemann';
 Q.spd_in_government = 1;
 Q.zentrum_in_government = 1;
 Q.ddp_in_government = 1;
-Q.radek_prison = 1;
+RG.arrest('radek', 11, {news: 'Karl Radek arrested in Berlin: police allege a Bolshevik conspiracy', priority: 2});
+RG.news('Ebert elected President of the Republic at Weimar', 3);
 Q.freikorps_strength += 40;
 !}
 

@@ -8,6 +8,7 @@ priority: 5
 on-arrival: {!
 Q.kapp_decided = 1;
 Q.e20_wg_roll = Math.floor(Math.random() * 11);
+RG.news('Kapp flees to Sweden: the putsch collapses', 3);
 !}
 
 = Kapp Flees
@@ -34,6 +35,10 @@ Q.unionist_satisfaction += 4;
 Q.offensive_satisfaction -= 6;
 Q.uspd_relation += 4;
 Q.lean_luxemburgist += 2;
+RG.ecci('lenin', 8);
+RG.ecci('radek', 6);
+RG.ecci('zinoviev', -4);
+RG.ecci('bukharin', -5);
 !}
 
 We publish the statement on 23 March. A workers' government would be a step forward; we would not try to bring it down by force while it respects the freedom of the workers' organisations; we would remain its critics. The Left calls it a declaration of loyalty to Legien.
@@ -60,6 +65,9 @@ Q.uspd_relation += 8;
 Q.spd_relation += 4;
 Q.uspd_score += 1;
 Q.lean_unionist += 3;
+RG.ecci('radek', 4);
+RG.ecci('zinoviev', -6);
+RG.ecci('bukharin', -6);
 !}
 
 Our delegates tell the USPD leaders to their faces: take power with Legien, and the communists will defend that government against any general.
@@ -79,6 +87,9 @@ Q.uspd_relation -= 4;
 Q.offensive_satisfaction += 8;
 Q.unionist_satisfaction -= 6;
 Q.lean_offensive += 2;
+RG.ecci('bukharin', 5);
+RG.ecci('zinoviev', 4);
+RG.ecci('lenin', -4);
 !}
 
 We tell the strikers that Legien's government would be Noske's government with a new coat of paint. The USPD leaders are glad of the excuse to refuse. The old coalition returns under Hermann Müller, and the unions call off the strike.
@@ -109,7 +120,7 @@ Q.crisis_kapp = 0;
 Q.crisis_ruhr = 1;
 Q.crisis_name = 'The Ruhr Red Army';
 Q.crisis_goal = 'Hold what the workers have won in the Ruhr, or save what can be saved.';
-Q.red_guards_strength += 45;
+Q.red_guards_strength += 12;
 Q.red_guards_arms += 15;
 Q.red_guards_loyalty -= 10;
 Q.freikorps_strength -= 60;
@@ -135,6 +146,13 @@ if (Q.kapp_outcome == 3) {
     Q.army_loyalty += 10;
 }
 Q.crisis_momentum = 35 + Math.round(Q.red_guards_arms / 5) + (Q.kapp_armed ? 5 : 0) + (Q.kapp_outcome == 3 ? 8 : 0);
+RG.districtSync();
+for (var d of Q.districts) {
+    if (d != 'ruhr') { RG.endStrike(d, Q.kapp_outcome == 3 ? 'won' : 'quiet'); }
+}
+RG.district('ruhr', {guards: 33, loyalty: 6});
+RG.news(Q.kapp_outcome == 3 ? 'Legien forms a workers\' government' : 'Unions call off the strike; Müller forms a cabinet', 3);
+RG.news('Red Army of the Ruhr holds the coalfield from the Rhine to Hamm', 3);
 !}
 
 = The Red Army of the Ruhr

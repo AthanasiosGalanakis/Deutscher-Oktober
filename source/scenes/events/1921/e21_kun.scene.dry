@@ -9,11 +9,30 @@ on-arrival: {!
 Q.e21_kun_done = 1;
 Q.e21_lux_leads = (Q.leading_faction == 'luxemburgist') ? 1 : 0;
 Q.comintern_rep = 'Béla Kun';
+// Zinoviev's directive, carried by Kun: the theory of the offensive
+if (Q.comintern_member == 1) {
+    RG.directive({
+        id: 'offensive',
+        title: 'The theory of the offensive',
+        text: 'The revolutionary party does not wait to be attacked. The Executive instructs the German section to go over to the offensive at the first occasion, to rouse the masses by action, and if necessary to force the pace.',
+        from: 'zinoviev',
+        months: 2,
+        goals: [{q: 'militancy', op: '>=', v: Math.min(85, Math.round(Q.militancy + 10))},
+                {q: 'red_guards_arms', op: '>=', v: Math.min(85, Math.round(Q.red_guards_arms + 8))}],
+        reward: {subsidy: 1, faction: 'offensive'},
+        punish: 'rival',
+        announce: false
+    });
+}
+RG.ecci('bukharin', 3);
+RG.news('Béla Kun in Berlin: Moscow\'s envoys demand action', 3);
 !}
 
 = The Emissaries
 
 In the first days of March three men arrive from Moscow: Béla Kun, who led the Hungarian soviet republic to its fall in 1919, József Pogány and August Guralsky. They come from Zinoviev, and their message is simple. Soviet Russia is isolated, Kronstadt is in revolt, and the German party is sitting on its hands. It must go over to the offensive: act, and if necessary provoke, until the masses move.
+
+On the Executive, Zinoviev and Bukharin are for the offensive. Radek, who knows Germany best, wrote in February that the party must act and now writes that it must not act stupidly. Lenin and Trotsky are absorbed by Kronstadt and the peasants, and have said nothing.
 
 In the Rote Fahne, Thalheimer and Frölich are already writing that a revolutionary party cannot wait to be attacked. [? if e21_levi_resigned = 1 : Kun goes to see Levi and Zetkin out of courtesy. Zetkin tells him that his plan is madness. Levi writes to Lenin. ?][? if e21_levi_resigned = 0 and levi_in_party = 1 : Kun goes first to Levi, who still holds the chair. Levi listens for an hour and shows him to the door. ?]
 
@@ -41,6 +60,13 @@ Q.offensive_satisfaction += 10;
 Q.luxemburgist_satisfaction -= 10;
 Q.lean_offensive += 3;
 Q.lean_luxemburgist -= 1;
+Q.e21_kun_stance = 1;
+RG.comply(40);
+RG.ecci('zinoviev', 6);
+RG.ecci('bukharin', 8);
+RG.ecci('radek', 2);
+RG.ecci('lenin', -4);
+RG.ledger('The Zentrale adopted the theory of the offensive.', 'e21_offensive_adopted');
 !}
 
 The Zentrale accepts Kun's line. The districts are told to be ready for action at any moment, and to look for a pretext. Nobody says out loud what kind of pretext.
@@ -58,6 +84,12 @@ Q.unionist_satisfaction += 8;
 Q.offensive_satisfaction -= 3;
 Q.lean_unionist += 2;
 Q.lean_luxemburgist += 1;
+Q.e21_kun_stance = 2;
+RG.comply(15);
+RG.ecci('radek', 5);
+RG.ecci('trotsky', 3);
+RG.ecci('bukharin', -3);
+RG.district('halle', {guards: 1});
 !}
 
 Kun is thanked for his advice and given an office. Meanwhile the Zentrale quietly prepares strike committees, courier lines and arms caches in Central Germany, for a defensive fight that everyone expects to come.
@@ -75,9 +107,15 @@ Q.offensive_satisfaction -= 10;
 Q.militancy -= 3;
 Q.lean_luxemburgist += 3;
 Q.lean_offensive -= 1;
+Q.e21_kun_stance = 3;
+RG.ecci('zinoviev', -6);
+RG.ecci('bukharin', -6);
+RG.ecci('lenin', 3);
+RG.defy();
+RG.ledger('The Zentrale sent Béla Kun back with his theory of the offensive.', 'e21_kun_refused');
 !}
 
-The Zentrale tells Kun that the German party will decide for itself when and how to fight. Kun stays in Berlin anyway, and spends his evenings with Ruth Fischer and the Berlin Left.
+The Zentrale tells Kun that the German party will decide for itself when and how to fight. Kun stays in Berlin anyway, and spends his evenings with Ruth Fischer and the Berlin Left. His report to Zinoviev is already written.
 
 @arm
 view-if: ultraleft_gone = 0
@@ -91,6 +129,14 @@ Q.ultraleft_satisfaction += 10;
 Q.luxemburgist_satisfaction -= 10;
 Q.unionist_satisfaction -= 8;
 Q.lean_ultraleft += 3;
+Q.e21_kun_stance = 4;
+RG.comply(30);
+RG.ecci('bukharin', 8);
+RG.ecci('zinoviev', 2);
+RG.ecci('lenin', -8);
+RG.district('hamburg', {militancy: 6, guards: 0.5});
+RG.district('bremen', {militancy: 6});
+RG.district('halle', {guards: 1});
 !}
 
 Hamburg and Bremen send their own men to the Mansfeld pits with rifles. Kun is delighted. The Zentrale is no longer sure who is leading whom.

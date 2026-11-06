@@ -1,0 +1,462 @@
+title: Living world library
+on-arrival: {!
+// The living world (lw_). This scene is never shown. It adds RG.lw, the
+// scheduler and helpers for the recurring events in source/scenes/living/
+// and the lw_ cards. Every lw_ event's view-if and every lw_ card's
+// on-arrival loads it when RG.lw is missing (a reload replaces RG).
+//
+// Scheduling: at most one living-world event at a time. Once a month, after
+// the gate (lw_next, in months) has opened, the scheduler picks one event
+// among those whose conditions hold, by category (districts, comrades,
+// Moscow) and weight, and stores it in lw_due. Only that event's view-if
+// passes. Firing it closes the gate for two to four months and gives the
+// event its own cooldown (lw_<id>_next). lw_ events have priority -1, so the
+// month's historical events always come first.
+if (typeof RG === 'undefined') { return; }
+var R = RG;
+var L = {};
+var num = R.num;
+var clamp = R.clamp;
+var q = function () { return R.q(); };
+var rnd = function (lo, hi) { return lo + Math.floor(Math.random() * (hi - lo + 1)); };
+L.rnd = rnd;
+
+// ------------------------------------------------------------ places
+L.TOWNS = {
+    berlin: ['Neukölln', 'Wedding', 'Lichtenberg', 'Spandau', 'Köpenick', 'Friedrichshain'],
+    hamburg: ['Barmbek', 'Altona', 'Harburg', 'Hammerbrook', 'Eimsbüttel'],
+    bremen: ['Gröpelingen', 'Vegesack', 'Bremerhaven', 'Walle', 'Hemelingen'],
+    ruhr: ['Essen', 'Bochum', 'Gelsenkirchen', 'Dortmund', 'Hamborn', 'Mülheim', 'Herne'],
+    saxony: ['Chemnitz', 'Leipzig', 'Dresden', 'Zwickau', 'Plauen', 'Meerane'],
+    thuringia: ['Jena', 'Gotha', 'Suhl', 'Gera', 'Erfurt', 'Zella-Mehlis'],
+    bavaria: ['Munich', 'Augsburg', 'Nuremberg', 'Schweinfurt', 'Hof', 'Penzberg'],
+    halle: ['Halle', 'Merseburg', 'Eisleben', 'Hettstedt', 'Bitterfeld', 'Zeitz']
+};
+L.WORKS = {
+    berlin: ['the Siemens works in Siemensstadt', 'the AEG turbine factory in Moabit', 'the Borsig works in Tegel', 'the Knorr-Bremse works in Lichtenberg'],
+    hamburg: ['the Blohm and Voss yard', 'the Vulcan yard', 'the Reiherstieg yard', 'the Hamburg docks'],
+    bremen: ['the AG Weser yard', 'the Vulkan yard in Vegesack', 'the jute mill in Hemelingen'],
+    ruhr: ['the Krupp works in Essen', 'the Thyssen works in Hamborn', 'the Bochumer Verein', 'the Phoenix works in Dortmund'],
+    saxony: ['the Wanderer works in Chemnitz', 'the Hartmann engineering works in Chemnitz', 'the Leipzig cotton mills', 'the Horch works in Zwickau'],
+    thuringia: ['the Zeiss works in Jena', 'the Simson arms works in Suhl', 'the Gotha wagon works'],
+    bavaria: ['the MAN works in Augsburg', 'the Krauss-Maffei works in Munich', 'the MAN works in Nuremberg', 'the ball-bearing works in Schweinfurt'],
+    halle: ['the Leuna works', 'the Mansfeld copper works', 'the Buna works at Schkopau', 'the Bitterfeld chemical works']
+};
+L.PITS = {
+    ruhr: ['a pit at Gelsenkirchen', 'a pit at Bochum', 'a pit at Herne', 'a pit at Dortmund', 'a pit at Hamborn'],
+    halle: ['a Mansfeld copper pit at Eisleben', 'a Mansfeld copper pit at Hettstedt', 'a brown-coal pit near Bitterfeld'],
+    saxony: ['a pit at Zwickau', 'a pit at Oelsnitz']
+};
+L.PAPERS = {
+    berlin: 'Die Rote Fahne', hamburg: 'the Hamburger Volkszeitung', bremen: 'Der Kommunist',
+    ruhr: 'the party paper in Essen', saxony: 'Der Kämpfer in Chemnitz', thuringia: 'the party paper in Jena',
+    bavaria: 'the Neue Zeitung in Munich', halle: 'Klassenkampf in Halle'
+};
+L.LANDS = {
+    berlin: 'Prussia', hamburg: 'Hamburg', bremen: 'Bremen', ruhr: 'Prussia', saxony: 'Saxony',
+    thuringia: 'Thuringia', bavaria: 'Bavaria', halle: 'Prussia'
+};
+L.CODE = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4};
+
+// ------------------------------------------------------------ comrades
+// fates the historical writers own, and Moscow's man: never touched here
+L.EXCL = ['luxemburg', 'liebknecht', 'jogiches', 'levi', 'levine', 'radek', 'hoelz', 'thalmann', 'brandler', 'fischer'];
+// comrades who might plausibly walk out on the party
+L.DEFECTORS = ['meyer', 'walcher', 'frolich', 'eberlein', 'laufenberg', 'wolffheim', 'ruhle', 'schroder', 'munzenberg', 'thalheimer'];
+L.STARS = ['zetkin', 'fischer', 'thalmann', 'brandler', 'ruhle', 'laufenberg', 'maslow', 'thalheimer', 'pieck'];
+L.ok = function (c) {
+    return c && L.EXCL.indexOf(c.id) < 0 && c.faction != 'ecci';
+};
+L.list = function (st) {
+    var Q = q();
+    if (!Array.isArray(Q.comrades)) { return []; }
+    return Q.comrades.filter(function (c) {
+        return L.ok(c) && c.status == st && !(Q[c.faction + '_gone']);
+    });
+};
+L.left = function (c) {
+    var Q = q();
+    return c.until > 0 ? c.until - num(Q.time) : 99;
+};
+// write a comrade into lw_<slot>, lw_<slot>_name, _role, _fname, _fcode, _star, _dname
+L.setC = function (slot, c) {
+    var Q = q();
+    var p = 'lw_' + slot;
+    Q[p] = c ? c.id : 0;
+    Q[p + '_name'] = c ? c.name : 0;
+    Q[p + '_role'] = c ? c.role : 0;
+    Q[p + '_fname'] = c ? R.fname(c.faction) : 0;
+    Q[p + '_fcode'] = c ? (L.CODE[c.faction] || 0) : 0;
+    Q[p + '_star'] = (c && L.STARS.indexOf(c.id) >= 0) ? 1 : 0;
+    Q[p + '_dname'] = (c && c.district) ? R.dname(c.district) : 'Berlin-Brandenburg';
+    Q[p + '_ours'] = (c && c.faction == Q.leading_faction) ? 1 : 0;
+    Q[p + '_has'] = c ? 1 : 0;
+};
+L.weighted = function (arr, w) {
+    if (!arr.length) { return null; }
+    var ws = arr.map(w);
+    var x = Math.random() * R.sum(ws);
+    for (var i = 0; i < arr.length; i++) { x -= ws[i]; if (x <= 0) { return arr[i]; } }
+    return arr[arr.length - 1];
+};
+
+// ------------------------------------------------------------ districts
+L.dv = function (d, k) { return num(q()['district_' + d + '_' + k]); };
+L.df = function (d) { return q()['district_' + d + '_faction']; };
+L.ours = function (d) { return L.df(d) == q().leading_faction; };
+// the best district for which ok(d) holds, by score(d); null if none
+L.best = function (ok, score) {
+    var Q = q();
+    var ds = Q.districts.filter(ok);
+    if (!ds.length) { return null; }
+    ds.sort(function (a, b) { return score(b) - score(a); });
+    return ds[0];
+};
+// a district for which ok(d) holds, at random weighted by w(d)
+L.some = function (ok, w) {
+    var Q = q();
+    return L.weighted(Q.districts.filter(ok), w);
+};
+// write a district into lw_d, lw_d_name, lw_town, lw_works, lw_pit, lw_paper ...
+L.setD = function (d) {
+    var Q = q();
+    if (!d) { d = Q.districts[0]; }
+    var p = 'district_' + d + '_';
+    var f = Q[p + 'faction'];
+    Q.lw_d = d;
+    Q.lw_d_name = R.dname(d);
+    Q.lw_town = R.pick(L.TOWNS[d] || [Q.lw_d_name]);
+    Q.lw_works = R.pick(L.WORKS[d] || ['the biggest works in the district']);
+    Q.lw_pit = L.PITS[d] ? R.pick(L.PITS[d]) : 0;
+    Q.lw_paper = L.PAPERS[d] || 'the district paper';
+    if (d == 'halle' && num(Q.time) < 24) { Q.lw_paper = 'the district paper in Halle'; }
+    Q.lw_land = L.LANDS[d] || 'Prussia';
+    Q.lw_d_trade = R.TRADES[d];
+    Q.lw_d_faction = f;
+    Q.lw_d_fname = R.fname(f);
+    Q.lw_d_fcode = L.CODE[f] || 0;
+    Q.lw_d_ours = f == Q.leading_faction ? 1 : 0;
+    Q.lw_d_mil = Math.round(num(Q[p + 'militancy']));
+    Q.lw_d_rep = Math.round(num(Q[p + 'repression']));
+    Q.lw_d_loyal = num(Q[p + 'loyalty']) >= 50 ? 1 : 0;
+    Q.lw_d_strike = Q[p + 'strike'] ? 1 : 0;
+    Q.lw_d_strike_months = num(Q[p + 'strike_months']);
+    Q.lw_d_guards = num(Q[p + 'guards']) < 10 ? num(Q[p + 'guards']).toFixed(1) : String(Math.round(num(Q[p + 'guards'])));
+    Q.lw_d_members = num(Q[p + 'members']) >= 10 ? String(Math.round(num(Q[p + 'members']))) : num(Q[p + 'members']).toFixed(1);
+    Q.lw_d_bavaria = d == 'bavaria' ? 1 : 0;
+    var nb = (R.NEIGHBOURS[d] || []).filter(function (x) { return !Q['district_' + x + '_strike']; });
+    nb.sort(function (a, b) { return L.dv(b, 'militancy') - L.dv(a, 'militancy'); });
+    Q.lw_nb = nb.length ? nb[0] : 0;
+    Q.lw_nb_name = nb.length ? R.dname(nb[0]) : 0;
+    // a comrade whose home is the district, of its current, for the story
+    var cs = q().comrades ? q().comrades.filter(function (c) {
+        return L.ok(c) && c.status == 'free' && c.district == d && c.faction == f;
+    }) : [];
+    L.setC('dc', cs.length ? cs[0] : null);
+    return d;
+};
+L.lead = function () {
+    var Q = q();
+    Q.lw_lead = L.CODE[Q.leading_faction] || 0;
+    return Q.lw_lead;
+};
+L.present = function (f) { var Q = q(); return Q[f + '_gone'] ? 0 : 1; };
+
+// ------------------------------------------------------------ the events
+// cat: d (districts), c (comrades), m (Moscow); cd: cooldown range in
+// months; w: weight; find(): the target (district id, comrade, or true), or
+// null when the event does not fit the moment; max: times per game
+var T = function () { return num(q().time); };
+var inCI = function () { return q().comintern_member == 1; };
+L.EV = {
+    // ------------------------------------------------ districts
+    strike_fund: {cat: 'd', cd: [5, 9], w: 1.4, find: function () {
+        return L.best(function (d) { return L.dv(d, 'strike'); },
+            function (d) { return L.dv(d, 'strike_months') * 2 + L.dv(d, 'members'); });
+    }},
+    rogue_leader: {cat: 'd', cd: [10, 16], w: 1, find: function () {
+        if (T() < 5) { return null; }
+        return L.best(function (d) { return !L.ours(d) && L.dv(d, 'loyalty') < 40 && L.dv(d, 'members') >= 0.5; },
+            function (d) { return -L.dv(d, 'loyalty'); });
+    }},
+    raid: {cat: 'd', cd: [7, 12], w: 1.2, find: function () {
+        return L.best(function (d) { return L.dv(d, 'repression') >= 50; },
+            function (d) { return L.dv(d, 'repression'); });
+    }},
+    rifles: {cat: 'd', cd: [9, 14], w: 1, find: function () {
+        return L.best(function (d) { return L.dv(d, 'guards') >= 0.8 && L.dv(d, 'repression') >= 35; },
+            function (d) { return L.dv(d, 'guards') * L.dv(d, 'repression'); });
+    }},
+    defy_vote: {cat: 'd', cd: [12, 18], w: 1, find: function () {
+        if (T() < 6) { return null; }
+        return L.best(function (d) { return !L.ours(d) && L.dv(d, 'loyalty') < 30 && L.dv(d, 'members') >= 1; },
+            function (d) { return L.dv(d, 'members') - L.dv(d, 'loyalty') / 10; });
+    }},
+    council_election: {cat: 'd', cd: [9, 13], w: 1.3, find: function () {
+        var Q = q();
+        if (T() < 14 || Q.month < 2 || Q.month > 6 || Q.kpd_banned == 1) { return null; }
+        return L.some(function (d) { return L.dv(d, 'members') >= 0.8 && !L.dv(d, 'strike'); },
+            function (d) { return L.dv(d, 'members'); });
+    }},
+    mine_disaster: {cat: 'd', cd: [18, 30], w: 0.7, max: 2, find: function () {
+        if (T() < 4) { return null; }
+        return L.some(function (d) { return (d == 'ruhr' || d == 'halle' || d == 'saxony') && L.dv(d, 'members') >= 0.4; },
+            function (d) { return d == 'ruhr' ? 3 : 1; });
+    }},
+    lockout: {cat: 'd', cd: [9, 14], w: 1, find: function () {
+        if (T() < 6) { return null; }
+        return L.best(function (d) { return L.dv(d, 'militancy') >= 55 && !L.dv(d, 'strike') && L.dv(d, 'members') >= 0.6; },
+            function (d) { return L.dv(d, 'militancy') + Math.random() * 15; });
+    }},
+    hunger_riot: {cat: 'd', cd: [4, 7], w: 1.3, find: function () {
+        var Q = q();
+        if (num(Q.inflation) < 55 || T() < 25) { return null; }
+        return L.best(function (d) { return L.dv(d, 'militancy') >= 40; },
+            function (d) { return L.dv(d, 'militancy') + Math.random() * 20; });
+    }, weight: function () { return num(q().inflation) >= 80 ? 2 : 1; }},
+    paper_banned: {cat: 'd', cd: [9, 14], w: 1, find: function () {
+        if (T() < 5) { return null; }
+        return L.best(function (d) { return L.dv(d, 'repression') >= 45 && L.dv(d, 'members') >= 0.5; },
+            function (d) { return L.dv(d, 'repression') + Math.random() * 10; });
+    }},
+    recruits: {cat: 'd', cd: [10, 15], w: 1, find: function () {
+        return L.best(function (d) { return L.dv(d, 'militancy') >= 58 && L.dv(d, 'loyalty') >= 50; },
+            function (d) { return L.dv(d, 'militancy') + L.dv(d, 'members'); });
+    }},
+    informer: {cat: 'd', cd: [9, 14], w: 1, find: function () {
+        if (T() < 5) { return null; }
+        return L.some(function (d) { return L.dv(d, 'repression') >= 40 && L.dv(d, 'members') >= 0.5; },
+            function (d) { return L.dv(d, 'repression') - 30; });
+    }},
+    shooting: {cat: 'd', cd: [9, 15], w: 1, find: function () {
+        return L.best(function (d) { return L.dv(d, 'militancy') >= 60 && L.dv(d, 'repression') >= 45; },
+            function (d) { return L.dv(d, 'militancy') + L.dv(d, 'repression'); });
+    }},
+    red_town: {cat: 'd', cd: [14, 20], w: 0.8, max: 2, find: function () {
+        var Q = q();
+        if (T() < 14 || num(Q.worker_support) < 28 || Q.lock_elections == 2 || Q.kpd_banned == 1) { return null; }
+        return L.best(function (d) { return L.dv(d, 'loyalty') >= 50 && L.dv(d, 'members') >= 1.2 && d != 'bavaria'; },
+            function (d) { return L.dv(d, 'members') + Math.random() * 3; });
+    }},
+    // ------------------------------------------------ comrades
+    c_arrest: {cat: 'c', cd: [8, 12], w: 1.2, find: function () {
+        var Q = q();
+        if (T() < 4 || num(Q.repression) < 38) { return null; }
+        var cs = L.list('free');
+        return L.weighted(cs, function (c) { return Math.max(1, (c.district ? L.dv(c.district, 'repression') : num(Q.repression)) - 25); });
+    }},
+    c_trial: {cat: 'c', cd: [8, 12], w: 1.2, find: function () {
+        var cs = L.list('prison').filter(function (c) { return L.left(c) >= 2 && num(c.lw_tried) < T() - 10; });
+        return cs.length ? R.pick(cs) : null;
+    }},
+    c_hunger: {cat: 'c', cd: [12, 18], w: 0.8, find: function () {
+        var cs = L.list('prison').filter(function (c) { return L.left(c) >= 3; });
+        return cs.length ? R.pick(cs) : null;
+    }},
+    c_jailbreak: {cat: 'c', cd: [12, 18], w: 0.8, find: function () {
+        if (num(q().red_guards_strength) < 1) { return null; }
+        var cs = L.list('prison').filter(function (c) { return L.left(c) >= 4; });
+        return cs.length ? R.pick(cs) : null;
+    }},
+    c_amnesty: {cat: 'c', cd: [18, 26], w: 1.5, max: 2, find: function () {
+        if (T() < 16) { return null; }
+        var cs = L.list('prison');
+        return cs.length >= 2 ? cs : null;
+    }},
+    c_quarrel: {cat: 'c', cd: [9, 14], w: 1, find: function () {
+        var cs = L.list('free');
+        for (var i = 0; i < 20; i++) {
+            var a = R.pick(cs), b = R.pick(cs);
+            if (a && b && a.faction != b.faction) { return [a, b]; }
+        }
+        return null;
+    }},
+    c_defection: {cat: 'c', cd: [12, 18], w: 1, find: function () {
+        var Q = q();
+        if (T() < 8) { return null; }
+        var cs = L.list('free').filter(function (c) {
+            return L.DEFECTORS.indexOf(c.id) >= 0 && c.faction != Q.leading_faction && num(Q[c.faction + '_satisfaction']) < 32;
+        });
+        return cs.length ? R.pick(cs) : null;
+    }},
+    c_assassin: {cat: 'c', cd: [18, 26], w: 0.8, max: 2, find: function () {
+        var Q = q();
+        if (T() < 18 || T() > 58) { return null; }
+        var cs = L.list('free');
+        return L.weighted(cs, function (c) { return L.STARS.indexOf(c.id) >= 0 ? 3 : 1; });
+    }},
+    c_return: {cat: 'c', cd: [0, 0], w: 6, find: function () {
+        var Q = q();
+        var ab = Q.lw_abroad || {};
+        for (var id in ab) {
+            var c = R.comrade(id);
+            if (!c || c.status != 'exile') { continue; }
+            if (T() >= ab[id].due) { return c; }
+        }
+        return null;
+    }},
+    // ------------------------------------------------ Moscow
+    m_zinoviev: {cat: 'm', cd: [8, 12], w: 1.2, find: function () { return inCI() && T() >= 6 ? true : null; }},
+    m_radek: {cat: 'm', cd: [10, 15], w: 1, find: function () {
+        return inCI() && T() >= 14 && R.status('radek') == 'free' ? true : null;
+    }},
+    m_bukharin: {cat: 'm', cd: [12, 18], w: 0.9, find: function () { return inCI() && T() >= 15 ? true : null; }},
+    m_trotsky: {cat: 'm', cd: [10, 16], w: 1, find: function () {
+        var Q = q();
+        return inCI() && (T() >= 48 || (T() >= 18 && num(Q.red_guards_arms) >= 35)) ? true : null;
+    }},
+    m_lenin: {cat: 'm', cd: [10, 15], w: 1.1, find: function () { return inCI() && T() >= 8 && T() < 41 ? true : null; }},
+    m_suitcase: {cat: 'm', cd: [8, 12], w: 1, find: function () {
+        var Q = q();
+        return inCI() && T() >= 8 && num(Q.moscow_favour) >= 50 ? true : null;
+    }},
+    m_envoy: {cat: 'm', cd: [9, 13], w: 1, find: function () {
+        var Q = q();
+        return inCI() && typeof Q.comintern_rep === 'string' && Q.comintern_rep ? true : null;
+    }},
+    m_patron: {cat: 'm', cd: [10, 15], w: 1, find: function () {
+        var Q = q();
+        if (!inCI() || T() < 12) { return null; }
+        var rivals = R.present().filter(function (f) { return f != Q.leading_faction && num(Q[f + '_strength']) >= 10; });
+        if (!rivals.length) { return null; }
+        rivals.sort(function (a, b) { return num(Q[b + '_strength']) - num(Q[a + '_strength']); });
+        return rivals[0];
+    }}
+};
+L.CATW = {d: 5, c: 2.5, m: 3};
+
+// ------------------------------------------------------------ scheduler
+L.ensure = function () {
+    var Q = q();
+    if (Q.lw_next === undefined) { Q.lw_next = 4; }
+    if (Q.lw_pick_time === undefined) { Q.lw_pick_time = -1; }
+    if (Q.lw_due === undefined) { Q.lw_due = 0; }
+    if (!Q.lw_fired || typeof Q.lw_fired !== 'object') { Q.lw_fired = {}; }
+    if (!Q.lw_abroad || typeof Q.lw_abroad !== 'object') { Q.lw_abroad = {}; }
+    if (Q.lw_count === undefined) { Q.lw_count = 0; }
+};
+L.eligible = function (id) {
+    var Q = q();
+    var e = L.EV[id];
+    if (!e) { return false; }
+    if (T() < num(Q['lw_' + id + '_next'])) { return false; }
+    if (e.max && num(Q.lw_fired[id]) >= e.max) { return false; }
+    return !!e.find();
+};
+L.schedule = function () {
+    var Q = q();
+    L.ensure();
+    if (Q.lw_pick_time === T()) { return; }
+    Q.lw_pick_time = T();
+    Q.lw_due = 0;
+    if (T() < num(Q.lw_next) || Q.game_over) { return; }
+    var byCat = {d: [], c: [], m: []};
+    for (var id in L.EV) {
+        if (L.eligible(id)) { byCat[L.EV[id].cat].push(id); }
+    }
+    // a comrade coming home is always news
+    if (byCat.c.indexOf('c_return') >= 0) { Q.lw_due = 'c_return'; return; }
+    var cats = ['d', 'c', 'm'].filter(function (c) { return byCat[c].length; });
+    var cat = L.weighted(cats, function (c) { return L.CATW[c]; });
+    if (!cat) { return; }
+    var pick = L.weighted(byCat[cat], function (i) {
+        var e = L.EV[i];
+        return (e.w || 1) * (e.weight ? e.weight() : 1);
+    });
+    Q.lw_due = pick || 0;
+};
+// the view-if of every lw_ event: RG.lw.ready('raid')
+L.ready = function (id) {
+    var Q = q();
+    if (Q.crisis || Q.congress) { return false; }
+    L.schedule();
+    return Q.lw_due === id && L.eligible(id);
+};
+// the on-arrival of every lw_ event: finds the target again, closes the gate,
+// sets the cooldown and keeps the event out of the automatic news (each event
+// writes its own, with the place and the names)
+L.fire = function (id) {
+    var Q = q();
+    L.ensure();
+    var e = L.EV[id];
+    var r = e ? e.find() : null;
+    Q.lw_due = 0;
+    Q.lw_out = 0;
+    // a comrade coming home is a small story: it barely holds up the others
+    Q.lw_next = T() + (id == 'c_return' ? 1 : rnd(2, 4));
+    if (e) { Q['lw_' + id + '_next'] = T() + rnd(e.cd[0], e.cd[1]); }
+    Q.lw_fired[id] = num(Q.lw_fired[id]) + 1;
+    Q.lw_count = num(Q.lw_count) + 1;
+    if (Q.news_seen_events && typeof Q.news_seen_events === 'object') { Q.news_seen_events['lw_' + id] = 1; }
+    L.lead();
+    if (e && e.cat == 'd') { L.setD(r); }
+    return r;
+};
+// a card: the same bookkeeping, without the gate
+L.card = function () {
+    L.ensure();
+    L.lead();
+    q().lw_out = 0;
+};
+
+// ------------------------------------------------------------ abroad
+// send a comrade abroad for some months; the lw_c_return event brings them back
+L.WHERE = ['Moscow', 'Vienna', 'Paris', 'Rome', 'Stockholm', 'Prague'];
+L.sendAbroad = function (id, months, where) {
+    var Q = q();
+    L.ensure();
+    var c = R.comrade(id);
+    if (!c) { return; }
+    R.exile(id, {news: c.name + ' leaves for ' + where});
+    Q.lw_abroad[id] = {due: T() + months, where: where};
+    L.abroadCount();
+};
+L.abroadCount = function () {
+    var Q = q();
+    var n = 0;
+    for (var k in Q.lw_abroad) {
+        var c = R.comrade(k);
+        if (c && c.status == 'exile') { n++; } else { delete Q.lw_abroad[k]; }
+    }
+    Q.lw_abroad_count = n;
+};
+// up to three candidates for a card, one per current if possible: lw_cand1..3
+L.candidates = function (pool, prefix) {
+    var Q = q();
+    var seen = {}, out = [];
+    pool = pool.slice().sort(function () { return Math.random() - 0.5; });
+    pool.sort(function (a, b) { return (L.STARS.indexOf(b.id) >= 0) - (L.STARS.indexOf(a.id) >= 0); });
+    for (var i = 0; i < pool.length && out.length < 3; i++) {
+        if (!seen[pool[i].faction]) { seen[pool[i].faction] = 1; out.push(pool[i]); }
+    }
+    for (var j = 0; j < pool.length && out.length < 3; j++) {
+        if (out.indexOf(pool[j]) < 0) { out.push(pool[j]); }
+    }
+    for (var k = 1; k <= 3; k++) {
+        L.setC(prefix + k, out[k - 1] || null);
+        Q['lw_' + prefix + k + '_has'] = out[k - 1] ? 1 : 0;
+    }
+    return out;
+};
+// lean and satisfaction for a current, if it is still in the party
+L.lean = function (f, lean, sat) {
+    var Q = q();
+    if (!f || Q[f + '_gone'] || Q['lean_' + f] === undefined) { return; }
+    Q['lean_' + f] += lean || 0;
+    Q[f + '_satisfaction'] += sat || 0;
+};
+// the soft lock of the party line: costs Unity and the leaders' patience
+L.against = function (action) {
+    var Q = q();
+    if (Q['lock_' + action] == 1) {
+        Q.unity -= 10;
+        Q[Q.leading_faction + '_satisfaction'] -= 10;
+    }
+};
+
+R.lw = L;
+!}
+
+= Living world library
+
+This scene is never shown.

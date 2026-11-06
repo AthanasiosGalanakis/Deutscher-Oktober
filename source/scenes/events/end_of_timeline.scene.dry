@@ -7,6 +7,7 @@ max-visits: 1
 priority: 5
 on-arrival: {!
 Q.ending_id = 6;
+RG.ledger(Q.kpd_banned == 1 ? 'The party entered 1924 banned, but alive.' : 'The party entered 1924 legal, and alive.', 'end_1924');
 !}
 
 = The End of 1923

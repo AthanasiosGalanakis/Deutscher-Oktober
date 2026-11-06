@@ -1,13 +1,14 @@
 title: The Unification Congress
-subtitle: The KPD and the USPD left become one party.
+subtitle: The KPD and the USPD left become one party
 new-page: true
 tags: event
-view-if: year = 1920 and month = 12 and crisis = 0 and ending_id = 0
+view-if: year = 1920 and month = 12 and crisis = 0 and congress = 0 and ending_id = 0
 max-visits: 1
 priority: 3
 on-arrival: {!
 Q.e20_lead_ul = (Q.leading_faction == 'ultraleft') ? 1 : 0;
 Q.e20_lux_in = Q.luxemburgist_gone ? 0 : 1;
+Q.e20_levi_free = (Q.comrade_levi == 1) ? 1 : 0;
 Q.comintern_rep = 'Karl Radek';
 // the Reichswehr is cut to the treaty's hundred thousand by 1 January 1921
 if (Q.army_strength > 100) {
@@ -17,6 +18,34 @@ if (Q.police_strength < 150) {
     Q.police_strength = 150;
 }
 Q.e20_newcomers = Q.uspd_split == 2 ? 'more than half a million' : (Q.uspd_split == 3 ? 'barely seventy thousand' : 'some three hundred thousand');
+// the Independents' branches join the districts before the delegates are elected
+if (!Q.e20_lead_ul) {
+    var add = {berlin: 45, hamburg: 24, bremen: 6, ruhr: 60, saxony: 48, thuringia: 25, bavaria: 12, halle: 62};
+    var f = Q.uspd_split == 2 ? 1.7 : (Q.uspd_split == 3 ? 0.25 : 1);
+    Q.e20_unif_add = {};
+    for (var d in add) {
+        Q.e20_unif_add[d] = add[d] * f;
+        Q['district_' + d + '_members'] += add[d] * f;
+        Q['district_' + d + '_loyalty'] = Math.round((Q['district_' + d + '_loyalty'] + 50) / 2);
+    }
+    Q.e20_unif_added = 1;
+    // the Independents of Halle-Merseburg are the most radical, those of Saxony the most patient
+    if (Q.uspd_split != 3) {
+        if (!Q.offensive_gone) { Q.district_halle_faction = 'offensive'; }
+        if (!Q.unionist_gone) { Q.district_saxony_faction = 'unionist'; }
+    }
+    if (Q.ultraleft_gone) {
+        for (var d2 of Q.districts) {
+            if (Q['district_' + d2 + '_faction'] == 'ultraleft') {
+                Q['district_' + d2 + '_faction'] = Q.leading_faction;
+            }
+        }
+    }
+    var total = 0;
+    for (var d3 of Q.districts) { total += Q['district_' + d3 + '_members']; }
+    Q.e20_members_display = Math.round(total);
+}
+RG.news('Communists and Independents unite in Berlin', 3);
 !}
 
 = The Unification Congress
@@ -25,55 +54,54 @@ On 4 December, in the Prussian House of Lords in Berlin, the delegates of the KP
 
 [? if uspd_split = 3 : It is a smaller union than Moscow promised. Most of the Independents stayed with Crispien and Dittmann. ?][? if uspd_split = 2 : The USPD has come over almost whole. Its old leaders are gone, but its branches, its presses and its members have come with Däumig and Stoecker. ?]
 
-[? if e20_lead_ul = 0 : The newcomers outnumber the old party four or five to one. Whoever they follow will lead the VKPD. The congress must elect its Zentrale. ?][? if e20_lead_ul = 1 : Däumig and Stoecker have one condition, and so does Moscow: the united party must work in the unions and in parliament, as the International's conditions demand. Our Left Radical Zentrale has refused both for a year. ?]
+[? if e20_lead_ul = 0 : The newcomers outnumber the old party four or five to one, and they elected their delegates in the old USPD way, branch by branch, with long speeches. Whoever they follow will lead the VKPD. The Zentrale must decide whose slate it puts to the congress, and then win the vote. Ernst Däumig wants to be co-chair; the USPD's trade union men want to know whether the new party will still let them sit on union executives. ?][? if e20_lead_ul = 1 : Däumig and Stoecker have one condition, and so does Moscow: the united party must work in the unions and in parliament, as the International's conditions demand. Our Left Radical Zentrale has refused both for a year. ?]
 
-- @levi_daumig: Elect Paul Levi and Ernst Däumig as co-chairs.
-- @left: Give the Zentrale to the Left and the USPD's radicals.
-- @right: Elect a Zentrale of union men: Brandler, Thalheimer and the USPD's trade unionists.
+- @levi_daumig: Put up Paul Levi and Ernst Däumig as co-chairs.
+- @left: Put up a Zentrale of the Left and the USPD's radicals.
+- @right: Put up a Zentrale of union men: Brandler, Thalheimer and the USPD's trade unionists.
 - @give_way: Give way, and hand the Zentrale to the new majority.
 - @refuse: Refuse their terms, and stay as we are.
 
 @levi_daumig
-subtitle: The Spartacist Zentrale, with the USPD left beside it. The historical choice.
+subtitle: The Spartacist Zentrale, with the USPD left beside it. The historical slate, and the newcomers trust Däumig.
 view-if: e20_lead_ul = 0 and e20_lux_in = 1
 on-arrival: {!
-Q.leading_faction = 'luxemburgist';
-Q.e20_lead_choice = 1;
-Q.luxemburgist_satisfaction += 12;
-Q.offensive_satisfaction -= 4;
+Q.e20_slate = 1;
 Q.lean_luxemburgist += 3;
+RG.congressStart({id: 'unification', name: 'The Unification Congress', stake: 'Who leads the VKPD',
+    sessions: 3, positions: ['luxemburgist', 'offensive', 'unionist'], backing: 'luxemburgist', kind: 'leadership',
+    mandates: 'members', delegates: 400, ownClose: true});
+RG.congress.sway(0.04);
 !}
 
-- @unite: Continue...
+The slate is printed overnight: Levi and Däumig at the top, Zetkin, Brandler, Stoecker and Koenen beneath them. The first count gives it [+ congress_votes_for +]% of the delegates.
 
 @left
-subtitle: The Left's Zentrale. Moscow would approve; the old Spartacists would not.
-view-if: e20_lead_ul = 0
+subtitle: The Left's Zentrale. Moscow's President would approve; the old Spartacists would not.
+view-if: e20_lead_ul = 0 and offensive_gone = 0
 on-arrival: {!
-Q.junior_faction = Q.leading_faction == 'offensive' ? Q.junior_faction : Q.leading_faction;
-Q.leading_faction = 'offensive';
-Q.e20_lead_choice = 2;
-Q.offensive_satisfaction += 15;
-Q.luxemburgist_satisfaction -= 10;
-Q.independence -= 5;
+Q.e20_slate = 2;
 Q.lean_offensive += 3;
+RG.congressStart({id: 'unification', name: 'The Unification Congress', stake: 'Who leads the VKPD',
+    sessions: 3, positions: ['luxemburgist', 'offensive', 'unionist'], backing: 'offensive', kind: 'leadership',
+    mandates: 'members', delegates: 400, ownClose: true});
+RG.congress.bitter(3);
 !}
 
-- @unite: Continue...
+The Left's slate names the Berlin and Halle radicals and nobody who ever sat in the Reichstag. The first count gives it [+ congress_votes_for +]% of the delegates.
 
 @right
-subtitle: The Right's Zentrale. Union work and the united front first.
-view-if: e20_lead_ul = 0
+subtitle: The Right's Zentrale. Union work and the united front first. Radek would approve.
+view-if: e20_lead_ul = 0 and unionist_gone = 0
 on-arrival: {!
-Q.junior_faction = Q.leading_faction == 'unionist' ? Q.junior_faction : Q.leading_faction;
-Q.leading_faction = 'unionist';
-Q.e20_lead_choice = 3;
-Q.unionist_satisfaction += 15;
-Q.offensive_satisfaction -= 10;
+Q.e20_slate = 3;
 Q.lean_unionist += 3;
+RG.congressStart({id: 'unification', name: 'The Unification Congress', stake: 'Who leads the VKPD',
+    sessions: 3, positions: ['luxemburgist', 'offensive', 'unionist'], backing: 'unionist', kind: 'leadership',
+    mandates: 'members', delegates: 400, ownClose: true});
 !}
 
-- @unite: Continue...
+Brandler's slate is full of men who have run strike funds and union branches. The first count gives it [+ congress_votes_for +]% of the delegates.
 
 @give_way
 subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] The Left Radicals lose the Zentrale. The party becomes a mass party.
@@ -92,9 +120,14 @@ Q.election_boycott = 0;
 Q.ultraleft_satisfaction -= 20;
 Q.independence -= 6;
 Q[Q.leading_faction + '_satisfaction'] += 15;
+RG.ecci('lenin', 6);
+RG.ecci('zinoviev', 4);
 !}
 
 - @unite: Continue...
+
+@unite
+go-to: e20_unif_vote.unite
 
 @refuse
 subtitle: The Left Radical answer. No unification, and a break with Moscow.
@@ -111,69 +144,9 @@ Q.ultraleft_satisfaction += 10;
 Q.luxemburgist_satisfaction -= 15;
 Q.unionist_satisfaction -= 15;
 Q.lean_ultraleft += 3;
+RG.ecci('all', -20);
+RG.news('Communist International expels the German party', 3);
+RG.ledger('The Left Radical Zentrale refused unification, and the party was expelled from the International.', 'e20_ci_expelled');
 !}
 
 The congress breaks up on the second day. Däumig and Stoecker found their own Communist Party, and Moscow recognises it as the German section of the International. Our party is expelled from the International it helped to found. It is free, and alone.
-
-@unite
-title: The VKPD
-new-page: true
-on-arrival: {!
-Q.vkpd_formed = 1;
-var add = {berlin: 45, hamburg: 24, bremen: 6, ruhr: 60, saxony: 48, thuringia: 25, bavaria: 12, halle: 62};
-var f = Q.uspd_split == 2 ? 1.7 : (Q.uspd_split == 3 ? 0.25 : 1);
-for (var d in add) {
-    Q['district_' + d + '_members'] += add[d] * f;
-    Q['district_' + d + '_loyalty'] = Math.round((Q['district_' + d + '_loyalty'] + 50) / 2);
-}
-// the newcomers change the districts' politics
-if (Q.uspd_split != 3) {
-    Q.district_halle_faction = Q.e20_lead_choice == 3 ? 'unionist' : 'offensive';
-    Q.district_berlin_faction = Q.e20_lead_choice == 3 ? 'luxemburgist' : 'offensive';
-}
-if (Q.e20_lead_choice == 2) {
-    Q.district_ruhr_faction = 'offensive';
-}
-if (Q.e20_lead_choice == 3) {
-    Q.district_thuringia_faction = 'unionist';
-    Q.district_saxony_faction = 'unionist';
-}
-if (Q.ultraleft_gone) {
-    for (var d of Q.districts) {
-        if (Q['district_' + d + '_faction'] == 'ultraleft') {
-            Q['district_' + d + '_faction'] = Q.leading_faction;
-        }
-    }
-}
-if (Q.uspd_split == 2) {
-    var moved = Math.round(Q.uspd_seats * 0.85);
-    Q.kpd_seats += moved;
-    Q.uspd_seats -= moved;
-    Q.uspd_exists = 0;
-    Q.uspd_in_government = 0;
-}
-Q.e20_left_government = 0;
-if (Q.kpd_in_government && Q.twenty_one_conditions != 2) {
-    Q.kpd_in_government = 0;
-    Q.e20_left_government = 1;
-    Q.government_name = Q.uspd_in_government ? 'Workers\' government (SPD, USPD)' : 'Legien cabinet (SPD, unions)';
-}
-Q.worker_support += Q.uspd_split == 3 ? 3 : 8;
-var total = 0;
-for (var d of Q.districts) {
-    total += Q['district_' + d + '_members'];
-}
-Q.e20_members_display = Math.round(total);
-Q.unity -= 5;
-Q.resources += 2;
-!}
-
-= The VKPD
-
-The congress ends with the *Internationale*, sung by a thousand voices. The VKPD has [+ e20_members_display +] thousand members, by the Zentrale's own count, and the count is not much exaggerated.
-
-[? if e20_lead_choice = 1 : Paul Levi and Ernst Däumig are elected co-chairs. Clara Zetkin, Brandler, Thalheimer, Stoecker and Koenen sit beside them in the Zentrale. Levi's speech warns that a mass party cannot be led like a sect, nor sent into battle on command. ?][? if e20_lead_choice = 2 : The Left and the USPD's radicals take the Zentrale. Their programme is short: the offensive, as soon as the party is ready. Levi stays in the Zentrale, outvoted. ?][? if e20_lead_choice = 3 : Brandler and the union men take the Zentrale. Their first circular tells every member to join a union and every cell to fight for wages, hours and bread. ?]
-
-[? if e20_left_government = 1 : Under the International's conditions, our ministers leave Legien's cabinet. ?]
-
-The old KPD had tens of thousands of members. The new party has hundreds of thousands, with all the habits they learned in the USPD. Making one party of them will be the work of the coming year.

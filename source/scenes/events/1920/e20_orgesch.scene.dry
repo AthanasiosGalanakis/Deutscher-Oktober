@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1920 and month = 5 and crisis = 0 and ending_id = 0
 max-visits: 1
+on-arrival: {!
+RG.news('Escherich\'s civil guards organise across the Reich', 2);
+!}
 
 = The Orgesch
 

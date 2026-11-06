@@ -1,0 +1,72 @@
+title: Bukharin's Theses
+subtitle: New theses arrive from the Executive's theorist.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('m_bukharin'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('m_bukharin');
+Q.lw_n = Q.time <= 33 ? 1 : 2;
+Q.lw_name = RG.isFree('thalheimer') && !Q.unionist_gone ? 'August Thalheimer' : 0;
+!}
+
+= Bukharin's Theses
+
+A thick envelope has come from Moscow: [? if lw_n = 1 : **Nikolai Bukharin**'s theses on the revolutionary offensive. The epoch, Bukharin argues, is one of decisive struggle; a communist party that waits for the masses to move by themselves will wait forever; a bold action can awaken the sleeping class. ?][? if lw_n = 2 : **Nikolai Bukharin**'s draft programme for the International, with a long chapter on Germany. It finds that the German party is too cautious, too fond of the unions and too ready to make deals with the social democrats. ?]
+
+Bukharin is the youngest of the Executive, the best liked and the most learned, and he asks, with real warmth, for the German comrades' opinion. He is also, in Moscow, the loudest voice for the Left.
+
+- @adopt: Adopt the theses as the Zentrale's own.
+- @discuss: Publish them for a discussion in the party.
+- @answer: Have [+ lw_name +] write a reply.
+- @shelve: Thank him, and put them in a drawer.
+
+@adopt
+subtitle: Bukharin is delighted. So is the Left; the Right sees an adventure coming.
+on-arrival: {!
+RG.ecci('bukharin', 10);
+RG.ecci('zinoviev', 3);
+Q.militancy += 3;
+Q.independence -= 2;
+RG.lw.lean('offensive', 2, 6);
+RG.lw.lean('unionist', -1, -5);
+!}
+
+The Zentrale's resolution quotes the theses at length. In the districts, young comrades learn a new word, the offensive, and use it.
+
+@discuss
+subtitle: A real debate in the party press. The party is livelier, and nobody is pleased for long.
+on-arrival: {!
+Q.unity += 2;
+RG.ecci('bukharin', 2);
+RG.lw.lean('luxemburgist', 1, 3);
+!}
+
+The theses run in Die Internationale over three issues, with replies from every current. Bukharin writes from Moscow to say he enjoyed the objections more than the agreements.
+
+@answer
+subtitle: A famous polemic. Our independence and the Right gain; Bukharin is stung.
+view-if: lw_name
+on-arrival: {!
+RG.ecci('bukharin', -5);
+Q.independence += 3;
+RG.lw.lean('unionist', 2, 5);
+RG.lw.lean('offensive', 0, -3);
+!}
+
+Thalheimer's reply is forty pages long and very polite. It finds that Bukharin has read Marx but not the German trade union statistics. It is translated into Russian, and read.
+
+@shelve
+subtitle: No debate, no new line. Bukharin feels ignored.
+on-arrival: {!
+RG.ecci('bukharin', -7);
+Q.independence += 2;
+RG.lw.lean('unionist', 1, 2);
+!}
+
+The Zentrale thanks Comrade Bukharin for his stimulating contribution. The envelope goes into the archive, where the police will find it in a raid two years later.

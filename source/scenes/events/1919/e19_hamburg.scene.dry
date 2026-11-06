@@ -19,13 +19,32 @@ They also want no party Zentrale, no union work and no elections. The Hamburg di
 
 @condemn
 subtitle: The Spartacist answer: national bolshevism is counter-revolution in a red shirt.
-on-arrival: heid_natbol = 1; natbol_line = 1; ultraleft_satisfaction -= 8; district_hamburg_loyalty -= 8; luxemburgist_satisfaction += 5; lean_luxemburgist += 2; lean_ultraleft -= 1
+on-arrival: {!
+Q.heid_natbol = 1;
+Q.natbol_line = 1;
+Q.ultraleft_satisfaction -= 8;
+Q.district_hamburg_loyalty -= 8;
+Q.luxemburgist_satisfaction += 5;
+Q.lean_luxemburgist += 2;
+Q.lean_ultraleft -= 1;
+RG.ecci('lenin', 4);
+RG.ecci('radek', 2);
+!}
 
 The Zentrale's circular calls the Hamburg line a betrayal of internationalism. Bremen, which dislikes Laufenberg's nationalism, keeps quiet. Hamburg calls it a declaration of war.
 
 @tolerate
 subtitle: A party this young cannot afford heresy trials. The Left Radicals are pleased.
-on-arrival: natbol_line = 2; ultraleft_satisfaction += 6; unity += 3; luxemburgist_satisfaction -= 5; lean_ultraleft += 1; stability -= 1
+on-arrival: {!
+Q.natbol_line = 2;
+Q.ultraleft_satisfaction += 6;
+Q.unity += 3;
+Q.luxemburgist_satisfaction -= 5;
+Q.lean_ultraleft += 1;
+Q.stability -= 1;
+RG.ecci('lenin', -6);
+RG.ecci('zinoviev', -4);
+!}
 
 The Zentrale says nothing. In Hamburg the nationalist officers' clubs send observers to our meetings.
 

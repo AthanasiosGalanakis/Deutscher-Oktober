@@ -41,6 +41,19 @@ Q.crisis = 0;
 Q.crisis_bavaria = 0;
 Q.crisis_name = 0;
 Q.crisis_goal = 0;
+RG.districtSync();
+if (Q.bav_result == 3) {
+    RG.news('Truce of Freising: the Bavarian Soviet Republic survives', 3);
+    RG.setRole('levine', 'Chairman of the Executive Council in Munich');
+    RG.district('bavaria', {guards: 3, militancy: 6});
+} else if (Q.bav_result == 2) {
+    RG.news('Munich surrenders: the Red Army lays down its arms', 3);
+    RG.district('bavaria', {repression: 12});
+} else {
+    RG.news('White terror in Munich: hundreds shot as the council republic falls', 3);
+    RG.district('bavaria', {repression: 25, guards: -1, loyalty: -5});
+    RG.ledger('The Bavarian Council Republic was drowned in blood in May 1919.', 'e19_munich_terror');
+}
 !}
 
 = The First of May in Munich

@@ -5,12 +5,33 @@ tags: event
 view-if: year = 1922 and month = 12
 max-visits: 1
 priority: 2
+on-arrival: {!
+Q.e22_fc_directive = 0;
+if (Q.comintern_member == 1) {
+    RG.directive({
+        id: 'workers_gov',
+        title: 'The united front and the workers\' government',
+        text: 'The Executive instructs the German section to propose the united front to the social democratic workers in every works and every town, and to fight for a workers\' government wherever the workers\' parties hold a majority.',
+        from: 'radek',
+        months: 4,
+        goals: [{q: 'spd_relation', op: '>=', v: Math.round(Math.min(55, Q.spd_relation + 8))},
+                {q: 'worker_support', op: '>=', v: Math.round(Math.min(70, Q.worker_support + 4))}],
+        reward: {funds: 2, favour: 12, faction: 'unionist'},
+        punish: 'rebuke',
+        announce: false
+    });
+    Q.e22_fc_directive = 1;
+}
+RG.news('Fourth Congress of the International closes: Lenin speaks for the last time', 3);
+!}
 
 = The Fourth Congress
 
 The Fourth Congress of the Communist International closes in Moscow on 5 December, after a month of speeches. Lenin, grey and partly paralysed since his first stroke, spoke for an hour on 13 November, and said the International had passed a resolution too Russian for foreigners to understand. Few of the delegates expect to hear him again.
 
 The great question for the German delegation was the **workers' government**. Radek and Ernst Meyer argued that a government of the workers' parties, even one formed in a parliament, could be a step towards power: if the SPD would break with the bourgeoisie, communists could sit beside its ministers. Ruth Fischer answered that a workers' government could only be another name for the dictatorship of the proletariat, and that anything else was coalition politics in a red shirt. Zinoviev's resolution allowed for both, and five kinds of workers' government in between.
+
+[? if e22_fc_directive = 1 : Radek drafted the instruction to the German section himself, and it leaves the Zentrale four months to show results: the united front in the factories, and a workers' government where one can be had. ?] With Lenin ill, Zinoviev chairs, Radek writes, Trotsky lectures, and a quiet general secretary called Stalin answers the letters.
 
 [? if e22_workers_gov = 2 : Our own ministers in Berlin make the debate less theoretical than the delegates would like. ?][? if saxony_government = 1 : Our ministers in Dresden make the debate less theoretical than the delegates would like. ?]
 
@@ -25,6 +46,10 @@ The delegation must say what the German party will take home.
 subtitle: The Right's line. The road to Saxony and to coalition offers is open.
 on-arrival: {!
 Q.e22_fourth_congress = 1;
+RG.comply(35);
+RG.ecci('radek', 8);
+RG.ecci('lenin', 4);
+RG.ecci('zinoviev', -2);
 Q.unionist_satisfaction += 8;
 Q.offensive_satisfaction -= 8;
 Q.lean_unionist += 3;
@@ -38,6 +63,10 @@ subtitle: The Left's line. The radicals are encouraged; the SPD shrugs.
 view-if: offensive_gone = 0
 on-arrival: {!
 Q.e22_fourth_congress = 2;
+RG.comply(10);
+RG.ecci('zinoviev', 6);
+RG.ecci('bukharin', 6);
+RG.ecci('radek', -8);
 Q.offensive_satisfaction += 8;
 Q.unionist_satisfaction -= 8;
 Q.lean_offensive += 3;
@@ -48,13 +77,15 @@ Q.militancy += 3;
 Fischer returns to Berlin in triumph. The workers' government, she tells the district, is a slogan for the street, not for the Landtag.
 
 @own
-subtitle: The Spartacist answer. More independence, and less money from Moscow.
+subtitle: The Spartacist answer. More independence; Moscow will want to know what it means.
 on-arrival: {!
 Q.e22_fourth_congress = 3;
 Q.independence += 8;
 Q.luxemburgist_satisfaction += 7;
 Q.lean_luxemburgist += 2;
-Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
+RG.stall(2);
+RG.ecci('zinoviev', -8);
+RG.ecci('radek', -3);
 !}
 
 [? if luxemburg_alive = 1 : Rosa Luxemburg, who did not go to Moscow, writes the German resolution herself. ?][? if luxemburg_alive = 0 : Clara Zetkin's report insists that the German party will choose its own allies. ?] Zinoviev calls it a lapse into federalism, and lets it pass.
@@ -63,6 +94,8 @@ Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
 subtitle: Obeys Moscow word for word. Unity rises; independence falls.
 on-arrival: {!
 Q.e22_fourth_congress = 4;
+RG.comply(40);
+RG.ecci('zinoviev', 10);
 Q.independence -= 7;
 Q.unity += 4;
 Q.moscow_subsidy += 1;

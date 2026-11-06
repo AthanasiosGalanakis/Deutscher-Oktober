@@ -75,6 +75,10 @@ Q.e19_split_done = 1;
 Q.worker_support -= 3;
 Q.unity += 15;
 Q.militancy -= 4;
+RG.districtSync();
+for (var d2 of ['hamburg', 'bremen', 'berlin']) { RG.district(d2, {militancy: -5}); }
+RG.news('Expelled Left Radicals take ' + Q.heid_lost_names + ' with them', 3);
+RG.ledger('The split after Heidelberg cost the party about ' + Q.heid_members_lost + ' thousand members.', 'e19_split');
 !}
 
 = After the Split

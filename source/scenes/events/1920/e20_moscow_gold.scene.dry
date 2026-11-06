@@ -24,6 +24,8 @@ Q.independence -= 10;
 Q.comintern_rep = 'Comrade Thomas';
 Q.offensive_satisfaction += 3;
 Q.luxemburgist_satisfaction -= 3;
+RG.ecci('zinoviev', 8);
+RG.ecci('bukharin', 3);
 !}
 
 The money arrives on the first of every month, through a bank in Amsterdam. The party hires full-time secretaries in every district. They are paid by Moscow, and they know it.
@@ -44,6 +46,8 @@ Q.independence += 8;
 Q.luxemburgist_satisfaction += 5;
 Q.offensive_satisfaction -= 4;
 Q.lean_luxemburgist += 1;
+RG.ecci('zinoviev', -8);
+RG.ecci('lenin', -2);
 !}
 
 Thomas takes his envelope away again. He will report to Zinoviev that the German Zentrale has delusions of independence.

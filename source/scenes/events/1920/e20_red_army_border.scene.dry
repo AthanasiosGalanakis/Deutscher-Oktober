@@ -5,6 +5,9 @@ tags: event
 view-if: year = 1920 and month = 9 and crisis = 0 and warsaw_outcome = 2 and ending_id = 0
 max-visits: 1
 priority: 3
+on-arrival: {!
+RG.news('Soviet cavalry on the East Prussian border', 3);
+!}
 
 = The Red Army on the Border
 
@@ -40,6 +43,9 @@ Q.offensive_satisfaction += 12;
 Q.luxemburgist_satisfaction -= 12;
 Q.unionist_satisfaction -= 10;
 Q.lean_offensive += 3;
+RG.ecci('bukharin', 8);
+RG.ecci('zinoviev', 6);
+RG.ecci('lenin', 3);
 !}
 
 The signal goes out on 5 September. In Halle-Merseburg and the Mansfeld copper country, armed miners occupy the pits and the railway junctions. In Berlin, the police are waiting for us.
@@ -74,6 +80,7 @@ Q.uspd_score += 1;
 Q.stability -= 2;
 Q.luxemburgist_satisfaction += 8;
 Q.lean_luxemburgist += 2;
+RG.ecci('lenin', -3);
 !}
 
 Rallies in every city, under the banners of all three workers' parties. The railwaymen's union declares that no Entente troop train will cross Germany. The government, relieved, says the same.

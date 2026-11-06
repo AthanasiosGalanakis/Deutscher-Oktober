@@ -5,6 +5,10 @@ tags: event
 view-if: year = 1919 and month = 2 and crisis = 0
 max-visits: 1
 priority: 2
+on-arrival: {!
+RG.news('Noske\'s troops march on the Bremen Soviet Republic', 3);
+RG.district('bremen', {militancy: 8, repression: 6});
+!}
 
 = The Bremen Soviet Republic
 

@@ -6,6 +6,8 @@ view-if: year = 1923 and month = 12 and german_october = 2 and e23_oct_result >=
 max-visits: 1
 priority: 4
 on-arrival: {!
+RG.news('Seeckt proclaims a Directory: the Reichstag adjourned', 3);
+RG.ledger('General von Seeckt ended the Republic with his Directory.', 'e23_directory');
 Q.e23_directory = 1;
 Q.kpd_banned = 1;
 Q.chancellor = 'Hans von Seeckt';

@@ -1,0 +1,70 @@
+title: The Empty Seats
+subtitle: The delegates who are in prison cannot vote.
+view-if: congress_jena = 1 and congress_closing = 0 and e21_cg_halle_out = 0 and march_action != 0
+on-arrival: {!
+Q.month_actions += 1;
+Q.e21_cg_halle_out = 1;
+Q.e21_cg_halle_name = RG.dname('halle');
+Q.e21_cg_halle_ours = (Q.district_halle_faction == Q.congress_backing) ? 1 : 0;
+Q.sys_outcome = 0;
+!}
+frequency: 300
+is-card: true
+new-page: true
+tags: congress
+
+= The Empty Seats
+
+Halle-Merseburg sent the strongest delegation of any district to the unification congress in December. At Jena its benches are half empty. [? if march_action = 1 : Its best men are in Lichtenburg and the other prisons of the province, or underground, or dead in the Mansfeld villages. ?][? if march_action = 2 : Its best men are still guarding the works at Leuna, and will not leave them for a congress. ?] The district has sent their wives and their deputies, and asks the congress to let them vote.
+
+[? if e21_cg_halle_ours = 1 : Halle follows our current. Its missing votes are ours. ?][? if e21_cg_halle_ours = 0 : Halle follows the [+ district_halle_faction_name +]. Its missing votes would go against us. ?]
+
+- @seat: Seat the substitutes by acclamation.
+- @strict: Insist on the rules: no mandate, no vote.
+- @collection: Take a collection for the prisoners' families.
+
+@seat
+subtitle: The hall honours Mansfeld and Leuna. Their votes count, whichever way they go.
+on-arrival: {!
+if (Q.e21_cg_halle_ours == 1) {
+    RG.congress.convert('halle', 0.25);
+    RG.congress.tally();
+} else {
+    RG.congress.swayTo(Q.district_halle_faction, 0.02);
+}
+RG.district('halle', {loyalty: 6});
+Q.unity += 2;
+Q.lean_offensive += 1;
+!}
+
+The congress rises for the prisoners of March and seats their substitutes without a vote. The Halle benches fill up. [? if e21_cg_halle_ours = 1 : They vote with us. ?][? if e21_cg_halle_ours = 0 : They will not vote with us, and the whole hall knows it. ?]
+
+@strict
+subtitle: The mandate commission keeps the substitutes out. [? if e21_cg_halle_ours = 0 : A rival loses votes. ?] Halle will never forgive it.
+on-arrival: {!
+if (Q.e21_cg_halle_ours == 0) {
+    Q.congress_last_moved = RG.congress.annul('halle', Q.district_halle_faction, 0.3);
+} else {
+    Q.congress_last_moved = RG.congress.annul('halle', Q.congress_backing, 0.3);
+}
+RG.district('halle', {loyalty: -12});
+RG.congress.bitter(4);
+Q.offensive_satisfaction -= 4;
+!}
+
+The mandate commission rules that a prisoner's wife is not a delegate. [+ congress_last_moved +] mandates from Halle-Merseburg are struck off. The district's substitutes walk out of the hall, and some of them do not come back for the rest of the year.
+
+@collection
+subtitle: Costs 1 fund. Nobody's vote changes, and everybody remembers who thought of it.
+choose-if: resources >= 1
+unavailable-subtitle: The party treasury is empty.
+on-arrival: {!
+Q.resources -= 1;
+RG.congress.sway(0.03);
+RG.district('halle', {loyalty: 8});
+Q.unity += 3;
+Q.lean_unionist += 1;
+Q.lean_luxemburgist += 1;
+!}
+
+The hats go round the hall twice. The money goes to Red Aid in Halle the same night. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates are moved enough to come over. ?]

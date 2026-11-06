@@ -1,0 +1,89 @@
+title: The KAG in the Districts
+subtitle: Levi's group is courting a district of the party.
+new-page: true
+tags: event
+view-if: year = 1921 and month >= 10 and crisis = 0 and congress = 0 and kag_exists = 1 and levi_in_party = 0 and e21_kagd_done = 0
+max-visits: 1
+priority: 6
+on-arrival: {!
+Q.e21_kagd_done = 1;
+Q.e21_kag_outcome = 0;
+var d = RG.target('loyalty');
+Q.e21_kag_target = d;
+Q.e21_kag_target_name = Q.sys_target_name;
+Q.e21_kag_target_faction_name = Q.sys_target_faction_name;
+Q.e21_kag_target_members = Q.sys_target_members;
+!}
+
+= The KAG in the Districts
+
+The Communist Working Group has no districts of its own, only a newspaper, a Reichstag group and friends. This autumn it is looking for members. Däumig and Malzahn have been touring [+ e21_kag_target_name +], where the party has [+ e21_kag_target_members +] thousand members and a leadership that follows the [+ e21_kag_target_faction_name +] and trusts the Zentrale less than any other district does.
+
+At their meetings they do not attack the party. They say they are still communists, that they want nothing from Moscow but to be left to judge German questions themselves, and that the door of the KAG is open to anybody who agrees. Several branch secretaries have been seen at those meetings.
+
+- @organisers: Send our best organisers to the district.
+- @purge: Expel every member who went to their meetings.
+- @joint: Propose joint work in the district's unions.
+- @ignore: Ignore them.
+
+@organisers
+subtitle: Costs 1 fund. The Right's way: win the branches back one by one.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds to send anyone.
+on-arrival: {!
+Q.resources -= 1;
+Q.e21_kag_outcome = 1;
+RG.district(Q.e21_kag_target, {loyalty: 10, members: -0.02});
+Q.unionist_satisfaction += 3;
+Q.lean_unionist += 1;
+!}
+
+Two organisers from the Zentrale move into [+ e21_kag_target_name +] for a month. They visit every branch and every doubter. A few go over to the KAG anyway. Most stay, and some of them are flattered to have been asked.
+
+@purge
+view-if: offensive_gone = 0
+subtitle: The Left's way: a clean party. The district will be smaller, and of one mind.
+on-arrival: {!
+Q.e21_kag_outcome = 2;
+RG.district(Q.e21_kag_target, {members: -0.1, loyalty: 4});
+Q.unity += 2;
+Q.offensive_satisfaction += 5;
+Q.luxemburgist_satisfaction -= 6;
+Q.lean_offensive += 2;
+RG.ecci('zinoviev', 3);
+RG.news('Party expels KAG sympathisers in ' + Q.e21_kag_target_name, 2);
+!}
+
+The district control commission expels every member who was seen at a KAG meeting, and several who were not. The KAG's paper prints their names under the heading "Expelled for listening".
+
+@joint
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Spartacist way: a common list in the metalworkers' union. The district stays calm; Moscow asks questions.
+choose-if: lock_united_front < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids any deal with Levi's group.
+on-arrival: {!
+if (Q.lock_united_front == 1) {
+    Q.unity -= 10;
+    Q[Q.leading_faction + '_satisfaction'] -= 10;
+}
+Q.e21_kag_outcome = 3;
+RG.district(Q.e21_kag_target, {loyalty: -2, members: 0.02});
+Q.independence += 3;
+Q.worker_support += 1;
+Q.luxemburgist_satisfaction += 5;
+Q.offensive_satisfaction -= 5;
+Q.lean_luxemburgist += 2;
+RG.ecci('zinoviev', -5);
+RG.ecci('radek', 2);
+!}
+
+The district and the KAG agree on a common list for the union elections, and win them. The district's members are pleased. The Executive's representative asks, in writing, since when the German party has made alliances with expelled renegades.
+
+@ignore
+subtitle: Costs nothing now. The KAG will take what it can.
+on-arrival: {!
+Q.e21_kag_outcome = 4;
+RG.district(Q.e21_kag_target, {members: -0.1, loyalty: -8});
+RG.news('KAG wins over party branches in ' + Q.e21_kag_target_name, 2);
+!}
+
+The Zentrale has other things to do. By December, a dozen branches in [+ e21_kag_target_name +] have gone over to the KAG, with their funds and their membership lists.

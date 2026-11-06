@@ -1,0 +1,96 @@
+title: Leipzig Votes
+subtitle: The Eighth Congress elects a new Zentrale.
+new-page: true
+tags: event
+view-if: congress_leipzig = 2
+max-visits: 1
+priority: 9
+on-arrival: {!
+Q.e23_lz_old_lead = Q.leading_faction;
+RG.congressEnd();
+var w = Q.congress_result;
+Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];
+var L = {unionist: 'Heinrich Brandler', offensive: 'Ruth Fischer', luxemburgist: (Q.luxemburg_alive == 1 ? 'Rosa Luxemburg' : (Q.levi_in_party == 1 ? 'Paul Levi' : 'Ernst Meyer')), ultraleft: 'Karl Schröder'};
+Q.party_leader = L[Q.leading_faction];
+// the count, as the tellers read it out
+var motion = {unionist: 'Brandler\'s theses', offensive: 'the Left\'s theses', luxemburgist: 'the centre\'s motion', ultraleft: 'the council communists\' motion'};
+var cnt = ['unionist', 'offensive', 'luxemburgist', 'ultraleft'].filter(function (f) { return Q['congress_share_' + f] > 0; });
+cnt.sort(function (a, b) { return Q['congress_share_' + b] - Q['congress_share_' + a]; });
+Q.e23_lz_count = cnt.map(function (f, i) { return Q['congress_share_' + f] + (i == 0 ? ' per cent for ' : ' for ') + motion[f]; }).join(', ');
+// the runner-up, who may be offered seats; a current that made a bargain with us comes first
+var deals = Object.keys(Q.congress_deals || {}).filter(function (f) { return !Q[f + '_gone'] && f != w; });
+Q.e23_lz_dealt = (deals.length && Q.congress_won) ? 1 : 0;
+var pos = ['unionist', 'offensive', 'luxemburgist', 'ultraleft'].filter(function (f) { return f != w && !Q[f + '_gone']; });
+pos.sort(function (a, b) { return Q['congress_share_' + b] - Q['congress_share_' + a]; });
+var sec = Q.e23_lz_dealt ? deals[0] : pos[0];
+Q.e23_lz_second = sec || 0;
+Q.e23_lz_second_name = sec ? Q.faction_names[sec] : 0;
+Q.e23_lz_second_share = sec ? Q['congress_share_' + sec] : 0;
+Q.e23_lz_has_second = (sec && (Q.e23_lz_dealt || Q.e23_lz_second_share >= 15)) ? 1 : 0;
+Q.e23_lz_left_second = (Q.e23_lz_second == 'offensive') ? 1 : 0;
+Q.e23_lz_right_second = (Q.e23_lz_second == 'unionist') ? 1 : 0;
+// provisional outcome, made final by the option
+Q.e23_leipzig = {unionist: 1, offensive: 3, luxemburgist: 4, ultraleft: 5}[w] || 1;
+if (w == 'unionist') {
+    RG.setRole('brandler', 'Chairman of the Zentrale');
+    RG.ecci('radek', 6);
+    RG.ecci('lenin', 3);
+    RG.ecci('zinoviev', -3);
+} else if (w == 'offensive') {
+    RG.setRole('fischer', 'Chair of the Zentrale');
+    RG.setRole('maslow', 'Zentrale');
+    RG.setRole('thalmann', 'Zentrale; Hamburg leader');
+    RG.ecci('zinoviev', 6);
+    RG.ecci('bukharin', 6);
+    RG.ecci('radek', -8);
+} else if (w == 'luxemburgist') {
+    RG.setRole('meyer', 'Chairman of the Zentrale');
+    RG.ecci('zinoviev', -5);
+    RG.ecci('radek', -2);
+} else if (w == 'ultraleft') {
+    RG.ecci('all', -10);
+}
+RG.news('Leipzig: the ' + Q.congress_result_name + ' win the congress', 3);
+!}
+
+= Leipzig Votes
+
+On the last evening the tellers count the mandate cards, district by district. The motion of the **[+ congress_result_name +]** is carried. In the final ballot: [+ e23_lz_count +]. [? if congress_won = 1 : It is the motion the Zentrale fought for. ?][? if congress_won = 0 : It is not the motion the Zentrale fought for. ?] [? if congress_close_call = 1 : A handful of delegates decided it. ?]
+
+[? if e23_leipzig = 1 : Brandler heads the new Zentrale. The theses of the Fourth Congress are now the party's: the united front, the control committees, a workers' government in Saxony when it can be had. Fischer tells the press the congress has buried the revolution under a pile of resolutions. ?][? if e23_leipzig = 3 : The Left has taken the Zentrale. Ruth Fischer and Arkadi Maslow will lead, with Thälmann beside them. In the Chemnitz delegation, Brandler's Saxons sit with their arms folded. ?][? if e23_leipzig = 4 : Neither the Right nor the Left could win alone, and the delegates turned to the centre. [+ party_leader +] heads the new Zentrale. Radek reports to Moscow that the Germans have elected a debating society. ?][? if e23_leipzig = 5 : The congress votes to leave the reformist unions and put all its strength into the factory councils. Moscow's delegation leaves before the final session. ?]
+
+[? if e23_lz_dealt = 1 : The [+ e23_lz_second_name +] withdrew their motion and voted with us, for seats in the Zentrale. Now they want them. ?][? if e23_lz_dealt = 0 and e23_lz_has_second = 1 : The [+ e23_lz_second_name +] won [+ e23_lz_second_share +] per cent. The new Zentrale must decide whether to give them seats. ?]
+
+- @include: Give the [+ e23_lz_second_name +] seats in the Zentrale.
+- @exclude: Keep the Zentrale in one current's hands.
+
+@include
+subtitle: Peace in the hall, a junior partner in the Zentrale, and its line weighs on ours. [? if e23_lz_left_second = 1 : Moscow's preferred outcome. ?]
+view-if: e23_lz_has_second = 1
+on-arrival: {!
+var s = Q.e23_lz_second;
+Q.junior_faction = s;
+Q[s + '_satisfaction'] += 8;
+Q['lean_' + s] += 1;
+Q.unity += 4;
+Q.independence -= 2;
+if (Q.leading_faction == 'unionist' && s == 'offensive') { Q.e23_leipzig = 2; RG.ecci('all', 4); }
+if (Q.leading_faction == 'offensive' && s == 'unionist') { RG.ecci('radek', 4); }
+RG.ledger('The Leipzig congress elected a Zentrale of the ' + Q.congress_result_name + ', with the ' + Q.e23_lz_second_name + ' as junior partners.', 'e23_leipzig');
+!}
+
+[? if e23_leipzig = 2 : Radek takes both sides into a back room, and the Left gets seats in the Zentrale, Thälmann among them. Nobody believes the peace will last the year. ?][? if e23_leipzig != 2 : The [+ e23_lz_second_name +] take their seats on the last morning. The two currents will share an office, a telephone and very little else. ?]
+
+@exclude
+subtitle: [? if e23_lz_dealt = 1 : Breaking the bargain: the cheated current will never trust us again. ?][? if e23_lz_dealt = 0 : A clear line, and a bitter minority that will organise against it. ?]
+on-arrival: {!
+var s = Q.e23_lz_second;
+Q.junior_faction = 0;
+if (s) { Q[s + '_satisfaction'] -= Q.e23_lz_dealt ? 18 : 8; }
+Q.unity -= Q.e23_lz_dealt ? 8 : 3;
+Q['lean_' + Q.leading_faction] += 1;
+if (!Q.congress_leadership_changed) { RG.ledger('The Leipzig congress kept the ' + Q.congress_result_name + ' in the Zentrale, alone.', 'e23_leipzig'); }
+if (Q.e23_lz_dealt) { RG.ledger('The new Zentrale broke its Leipzig bargain with the ' + Q.e23_lz_second_name + '.', 'e23_lz_broken'); }
+!}
+
+[? if e23_lz_dealt = 1 : The bargain is not kept. The [+ e23_lz_second_name +] find their names missing from the list, and say so from the platform. ?][? if e23_lz_dealt = 0 and e23_lz_has_second = 1 : The [+ e23_lz_second_name +]'s candidates are voted off the Zentrale one by one. They go back to their districts and start counting the delegates for the next congress. ?][? if e23_lz_dealt = 0 and e23_lz_has_second = 0 : There is nobody left in the hall strong enough to ask for seats. ?]

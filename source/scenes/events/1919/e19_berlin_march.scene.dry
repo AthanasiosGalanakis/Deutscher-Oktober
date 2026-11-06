@@ -4,6 +4,11 @@ new-page: true
 tags: event
 view-if: year = 1919 and month = 3 and crisis = 0
 max-visits: 1
+on-arrival: {!
+RG.startStrike('berlin', true);
+RG.district('berlin', {militancy: 10});
+RG.news('Berlin councils call a general strike', 2);
+!}
 
 = Bloody March in Berlin
 
@@ -80,11 +85,17 @@ Q.repression += 3;
 Q.freikorps_strength += 20;
 // Liebknecht at the barricades
 if (Q.liebknecht_alive == 1 && Q.march_line == 2 && Math.random() < 0.4) {
+    RG.kill('liebknecht', {news: 'Karl Liebknecht shot at a checkpoint in Lichtenberg', priority: 3});
+    RG.ledger('Karl Liebknecht fell at the barricades of Lichtenberg in March 1919.', 'e19_lieb_march');
     Q.liebknecht_alive = 0;
     Q.liebknecht_advisor = 0;
     Q.liebknecht_march_death = 1;
     Q.militancy += 5;
 }
+RG.districtSync();
+RG.endStrike('berlin', 'crushed');
+RG.district('berlin', {repression: 15, guards: -0.5});
+RG.news('Noske orders: anyone found armed to be shot', 3);
 !}
 
 = Noske's Order
@@ -134,6 +145,7 @@ title: The Zentrale
 new-page: true
 on-arrival: {!
 if (!Q.jogiches_alive) {
+    RG.kill('jogiches', {news: 'Leo Jogiches shot in Moabit "while trying to escape"', priority: 3});
     Q.luxemburgist_satisfaction -= 5;
     Q.spd_relation -= 5;
 }
@@ -146,6 +158,9 @@ if (Q.luxemburg_alive) {
 } else {
     Q.party_chair = 'Paul Levi';
     Q.levi_chair = 1;
+    RG.setRole('levi', 'Chair of the Zentrale');
+    RG.news('Paul Levi takes over the Communist Zentrale', 2);
+    RG.ledger('Paul Levi took over the Zentrale in March 1919.', 'e19_levi_chair');
 }
 !}
 

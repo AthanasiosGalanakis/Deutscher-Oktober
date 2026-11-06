@@ -9,13 +9,24 @@ on-arrival: {!
 Q.e23_ban_done = 1;
 var ban = (Q.german_october >= 1 || Q.e23_october_path > 0 || Q.militancy >= 50) ? 1 : 0;
 Q.kpd_banned = ban;
+Q.e23_ban_has_arrests = 0;
 if (ban) {
+    RG.news('Seeckt bans the Communist Party', 3);
+    for (var bd of Q.districts) { RG.district(bd, {repression: 3, guards: -Q['district_' + bd + '_guards'] * 0.3}); }
+    var pool = ['eberlein', 'pieck', 'walcher', 'frolich', 'maslow', 'thalheimer', 'meyer', 'munzenberg'].filter(function (c) { return RG.isFree(c); });
+    pool.sort(function () { return Math.random() - 0.5; });
+    var taken = pool.slice(0, 2);
+    taken.forEach(function (c) { RG.arrest(c, 6, {quiet: true}); });
+    Q.e23_ban_arrested = taken.map(function (c) { return RG.comradeName(c); }).join(' and ');
+    Q.e23_ban_has_arrests = taken.length ? 1 : 0;
+    if (taken.length) { RG.news(Q.e23_ban_arrested + ' arrested in the first raids', 2); }
     Q.repression += 15;
     for (var d of Q.districts) {
         Q['district_' + d + '_members'] *= 0.9;
     }
 } else {
     Q.repression += 4;
+    RG.news('Seeckt bans the National Socialists; the communists stay legal', 3);
 }
 Q.nsdap_exists = 1;
 Q.sa_strength *= 0.6;
@@ -25,7 +36,7 @@ Q.sa_strength *= 0.6;
 
 After the putsch in Munich, President Ebert transfers executive power in the whole Reich to General Hans von Seeckt himself. Seeckt has no wish to be a dictator, he says, only to restore order. On 23 November he bans Hitler's National Socialists and the German Völkisch Freedom Party.
 
-[? if kpd_banned = 1 : He bans the Communist Party of Germany in the same decree. Its offices are closed, its presses sealed, *Die Rote Fahne* forbidden. Its deputies keep their immunity, and nothing else. Thousands of functionaries are arrested in the first week. ?]
+[? if kpd_banned = 1 : He bans the Communist Party of Germany in the same decree. Its offices are closed, its presses sealed, *Die Rote Fahne* forbidden. Its deputies keep their immunity, and nothing else. Thousands of functionaries are arrested in the first week. ?][? if e23_ban_has_arrests = 1 : Among them are [+ e23_ban_arrested +]. ?]
 
 [? if kpd_banned = 0 : He does not ban us. The party took no part in any rising, the SPD has let it be known that it would leave the government over a ban, and Stresemann has no wish to make martyrs. The police keep their lists up to date all the same. ?]
 
@@ -40,6 +51,7 @@ view-if: kpd_banned = 1
 on-arrival: {!
 Q.unity += 5;
 Q.red_guards_loyalty += 5;
+RG.ecci('zinoviev', 4);
 Q.worker_support -= 3;
 Q.offensive_satisfaction += 4;
 Q.lean_offensive += 1;
@@ -59,6 +71,8 @@ if (Q.lock_united_front == 1) {
 }
 Q.spd_relation += 5;
 Q.repression -= 5;
+RG.ecci('radek', 3);
+RG.ecci('zinoviev', -4);
 Q.unionist_satisfaction += 3;
 Q.lean_unionist += 1;
 !}
@@ -69,6 +83,9 @@ Q.lean_unionist += 1;
 subtitle: Brave, and the arrests double.
 view-if: kpd_banned = 1
 on-arrival: {!
+var more = ['fischer', 'thalmann', 'maslow', 'pieck', 'meyer'].filter(function (c) { return RG.isFree(c); });
+if (more.length) { RG.arrest(more[0], 6); }
+for (var dd of Q.districts) { RG.district(dd, {repression: 4, militancy: 3}); }
 Q.repression += 8;
 Q.militancy += 5;
 Q.worker_support += 2;

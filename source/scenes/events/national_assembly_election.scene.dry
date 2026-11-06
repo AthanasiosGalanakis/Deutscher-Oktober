@@ -10,6 +10,7 @@ Q.parliament_name = 'National Assembly';
 Q.parliament_size = 423;
 Q.spd_seats = 163; Q.zentrum_seats = 91; Q.ddp_seats = 75; Q.dnvp_seats = 44;
 Q.uspd_seats = 22; Q.dvp_seats = 19; Q.bvp_seats = 0; Q.nsdap_seats = 0;
+RG.news('Germany votes: Social Democrats first, without a majority', 3);
 !}
 
 = Elections to the National Assembly

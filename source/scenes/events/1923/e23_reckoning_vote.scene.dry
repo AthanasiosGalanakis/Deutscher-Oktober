@@ -1,0 +1,114 @@
+title: The Central Committee Votes
+subtitle: The party chooses its leaders for 1924.
+new-page: true
+tags: event
+view-if: congress_reckoning = 2
+max-visits: 1
+priority: 9
+on-arrival: {!
+Q.e23_rk_old = Q.leading_faction;
+RG.congressEnd();
+var w = Q.congress_result;
+var motion = {unionist: 'Brandler', offensive: 'the Left', luxemburgist: 'the middle group', ultraleft: 'the council communists'};
+var cnt = ['unionist', 'offensive', 'luxemburgist', 'ultraleft'].filter(function (f) { return Q['congress_share_' + f] > 0; });
+cnt.sort(function (a, b) { return Q['congress_share_' + b] - Q['congress_share_' + a]; });
+Q.e23_rk_count = cnt.map(function (f, i) { return Q['congress_share_' + f] + (i == 0 ? ' per cent for ' : ' for ') + motion[f]; }).join(', ');
+Q.e23_reckoning = {unionist: 1, offensive: 2, luxemburgist: 3}[w] || 5;
+if (w == Q.e23_rk_old && w != 'unionist') { Q.e23_reckoning = 5; }
+Q.lead_code = {luxemburgist: 1, offensive: 2, unionist: 3, ultraleft: 4}[Q.leading_faction];
+Q.e23_rk_can_purge = (w == 'offensive' && Q.unionist_gone == 0) ? 1 : 0;
+Q.e23_rk_kept = (Q.e23_reckoning == 5) ? 1 : 0;
+Q.e23_rk_left_present = Q.offensive_gone == 0 ? 1 : 0;
+if (w == 'unionist') {
+    Q.unionist_satisfaction += 4;
+    Q.offensive_satisfaction -= 8;
+    Q.independence += 3;
+    RG.ecci('zinoviev', -8);
+    RG.ecci('radek', 4);
+} else if (w == 'offensive') {
+    RG.ecci('zinoviev', 8);
+    RG.ecci('bukharin', 5);
+    RG.ecci('radek', -6);
+    RG.setRole('fischer', 'Chair of the Zentrale');
+    RG.setRole('thalmann', 'Zentrale; chairman-designate');
+} else if (w == 'luxemburgist') {
+    RG.setRole('pieck', 'Zentrale; middle group');
+    RG.ecci('zinoviev', -2);
+}
+RG.news('Central Committee: the ' + Q.congress_result_name + ' take the party into 1924', 3);
+!}
+
+= The Central Committee Votes
+
+The vote is taken by a show of hands, twice, because the first count is disputed. The resolution of the **[+ congress_result_name +]** is carried in the final count: [+ e23_rk_count +]. [? if congress_close_call = 1 : The second count changes two hands, and the result. ?]
+
+[? if e23_reckoning = 1 : Brandler survives. He promises the united front, patient work in the unions, and no more risings planned in Moscow. Zinoviev's letter of reply is not read out. ?][? if e23_reckoning = 2 : The Left has won the Central Committee. Ruth Fischer and Arkadi Maslow will take the Zentrale, with Thälmann beside them, and they have a question about the men who led the October. ?][? if e23_reckoning = 3 : The middle group of Pieck, Remmele and Eberlein takes the Zentrale. Everyone knows it is a truce, and that the next congress will end it. ?][? if e23_reckoning = 5 : The Zentrale stays as it was. The resolution on the lessons of 1923 is one that everyone can vote for and nobody believes. ?]
+
+- @brandler_moscow: Send Brandler and Thalheimer to Moscow, and keep them there.
+- @purge: Expel Brandler's Right from the party.
+- @middle_left: Give the Left its seats in the new Zentrale.
+- @close: Close the session.
+
+@brandler_moscow
+subtitle: The Left rules, Moscow is pleased, and the Right's leaders go into honourable exile.
+view-if: e23_rk_can_purge = 1
+on-arrival: {!
+RG.exile('brandler', {news: 'Brandler and Thalheimer summoned to Moscow'});
+RG.exile('thalheimer', {quiet: true});
+Q.unionist_satisfaction -= 10;
+Q.independence -= 6;
+RG.ecci('zinoviev', 4);
+RG.ledger('The Central Committee gave the party to the Left; Brandler was sent to Moscow.', 'e23_reckoning');
+!}
+
+Brandler and Thalheimer are summoned to Moscow "for consultations". The consultations will last for years. Their followers in Saxony keep their posts and lose their voice.
+
+@purge
+subtitle: The Left rules alone. The Right and its districts leave.
+view-if: e23_rk_can_purge = 1
+on-arrival: {!
+Q.e23_reckoning = 4;
+RG.expel('brandler', {news: 'Brandler, Thalheimer and Walcher expelled'});
+RG.expel('thalheimer', {quiet: true});
+RG.expel('walcher', {quiet: true});
+Q.unionist_gone = 1;
+Q.unionist_satisfaction = 0;
+for (var d of Q.districts) {
+    if (Q['district_' + d + '_faction'] == 'unionist') {
+        Q['district_' + d + '_members'] *= 0.5;
+        Q['district_' + d + '_faction'] = 'offensive';
+        Q['district_' + d + '_loyalty'] = 50;
+    }
+}
+if (Q.junior_faction == 'unionist') { Q.junior_faction = 0; }
+Q.offensive_satisfaction += 10;
+Q.unity += 5;
+Q.worker_support -= 4;
+Q.lean_offensive += 3;
+RG.ledger('The Left expelled Brandler\'s Right at the end of 1923.', 'e23_reckoning');
+!}
+
+Brandler, Thalheimer and Walcher are expelled. Half of Saxony goes with them, and the old union men of Chemnitz found an opposition of their own.
+
+@middle_left
+subtitle: The Left shares power and waits. Unity holds, for now.
+view-if: e23_reckoning = 3 and e23_rk_left_present = 1
+on-arrival: {!
+Q.junior_faction = 'offensive';
+Q.offensive_satisfaction += 6;
+Q.unity += 4;
+RG.ledger('A middle group took the Zentrale at the end of 1923, with the Left as junior partner.', 'e23_reckoning');
+!}
+
+The Left takes its seats in the Zentrale and waits for the next congress.
+
+@close
+subtitle: The vote stands as it is.
+on-arrival: {!
+if (Q.e23_reckoning == 1) { RG.ledger('Brandler kept the Zentrale through the reckoning of December 1923.', 'e23_reckoning'); }
+if (Q.e23_reckoning == 2) { RG.ledger('The Left took the Zentrale at the end of 1923.', 'e23_reckoning'); }
+if (Q.e23_reckoning == 3) { RG.ledger('A middle group took the Zentrale at the end of 1923.', 'e23_reckoning'); }
+Q.unity -= (Q.e23_reckoning == 5) ? 4 : 0;
+!}
+
+The Central Committee rises at four in the morning. [? if e23_reckoning = 2 : Brandler stays in Germany, without a post, and his friends write to Moscow. ?][? if e23_reckoning = 1 : The Left goes home to prepare the next congress. ?][? if e23_reckoning = 3 : The Left goes home, angry, to prepare the next congress. ?]

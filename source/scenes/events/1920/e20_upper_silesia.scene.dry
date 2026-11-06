@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1920 and month = 11 and crisis = 0 and ending_id = 0
 max-visits: 1
+on-arrival: {!
+RG.news('Upper Silesia: Polish and German nationalists arm for the plebiscite', 2);
+!}
 
 = Upper Silesia
 

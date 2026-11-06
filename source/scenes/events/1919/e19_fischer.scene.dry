@@ -18,7 +18,15 @@ But they also think the Left Radicals are a dead end: a party that boycotts the 
 
 @berlin
 subtitle: The Left gets a voice in Berlin. Before the congress, it will be on our side.
-on-arrival: heid_left = 1; offensive_satisfaction += 8; lean_offensive += 2; district_berlin_loyalty += 5; ultraleft_satisfaction -= 4
+on-arrival: {!
+Q.heid_left = 1;
+Q.offensive_satisfaction += 8;
+Q.lean_offensive += 2;
+Q.district_berlin_loyalty += 5;
+Q.ultraleft_satisfaction -= 4;
+RG.setRole('fischer', 'Berlin district organiser');
+RG.ecci('zinoviev', 3);
+!}
 
 Within weeks Fischer is the best-known speaker in the Berlin district. The Left Radicals on the committee find their meetings full of her supporters.
 

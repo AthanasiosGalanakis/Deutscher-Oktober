@@ -14,6 +14,9 @@ Q.crisis_goal = 'Decide what the party fights for in Berlin, and keep its leader
 Q.crisis_momentum = 40;
 Q.lux_risk = 40;
 Q.lieb_risk = 45;
+RG.startStrike('berlin', true);
+RG.district('berlin', {militancy: 15});
+RG.news('Revolutionary Committee declares the Ebert government deposed', 3);
 !}
 
 = The January Uprising

@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1922 and month = 2
 max-visits: 1
+on-arrival: {!
+RG.news('Railway officials strike: Ebert forbids it by decree', 3);
+!}
 
 = The Railway Strike
 
@@ -23,6 +26,8 @@ subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Our 
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
+RG.startStrike('berlin');
+RG.district('berlin', {militancy: 5, repression: 3});
 if (Q.lock_councils == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -43,6 +48,7 @@ subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Th
 choose-if: lock_union_work < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids work inside the reformist unions.
 on-arrival: {!
+RG.ecci('radek', 3);
 if (Q.lock_union_work == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -60,6 +66,9 @@ Our members move resolutions in a hundred union branches: the federation must de
 subtitle: The Left's call. Brave, and few will follow it.
 view-if: offensive_gone = 0 or ultraleft_gone = 0
 on-arrival: {!
+RG.district('berlin', {militancy: 6, repression: 5});
+RG.district('halle', {militancy: 4});
+RG.ecci('bukharin', 4);
 Q.e22_railway = 3;
 Q.militancy += 10;
 Q.repression += 8;

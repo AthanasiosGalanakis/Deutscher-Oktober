@@ -5,6 +5,7 @@ tags: event
 view-if: year = 1923 and month = 12 and e23_rentenmark_done = 0 and crisis = 0
 max-visits: 1
 on-arrival: {!
+RG.news('The Rentenmark holds: bread costs the same at night', 3);
 Q.e23_rentenmark_done = 1;
 Q.inflation = 12;
 Q.stability += 12;
@@ -47,6 +48,8 @@ Our factory cells lead a hundred small strikes for the eight-hour day. Most are 
 @unemployed
 subtitle: The Left's answer. A new base among the desperate.
 on-arrival: {!
+RG.district('berlin', {militancy: 4});
+RG.district('ruhr', {militancy: 4});
 Q.militancy += 4;
 Q.worker_support += 2;
 Q.district_berlin_members *= 1.04;

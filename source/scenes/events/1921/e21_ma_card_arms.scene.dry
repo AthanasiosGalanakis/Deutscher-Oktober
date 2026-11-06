@@ -26,7 +26,7 @@ if (Q.lock_uprising == 1) {
 }
 Q.red_guards_arms += 10;
 Q.crisis_momentum += 5;
-Q.repression += 6;
+RG.district('halle', {guards: 1, repression: 8});
 Q.offensive_satisfaction += 3;
 Q.lean_offensive += 2;
 !}
@@ -37,8 +37,7 @@ A night raid on a police barracks near Eisleben brings in two hundred rifles and
 subtitle: More men under arms. Better if we already have arms to give them.
 on-arrival: {!
 Q.crisis_momentum += (Q.red_guards_arms >= 20) ? 6 : 2;
-Q.red_guards_strength += 3;
-Q.repression += 3;
+RG.district('halle', {guards: 3, repression: 4, militancy: 3});
 Q.lean_offensive += 1;
 !}
 

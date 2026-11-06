@@ -31,13 +31,22 @@ if (Q.e21_soviet_viable == 1) {
     Q.central_germany_soviet = 2;
     Q.ending_id = 2;
     Q.world_revolution += 15;
+    RG.ecci('zinoviev', 15);
+    RG.ecci('bukharin', 15);
+    RG.ecci('trotsky', 6);
+    RG.news('Soviet Republic of Central Germany proclaimed in Halle', 3);
+    RG.ledger('The Soviet Republic of Central Germany was proclaimed in Halle.', 'e21_cg_soviet');
 } else {
     Q.central_germany_soviet = 0;
     for (var d of Q.districts) {
         Q['district_' + d + '_members'] *= 0.85;
     }
     Q.district_halle_members *= 0.45;
-    Q.repression += 25;
+    Q.repression += 8;
+    RG.district('halle', {repression: 30, guards: -3});
+    RG.ecci('lenin', -10);
+    RG.news('The Reichswehr retakes Halle: the soviet republic lasted eleven days', 3);
+    RG.ledger('The Central German soviet republic was crushed by the Reichswehr after eleven days.', 'e21_cg_soviet_crushed');
     Q.red_guards_strength *= 0.3;
     Q.red_guards_arms -= 20;
     Q.unity -= 10;
@@ -73,6 +82,9 @@ Q.red_guards_arms += 5;
 Q.unionist_satisfaction += 10;
 Q.offensive_satisfaction += 2;
 Q.lean_unionist += 2;
+RG.district('halle', {repression: -10, guards: 1});
+RG.ecci('radek', 4);
+RG.ledger('The councils of Halle-Merseburg won recognition from the Prussian government.', 'e21_cg_councils');
 !}
 
 The councils stay, the arms stay hidden, and the Prussian government signs an agreement with the district council that it hopes nobody will read too closely. Central Germany becomes a place where the party is the law in the factories and the police come only when invited.
@@ -88,6 +100,8 @@ Q.militancy -= 5;
 Q.luxemburgist_satisfaction += 10;
 Q.offensive_satisfaction -= 10;
 Q.lean_luxemburgist += 2;
+RG.district('halle', {repression: -8, militancy: -4});
+RG.ecci('lenin', 5);
 !}
 
 The occupied works are handed back, in return for an amnesty and the recognition of the factory councils. The party's membership books, in every district, cannot be printed fast enough.

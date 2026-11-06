@@ -1,0 +1,103 @@
+title: A District Says No
+subtitle: One district leadership refuses to call its members out.
+new-page: true
+tags: event
+view-if: crisis_march = 1 and crisis_time = 2 and e21_refuse_done = 0 and e21_march_mode >= 1 and e21_refuse_district != 0
+max-visits: 1
+priority: 8
+on-arrival: {!
+Q.e21_refuse_done = 1;
+Q.e21_refuse_outcome = 0;
+var d = Q.e21_refuse_district;
+Q.e21_refuse_name = RG.dname(d);
+Q.e21_refuse_faction_name = RG.fname(Q['district_' + d + '_faction']);
+Q.e21_refuse_trade = RG.TRADES[d];
+Q.e21_refuse_saxony = (d == 'saxony') ? 1 : 0;
+Q.e21_refuse_mil = Math.round(Q['district_' + d + '_militancy']);
+!}
+
+= A District Says No
+
+A letter from the [+ e21_refuse_name +] district leadership reaches the Zentrale by the night train. It is polite and it is final. The district will not call [+ e21_refuse_trade +] out. The workers there are not ready, the secretary writes; the social democrats would break the strike in a day, and the police would have the names of every communist in the works by the end of the week.
+
+[? if e21_refuse_saxony = 1 : Chemnitz is Brandler's own district, and the letter is signed by men he trained. They say what he would say if he were not in the Zentrale. ?][? if e21_refuse_saxony = 0 : The district follows the [+ e21_refuse_faction_name +], and it has never liked taking orders from Berlin. ?]
+
+[? if e21_march_mode = 2 : Kun says that a district which refuses the offensive has deserted in the face of the enemy. ?][? if e21_march_mode = 1 : The strike in Central Germany needs every district that can come out. This one says it cannot. ?]
+
+- @order: Order them out, and replace the leadership.
+- @respect: Accept their judgement.
+- @courier: Send a member of the Zentrale to talk it over.
+- @denounce: Denounce them in the Rote Fahne as strike-breakers.
+
+@order
+subtitle: The Left's line: discipline in battle. The district comes out, sullen, and remembers who sent it.
+on-arrival: {!
+var d = Q.e21_refuse_district;
+Q.e21_refuse_outcome = 1;
+RG.startStrike(d, true);
+RG.district(d, {loyalty: -15, militancy: 8, repression: 8});
+Q.crisis_momentum += 4;
+Q.unity -= 4;
+Q.offensive_satisfaction += 4;
+Q.unionist_satisfaction -= 4;
+Q.lean_offensive += 2;
+RG.news('The Zentrale removes the ' + Q.e21_refuse_name + ' district leadership; the district strikes', 2);
+!}
+
+The Zentrale sends two of its own men to take over the district office. The old leadership is suspended, and [+ e21_refuse_trade +] are called out by strangers. About half of them come.
+
+@respect
+subtitle: The Spartacists and the Right: a district knows its own workers. The action will be weaker for it.
+on-arrival: {!
+var d = Q.e21_refuse_district;
+Q.e21_refuse_outcome = 2;
+RG.district(d, {loyalty: 8, repression: -3});
+Q.crisis_momentum -= 3;
+Q.luxemburgist_satisfaction += 3;
+Q.unionist_satisfaction += 4;
+Q.offensive_satisfaction -= 5;
+Q.lean_unionist += 1;
+Q.lean_luxemburgist += 1;
+!}
+
+The Zentrale writes back that the district is to stay at work and keep its organisation intact. In [+ e21_refuse_name +] the members are relieved, and grateful. In Mansfeld they are not.
+
+@courier
+subtitle: Costs 1 fund. Perhaps a district can be persuaded rather than ordered. Perhaps not.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds for the journey and the meetings.
+on-arrival: {!
+var d = Q.e21_refuse_district;
+Q.resources -= 1;
+RG.district(d, {militancy: 5});
+if (Math.random() < 0.3 + Q['district_' + d + '_loyalty'] / 200) {
+    Q.e21_refuse_outcome = 3;
+    RG.startStrike(d, true);
+    RG.district(d, {loyalty: 3, repression: 4});
+    Q.crisis_momentum += 5;
+    RG.news(Q.e21_refuse_name + ' comes out for Central Germany', 2);
+} else {
+    Q.e21_refuse_outcome = 4;
+    Q.crisis_momentum -= 1;
+}
+Q.lean_unionist += 1;
+!}
+
+A member of the Zentrale spends two days in [+ e21_refuse_name +], at the district office and at the factory gates. [? if e21_refuse_outcome = 3 : At the end of the second day the district conference votes to strike, by a small majority. The minority goes out with the majority. ?][? if e21_refuse_outcome = 4 : The district conference listens to him politely and votes to stay at work. ?]
+
+@denounce
+view-if: offensive_gone = 0
+subtitle: The Left's anger, in print. The district will hate us; some of its members will strike in shame.
+on-arrival: {!
+var d = Q.e21_refuse_district;
+Q.e21_refuse_outcome = 5;
+RG.district(d, {loyalty: -20, members: -0.08, militancy: 4});
+Q.crisis_momentum += 2;
+Q.unity -= 6;
+Q.offensive_satisfaction += 5;
+Q.luxemburgist_satisfaction -= 5;
+Q.lean_offensive += 1;
+RG.news('Rote Fahne attacks the ' + Q.e21_refuse_name + ' leadership as strike-breakers', 2);
+!}
+
+The Rote Fahne prints the district's letter under the headline "Strike-breakers in our own ranks". In [+ e21_refuse_name +] some members tear up their membership books, and some go out on strike so as not to be called cowards.

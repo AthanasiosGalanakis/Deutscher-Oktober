@@ -19,18 +19,37 @@ The SPD press writes that Lenin has restored capitalism and shot the revolution'
 
 @defend
 subtitle: The Left's line, and Moscow's. Loyalty first.
-on-arrival: independence -= 4; offensive_satisfaction += 4; luxemburgist_satisfaction -= 3; lean_offensive += 1
+on-arrival: {!
+Q.independence -= 4;
+Q.offensive_satisfaction += 4;
+Q.luxemburgist_satisfaction -= 3;
+Q.lean_offensive += 1;
+RG.ecci('zinoviev', 3);
+RG.ecci('trotsky', 3);
+!}
 
 The Rote Fahne calls the Kronstadt rebels tools of the White émigrés and the French general staff. Some of our readers believe it.
 
 @explain
 subtitle: The Right's way. Workers respect an honest account.
-on-arrival: worker_support += 2; unionist_satisfaction += 4; lean_unionist += 1
+on-arrival: {!
+Q.worker_support += 2;
+Q.unionist_satisfaction += 4;
+Q.lean_unionist += 1;
+RG.ecci('lenin', 4);
+RG.ecci('bukharin', 2);
+!}
 
 Thalheimer writes that the Russian workers have made a tactical retreat in a ruined country, as an army retreats to save itself. It is the most widely read article the paper prints that spring.
 
 @criticise
 subtitle: The Spartacist line, in Rosa Luxemburg's spirit. Moscow will not like it.
-on-arrival: independence += 6; luxemburgist_satisfaction += 6; offensive_satisfaction -= 6; lean_luxemburgist += 2
+on-arrival: {!
+Q.independence += 6;
+Q.luxemburgist_satisfaction += 6;
+Q.offensive_satisfaction -= 6;
+Q.lean_luxemburgist += 2;
+RG.ecci('all', -4);
+!}
 
 The Rote Fahne defends the Russian revolution, and says that freedom only for the members of one party is no freedom at all. The quotation is Luxemburg's. Radek asks who authorised it.

@@ -1563,11 +1563,11 @@ C.end = function () {
     if (Q.congress_won) {
         Q.congress_wins = num(Q.congress_wins) + 1;
         if (Q.congress_wins == 1) {
-            R.ledger('Won our first congress: ' + Q.congress_name + ', with ' + Q.congress_votes_for + ' per cent of the delegates.', 'cg_first_win');
+            R.ledger('Won our first congress: ' + String(Q.congress_name).replace(/^The /, 'the ') + ', with ' + Q.congress_votes_for + ' per cent of the delegates.', 'cg_first_win');
         }
     } else {
         Q.congress_losses = num(Q.congress_losses) + 1;
-        R.ledger('Lost ' + Q.congress_name + ' to the ' + R.fname(win) + '.', 'cg_lost_' + Q.congress_id + '_' + Q.time);
+        R.ledger('Lost ' + String(Q.congress_name).replace(/^The /, 'the ') + ' to the ' + R.fname(win) + '.', 'cg_lost_' + Q.congress_id + '_' + Q.time);
     }
     R.news(Q.congress_name + ': the ' + R.fname(win) + ' carry the vote', 3);
     Q.congress = 0;

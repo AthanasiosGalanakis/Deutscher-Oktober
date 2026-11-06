@@ -624,7 +624,7 @@
           if (info.members !== null) { dl += '<dt>Members</dt><dd>' + info.members.toFixed(1) + ' thousand</dd>'; }
           if (info.loyalty !== null) { dl += '<dt>Loyalty</dt><dd>' + levelWord(info.loyalty) + '</dd>'; }
           if (info.militancy !== null) { dl += '<dt>Militancy</dt><dd>' + levelWord(info.militancy) + '</dd>'; }
-          if (info.guards !== null) { dl += '<dt>Red guards</dt><dd>' + (info.guards > 0 ? Math.round(info.guards) + ' units' : 'none') + '</dd>'; }
+          if (info.guards !== null) { dl += '<dt>Red guards</dt><dd>' + (info.guards > 0 ? Math.round(info.guards) + (Math.round(info.guards) === 1 ? ' unit' : ' units') : 'none') + '</dd>'; }
           if (info.repression !== null) { dl += '<dt>Repression</dt><dd>' + levelWord(info.repression) + '</dd>'; }
           if (info.strike !== null) { dl += '<dt>Strike</dt><dd>' + (info.strike === 1 ? 'the district is out' : 'no') + '</dd>'; }
           var h2 = '<h3>' + esc(info.name) + '</h3>';

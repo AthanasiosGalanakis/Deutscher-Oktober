@@ -40,6 +40,7 @@ Levi publishes an article: a victory won by luck is not a method. The Left deman
 subtitle: Levi goes, almost alone. A few friends go with him.
 on-arrival: {!
 Q.e21_levi_fate = 4;
+RG.expel('levi', {news: 'Paul Levi returns his membership book', priority: 2});
 Q.levi_in_party = 0;
 Q.levi_split = 1;
 Q.levi_advisor = 0;

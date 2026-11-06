@@ -5,6 +5,11 @@ tags: event
 view-if: crisis_march = 1 and crisis_time = 1
 max-visits: 1
 priority: 10
+on-arrival: {!
+// 23 March: the unemployed occupy the Hamburg yards and are shot out of them
+RG.district('hamburg', {militancy: 10, repression: 10, loyalty: 3});
+RG.news('Hamburg: police clear the occupied shipyards with rifle fire', 2);
+!}
 
 = The General Strike Call
 
@@ -22,19 +27,34 @@ on-arrival: {!
 var gain = (Q.worker_support >= 30) ? 10 : ((Q.worker_support >= 20) ? 5 : 1);
 Q.crisis_momentum += gain;
 Q.e21_strike_gain = gain;
-Q.militancy += 6;
-Q.repression += 5;
+Q.militancy += 3;
+// the call reaches every district: where the mood is hot enough, they come out
+var need = (gain >= 10) ? 45 : ((gain >= 5) ? 55 : 68);
+Q.e21_ma_strikes = 0;
+for (var d of ['berlin', 'ruhr', 'hamburg', 'saxony', 'thuringia', 'bremen']) {
+    if (Q['district_' + d + '_militancy'] >= need) {
+        if (RG.startStrike(d, true)) { Q.e21_ma_strikes += 1; }
+        RG.district(d, {repression: 6});
+    }
+}
+RG.news('General strike called across the Reich: ' + (Q.e21_ma_strikes >= 3 ? 'the districts come out' : 'most of the country stays at work'), 3);
 Q.offensive_satisfaction += 6;
 Q.lean_offensive += 2;
 !}
 
-The call goes out on 24 March: a general strike throughout the Reich. [? if e21_strike_gain >= 10 : Hundreds of thousands answer it. For two days it looks as though the country might follow. ?][? if e21_strike_gain < 10 : In the Ruhr and in Berlin a minority comes out. Most workers read the call in the papers and go to work. ?]
+The call goes out on 24 March: a general strike throughout the Reich. [? if e21_strike_gain >= 10 : Hundreds of thousands answer it. For two days it looks as though the country might follow. ?][? if e21_strike_gain < 10 : In the Ruhr and in Berlin a minority comes out. Most workers read the call in the papers and go to work. ?] [? if e21_ma_strikes > 0 : Strike committees take over in [+ strike_districts +]. ?]
 
 @regional
 subtitle: The Right's caution: fight where we are strong, and nowhere else.
-on-arrival: crisis_momentum += 3; unionist_satisfaction += 4; offensive_satisfaction -= 4; lean_unionist += 1
+on-arrival: {!
+Q.crisis_momentum += 3;
+Q.unionist_satisfaction += 4;
+Q.offensive_satisfaction -= 4;
+Q.lean_unionist += 1;
+Q.e21_spread_to = RG.spreadStrike('halle') ? 1 : 0;
+!}
 
-The Zentrale keeps the strike to the province of Saxony and its neighbours. The Left says we are leaving Mansfeld to die alone. But no district is ordered into a fight it cannot win.
+The Zentrale keeps the strike to the province of Saxony and its neighbours. The Left says we are leaving Mansfeld to die alone. But no district is ordered into a fight it cannot win. [? if e21_spread_to = 1 : The strike crosses into the neighbouring district by itself, which is how a strike ought to spread. ?]
 
 @appeal
 subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Open Letter's method, in the middle of the fight.
@@ -51,6 +71,8 @@ Q.spd_relation += 3;
 Q.uspd_relation += 4;
 Q.lean_unionist += 1;
 Q.lean_luxemburgist += 1;
+RG.district('halle', {loyalty: 4, militancy: 3});
+RG.ecci('radek', 2);
 !}
 
 Our appeal goes to every SPD and USPD branch in Central Germany: defend the district together against Hörsing's police. Here and there, local branches join the strike committees against their own leaders' orders.

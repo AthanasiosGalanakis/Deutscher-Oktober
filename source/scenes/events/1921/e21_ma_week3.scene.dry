@@ -26,7 +26,10 @@ The Zentrale decides to end the action. The order goes out to the districts by c
 subtitle: The Left's line. One more week, and perhaps the country will move.
 on-arrival: {!
 Q.crisis_momentum += (Q.militancy >= 60) ? 6 : 2;
-Q.repression += 5;
+for (var d of Q.districts) {
+    if (Q['district_' + d + '_strike']) { RG.district(d, {repression: 5}); }
+}
+RG.district('halle', {repression: 3});
 Q.offensive_satisfaction += 6;
 Q.lean_offensive += 2;
 !}
@@ -35,6 +38,13 @@ The Zentrale orders the districts to hold on. The Rote Fahne, printed in secret,
 
 @retreat
 subtitle: The Right's caution. A little ground lost now; much less lost later.
-on-arrival: e21_arms_saved = 1; crisis_momentum -= 2; red_guards_arms += 4; unionist_satisfaction += 4; lean_unionist += 1
+on-arrival: {!
+Q.e21_arms_saved = 1;
+Q.crisis_momentum -= 2;
+Q.red_guards_arms += 4;
+Q.unionist_satisfaction += 4;
+Q.lean_unionist += 1;
+RG.district('halle', {guards: 0.5, militancy: -3});
+!}
 
 The fighting groups are told to pull back to the villages, bury their rifles and wait. The strike committees stay in being.

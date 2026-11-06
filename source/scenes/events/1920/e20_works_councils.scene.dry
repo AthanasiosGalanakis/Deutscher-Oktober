@@ -5,6 +5,9 @@ tags: event
 view-if: year = 1920 and month = 2
 max-visits: 1
 priority: 2
+on-arrival: {!
+RG.news('Works Councils Law in force: elections in every factory', 2);
+!}
 
 = The Works Councils Law
 

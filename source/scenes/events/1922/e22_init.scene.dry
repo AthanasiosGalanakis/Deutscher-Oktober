@@ -55,7 +55,23 @@ var start = {
     e23_red_region: 0,         // 1 Saxony and Thuringia, 2 the Ruhr, 3 Hamburg and the coast
     e23_reich_done: 0,
     e23_ban_done: 0, e23_seeckt_ambition: 0, e23_rentenmark_done: 0, e23_reckoning: 0, e23_directory: 0,
-    e23_generals_done: 0
+    e23_generals_done: 0,
+    // second pass: the systems
+    e22_fc_directive: 0, e22_sax_spd: 0, e22_sax_right: 0, e22_sax_majority: 0, e22_sax_stood: 0, e22_sax_gain: 0,
+    e23_lz_council: 0, e23_lz_radek: 0, e23_lz_right_pull: 0, e23_lz_left_pull: 0, e23_lz_record: 0,
+    e23_lz_backing: 'unionist', e23_lz_old_lead: 0, e23_lz_second: 0, e23_lz_second_name: 0, e23_lz_second_share: 0,
+    e23_lz_has_second: 0, e23_lz_left_second: 0, e23_lz_right_second: 0,
+    e23_lz_ruhr_used: 0, e23_lz_ruhr_left: 0, e23_lz_radek_used: 0, e23_lz_radek_name: 0, e23_lz_with_moscow: 0,
+    e23_lz_has_rival: 0, e23_lz_deal_name: 0, e23_lz_saxony_used: 0, e23_lz_sax_ours: 0, e23_lz_moved: 0,
+    e23_rk_backing: 'unionist', e23_rk_moscow_left: 0, e23_rk_three: 0, e23_rk_old: 0, e23_rk_can_purge: 0,
+    e23_rk_left_present: 0, e23_rk_kept: 0, e23_right_blamed: 0, e23_rk_count: 0, e23_lz_count: 0, e23_lz_dealt: 0,
+    e23_sch_directive: 0, e23_oct_directive: 0, e23_oct_verdict: 0, e23_oct_strength: 0, e23_oct_district_bonus: 0,
+    e23_oct_best_name: 0, e23_oct_worst_name: 0, e23_oct_arrests: 0, e23_oct_has_arrests: 0,
+    e23_oct_fallen: 0, e23_oct_has_fallen: 0, e23_hh_thal: 0, e23_ban_arrested: 0, e23_ban_has_arrests: 0,
+    e23_alone_d: 0, e23_alone_name: 0, e23_alone_trade: 0, e23_alone_ours: 0, e23_alone_faction: 0,
+    e23_hunger_d: 0, e23_hunger_name: 0, e23_hunger_trade: 0, e23_hunger_striking: 0,
+    e23_quarrel: 0, e23_q_rose: 0, e23_q_called: 0, e23_q_never: 0, e23_q_refused: 0,
+    e23_flight_done: 0, e23_fl_id: 0, e23_fl_name: 0, e23_fl_has: 0, e23_fl_ok: 0
 };
 for (var k in start) {
     if (Q[k] === undefined) {

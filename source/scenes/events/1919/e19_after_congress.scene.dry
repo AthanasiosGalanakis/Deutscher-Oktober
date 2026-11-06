@@ -23,14 +23,27 @@ on-arrival: kapd_split = 0
 @discipline
 subtitle: The Spartacist line. Less peace, more party.
 view-if: heidelberg_outcome = 2
-on-arrival: ultraleft_satisfaction -= 8; luxemburgist_satisfaction += 6; unity -= 4; lean_luxemburgist += 2
+on-arrival: {!
+Q.ultraleft_satisfaction -= 8;
+Q.luxemburgist_satisfaction += 6;
+Q.unity -= 4;
+Q.lean_luxemburgist += 2;
+RG.ecci('lenin', 2);
+!}
 
 Districts that boycott the unions lose their subsidies from the Zentrale. The Left Radicals call it blackmail, and stay, for now.
 
 @share
 subtitle: The Right's way: a broad party, and a slow one.
 view-if: heidelberg_outcome = 2
-on-arrival: ultraleft_satisfaction += 8; luxemburgist_satisfaction -= 4; unionist_satisfaction += 3; unity += 6; lean_unionist += 2
+on-arrival: {!
+Q.ultraleft_satisfaction += 8;
+Q.luxemburgist_satisfaction -= 4;
+Q.unionist_satisfaction += 3;
+Q.unity += 6;
+Q.lean_unionist += 2;
+RG.ecci('radek', 3);
+!}
 
 Wolffheim joins the Zentrale. Its meetings get longer. Its decisions get vaguer. The party does not split.
 
@@ -51,7 +64,15 @@ Levi refuses a seat for himself but lets two of his friends accept. The party st
 @purge
 subtitle: The Left Radicals' line to its end. The Spartacists may leave.
 view-if: heidelberg_outcome = 3
-on-arrival: luxemburgist_satisfaction -= 15; unionist_satisfaction -= 10; ultraleft_satisfaction += 8; unity -= 6; lean_ultraleft += 2
+on-arrival: {!
+Q.luxemburgist_satisfaction -= 15;
+Q.unionist_satisfaction -= 10;
+Q.ultraleft_satisfaction += 8;
+Q.unity -= 6;
+Q.lean_ultraleft += 2;
+RG.ecci('lenin', -6);
+RG.ecci('radek', -4);
+!}
 
 Officials who stood in elections or sat on union committees are removed. In Halle and Chemnitz, the members re-elect them the next week.
 
@@ -70,6 +91,8 @@ Q.comintern_member = 1;
 Q.luxemburgist_satisfaction += 6;
 Q.offensive_satisfaction += 4;
 Q.lean_offensive += 1;
+RG.ecci('lenin', 4);
+RG.ecci('zinoviev', 4);
 !}
 
 The Executive in Moscow sends a long letter: the party must not boycott the unions, and it must not drive out the comrades who disagree. The new Zentrale prints the letter, and ignores half of it.

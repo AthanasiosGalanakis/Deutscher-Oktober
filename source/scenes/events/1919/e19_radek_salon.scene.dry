@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1919 and month = 8 and crisis = 0
 max-visits: 1
+on-arrival: {!
+RG.news('Hungarian Soviet Republic falls; Romanian troops in Budapest', 3);
+!}
 
 = Radek's Salon
 
@@ -20,25 +23,60 @@ Radek agrees with [+ party_chair +] that the party must stand in elections and w
 
 @theses
 subtitle: The Spartacist line, with Moscow's weight behind it. Costs a little independence.
-on-arrival: heid_radek = 1; independence -= 3; luxemburgist_satisfaction += 4; ultraleft_satisfaction -= 4; lean_luxemburgist += 2
+on-arrival: {!
+Q.heid_radek = 1;
+Q.independence -= 3;
+Q.luxemburgist_satisfaction += 4;
+Q.ultraleft_satisfaction -= 4;
+Q.lean_luxemburgist += 2;
+RG.ecci('radek', 8);
+RG.ecci('lenin', 4);
+!}
 
 Radek writes that the boycott of parliament and the unions is the mistake of a young party, and that the congress must say so. He adds that it must say so without expelling anyone. The Zentrale reads the first half aloud.
 
 @unity
 subtitle: The Right's preference: a united party first, the argument later.
-on-arrival: heid_radek = 2; independence -= 2; unionist_satisfaction += 4; ultraleft_satisfaction += 3; lean_unionist += 2
+on-arrival: {!
+Q.heid_radek = 2;
+Q.independence -= 2;
+Q.unionist_satisfaction += 4;
+Q.ultraleft_satisfaction += 3;
+Q.lean_unionist += 2;
+RG.ecci('radek', 6);
+RG.ecci('zinoviev', 2);
+!}
 
 Radek's letter to the congress will be all about unity: the Bolsheviks also had their boycotters, and they did not throw them out. The Left Radicals start quoting him.
 
 @keep_out
 subtitle: The party's quarrels are German quarrels. The Left is disappointed.
-on-arrival: heid_radek = 0; independence += 5; offensive_satisfaction -= 4; luxemburgist_satisfaction += 2; lean_luxemburgist += 1
+on-arrival: {!
+Q.heid_radek = 0;
+Q.independence += 5;
+Q.offensive_satisfaction -= 4;
+Q.luxemburgist_satisfaction += 2;
+Q.lean_luxemburgist += 1;
+RG.ecci('radek', -10);
+RG.ecci('zinoviev', -4);
+!}
 
 The Zentrale thanks Radek for his advice and does not ask for more. In Moabit, Radek turns back to his industrialists.
 
 @join
 subtitle: The Left's wish. Lenin's International without us is a wound that must close.
 view-if: comintern_member = 0
-on-arrival: comintern_member = 1; independence -= 6; world_revolution += 4; offensive_satisfaction += 8; luxemburgist_satisfaction -= 4; lean_offensive += 2
+on-arrival: {!
+Q.comintern_member = 1;
+Q.independence -= 6;
+Q.world_revolution += 4;
+Q.offensive_satisfaction += 8;
+Q.luxemburgist_satisfaction -= 4;
+Q.lean_offensive += 2;
+RG.ecci('zinoviev', 8);
+RG.ecci('lenin', 5);
+RG.ecci('radek', 5);
+RG.news('German party joins the Communist International', 3);
+!}
 
 Radek's letter to Moscow goes out with the next courier. By September the German party is a section of the Communist International, like everyone else.

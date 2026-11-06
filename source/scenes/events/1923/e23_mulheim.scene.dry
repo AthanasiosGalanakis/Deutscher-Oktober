@@ -4,6 +4,9 @@ new-page: true
 tags: event
 view-if: year = 1923 and month = 4
 max-visits: 1
+on-arrival: {!
+RG.news('Red flag over the town hall of Mülheim', 2);
+!}
 
 = The Town Hall at Mülheim
 
@@ -20,6 +23,8 @@ subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The 
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed seizures.
 on-arrival: {!
+RG.startStrike('ruhr');
+RG.district('ruhr', {repression: 10, guards: 1});
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
@@ -43,6 +48,7 @@ subtitle: Costs 1 fund. Wins concessions on prices; some arrests.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds to send.
 on-arrival: {!
+RG.district('ruhr', {militancy: 2});
 Q.e23_mulheim = 2;
 Q.resources -= 1;
 Q.worker_support += 4;
@@ -57,6 +63,7 @@ The Zentrale's delegation, the town council and the union secretaries agree on f
 @withdraw
 subtitle: The careful answer. Fewer martyrs; the Ruhr Left is furious.
 on-arrival: {!
+RG.district('ruhr', {militancy: -6});
 Q.e23_mulheim = 3;
 Q.militancy -= 4;
 Q.district_ruhr_loyalty -= 8;

@@ -6,6 +6,10 @@ view-if: crisis_october = 1 and crisis_time >= 3 and e23_rising_phase = 2 and e2
 max-visits: 1
 priority: 3
 on-arrival: {!
+RG.news('Hamburg communists storm police stations in Barmbek', 3);
+RG.district('hamburg', {repression: 20, militancy: 10});
+if (Q.comrade_thalmann == 1) { RG.setRole('thalmann', 'Leader of the Hamburg rising'); }
+Q.e23_hh_thal = Q.comrade_thalmann == 1 ? 1 : 0;
 Q.e23_hamburg_done = 1;
 Q.repression += 8;
 !}
@@ -23,6 +27,11 @@ The police recover within hours. Marines arrive from Kiel. In Barmbek the fighte
 @retreat
 subtitle: Saves lives and the Hamburg organisation. The legend begins.
 on-arrival: {!
+if (Q.directive_active && Q.directive_id == 'october') { RG.directiveResolve('fail'); Q.directive_reckoning = 0; Q.e23_oct_verdict = 1; }
+Q.district_hamburg_guards *= 0.5;
+RG.ecci('zinoviev', -6);
+RG.ecci('trotsky', -10);
+if (Q.e23_hh_thal == 1) { RG.setRole('thalmann', 'Hamburg leader, in hiding'); }
 Q.german_october = 1;
 Q.e23_october_done = 1;
 Q.e23_oct_result = 0;
@@ -40,6 +49,12 @@ On the night of 25 October the last fighters slip away through the allotments wi
 @disown
 subtitle: The Zentrale keeps its hands clean, and Hamburg never forgives it.
 on-arrival: {!
+if (Q.directive_active && Q.directive_id == 'october') { RG.directiveResolve('fail'); Q.directive_reckoning = 0; Q.e23_oct_verdict = 1; }
+Q.district_hamburg_guards *= 0.3;
+RG.ecci('zinoviev', -10);
+RG.ecci('bukharin', -8);
+RG.ledger('Hamburg rose alone, and the Zentrale disowned it.', 'e23_barmbek');
+if (Q.e23_hh_thal == 1) { RG.arrest('thalmann', 8, {news: 'Thälmann arrested in Hamburg'}); }
 Q.german_october = 1;
 Q.e23_october_done = 1;
 Q.e23_oct_result = 0;
@@ -53,13 +68,19 @@ Q.unity -= 5;
 Q.lean_unionist += 1;
 !}
 
-*Die Rote Fahne* calls the rising a local action taken without the Zentrale's knowledge. In Hamburg the police read the paper with interest and arrest everyone named in it.
+[? if e23_hh_thal = 1 : Thälmann is taken in a raid on a Barmbek flat two days later. ?] *Die Rote Fahne* calls the rising a local action taken without the Zentrale's knowledge. In Hamburg the police read the paper with interest and arrest everyone named in it.
 
 @signal
 subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Two days late, and the enemy is warned. The Left demands it.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
+RG.startStrike('hamburg', true);
+RG.startStrike('berlin', true);
+RG.startStrike('saxony', true);
+RG.ecci('zinoviev', 4);
+RG.ecci('bukharin', 6);
+RG.news('Hamburg is the signal: the Reich rises', 3);
 if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;

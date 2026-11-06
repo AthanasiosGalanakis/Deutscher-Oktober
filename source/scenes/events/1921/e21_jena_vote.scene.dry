@@ -1,0 +1,307 @@
+title: Jena Votes
+subtitle: The congress elects a new Zentrale.
+new-page: true
+tags: event
+view-if: congress_jena = 2 and e21_jena_closed = 0
+max-visits: 1
+priority: 9
+on-arrival: {!
+Q.e21_jena_closed = 1;
+Q.e21_jena_walkout_lost = (Q.congress_walkout && !Q.congress_won) ? 1 : 0;
+RG.congressEnd();
+Q.e21_jena_winner = Q.congress_result_code;
+Q.e21_jena_margin = Q.congress_margin;
+Q.e21_jena_won = Q.congress_won ? 1 : 0;
+Q.e21_jena_share_u = Q.congress_share_unionist || 0;
+Q.e21_jena_share_o = Q.congress_share_offensive || 0;
+Q.e21_jena_share_l = Q.congress_share_luxemburgist || 0;
+Q.e21_left_strong = (Q.offensive_gone != 1 && Q.e21_jena_share_o >= 30) ? 1 : 0;
+// the line Moscow sent home from the world congress
+if (Q.directive_masses == 1) {
+    if (Q.congress_result == 'unionist') { RG.comply(30); }
+    else if (Q.congress_result == 'luxemburgist') { RG.comply(10); }
+}
+if (Q.congress_result == 'unionist') {
+    RG.setRole('meyer', 'Chairman of the Zentrale');
+    RG.ecci('lenin', 4);
+    RG.ecci('radek', 6);
+} else if (Q.congress_result == 'offensive') {
+    RG.setRole('fischer', 'Zentrale; leader of the Left');
+    RG.ecci('zinoviev', 6);
+    RG.ecci('bukharin', 6);
+    RG.ecci('lenin', -8);
+} else if (Q.congress_result == 'luxemburgist') {
+    RG.ecci('zinoviev', -6);
+    RG.ecci('lenin', 2);
+}
+!}
+
+= Jena Votes
+
+On the last evening the delegates vote by mandate cards, district by district, while the tellers count in the aisles. The motion of the **[+ congress_result_name +]** is carried. [? if e21_jena_share_u > 0 : The Right's motion has [+ e21_jena_share_u +] per cent. ?][? if e21_jena_share_o > 0 : The Left's has [+ e21_jena_share_o +] per cent. ?][? if e21_jena_share_l > 0 : Levi's friends have [+ e21_jena_share_l +] per cent. ?][? if e21_jena_share_l = 0 and e21_jena_levi_motion = 1 : The motion of Levi's friends fell in the first round, and its delegates voted again for the others. ?] [? if congress_close_call = 1 : A dozen mandates would have turned it. ?]
+
+[? if e21_jena_won = 1 : The motion the Zentrale fought for has won. ?][? if e21_jena_won = 0 : The motion the Zentrale fought for has lost, and the congress elects a Zentrale to carry out what the majority voted for. ?][? if e21_jena_walkout_lost = 1 : We threatened to walk out if we lost. We lost. The delegates of our current sit in the hall with their coats on, and the threat hangs over the vote like smoke. ?]
+
+[? if e21_jena_winner = 3 : Ernst Meyer will chair the new Zentrale, with Brandler and Thalheimer behind him. What remains to settle is what to do with the minority, and with Levi. ?][? if e21_jena_winner = 2 : Ruth Fischer's Left has the majority. Radek, in the gallery, telegraphs Moscow that the German party has gone left two years too early. ?][? if e21_jena_winner = 1 and levi_in_party = 1 : Levi's friends have the majority, and Levi has the chair if he wants it. ?][? if e21_jena_winner = 1 and levi_in_party = 0 : The congress has voted to readmit Levi and those who left with him. Lenin left the door ajar, and Jena has opened it. ?]
+
+- @close_ranks: Close ranks, and give the Left two seats.
+- @right_lead: Keep Levi in the ranks, and nothing more.
+- @readmit: Move Levi's readmission after all.
+- @expel_levi_r: Expel Levi to buy the Left's peace.
+- @left_zentrale: The Left takes the Zentrale, with the Right beside it.
+- @left_purge: The Left takes the Zentrale, and Levi goes.
+- @left_tolerate: The Left takes the Zentrale, and Levi stays, watched.
+- @levi_line: Levi takes the chair; the Right is the junior partner.
+- @keep_left: Levi takes the chair, with the Left in the Zentrale.
+- @readmit_won: Readmit Levi, and let Zetkin lead.
+- @no_readmit: Lead without Levi, after all.
+- @carry_on: Accept the congress's verdict.
+
+@close_ranks
+view-if: e21_jena_winner = 3 and levi_in_party = 0
+subtitle: What history did. The Left keeps a minority in the Zentrale; the Levi question is declared closed.
+on-arrival: {!
+Q.leading_faction = 'unionist';
+Q.junior_faction = (Q.offensive_gone == 1) ? 0 : 'offensive';
+Q.unity += 6;
+Q.unionist_satisfaction += 6;
+Q.offensive_satisfaction += 4;
+Q.lean_unionist += 2;
+if (!Q.congress_leadership_changed) { RG.ledger('The Jena congress elected a Zentrale of the Right under Ernst Meyer.', 'e21_jena_right'); }
+!}
+
+The congress elects a Zentrale around Ernst Meyer, with Brandler and Thalheimer behind it. Ruth Fischer's Left gets two places and a promise to be heard. The congress declares the Levi question closed. It will not stay closed.
+
+@right_lead
+view-if: e21_jena_winner = 3 and levi_in_party = 1
+subtitle: The Right's line, and Moscow's preference: Brandler and Meyer lead, Levi is kept but not trusted.
+on-arrival: {!
+Q.leading_faction = 'unionist';
+Q.junior_faction = (Q.luxemburgist_gone == 1) ? 0 : 'luxemburgist';
+Q.unionist_satisfaction += 6;
+Q.luxemburgist_satisfaction += 2;
+Q.offensive_satisfaction -= 6;
+Q.unity += 3;
+Q.lean_unionist += 2;
+RG.setRole('levi', 'Reichstag deputy; Central Committee');
+RG.ledger('Jena kept Levi in the party under a Zentrale of the Right.', 'e21_jena_right_levi');
+!}
+
+Ernst Meyer chairs the new Zentrale, with Brandler and Thalheimer. Levi is elected to the Central Committee and nothing more. He writes his speeches for the Reichstag now.
+
+@readmit
+view-if: e21_jena_winner = 3 and e21_can_readmit = 1 and levi_in_party = 0
+subtitle: The Spartacist line, against the majority's mood. The Right won the vote; it may not want Levi back.
+on-arrival: {!
+Q.lean_luxemburgist += 3;
+Q.leading_faction = 'unionist';
+Q.e21_jena_readmit_ok = (Q.e21_levi_score + (Q.e21_jena_share_l - 25) / 5 >= 2 || (Q.e21_levi_plea == 1 && Math.random() < 0.5)) ? 1 : 0;
+if (Q.e21_jena_readmit_ok) {
+    RG.free('levi', {news: 'Jena readmits Paul Levi', priority: 2});
+    Q.levi_in_party = 1;
+    Q.levi_split = 0;
+    Q.e21_levi_readmitted = 1;
+    Q.levi_advisor = 1;
+    Q.e21_levi_fate = 5;
+    Q.junior_faction = 'luxemburgist';
+    for (var d of Q.districts) {
+        Q['district_' + d + '_members'] *= 1.06;
+    }
+    Q.luxemburgist_satisfaction += 20;
+    Q.offensive_satisfaction -= 15;
+    Q.independence += 5;
+    RG.ecci('zinoviev', -8);
+    if (Q.offensive_gone != 1 && Q.offensive_satisfaction < 35) {
+        Q.e21_left_split_pending = 1;
+    }
+    RG.ledger('The Jena congress readmitted Paul Levi.', 'e21_levi_readmitted');
+} else {
+    Q.junior_faction = (Q.offensive_gone == 1) ? 0 : 'offensive';
+    Q.luxemburgist_satisfaction -= 10;
+    Q.unity -= 4;
+}
+!}
+
+[? if e21_jena_readmit_ok = 1 : The congress votes, narrowly, to readmit Levi and those who left with him, on condition that they accept its decisions. Levi accepts, in a speech so restrained that it sounds like an apology. Brandler's Right leads the new Zentrale, and Zetkin and Levi sit beside it. The Left walks out of the hall for an hour, and comes back muttering. ?][? if e21_jena_readmit_ok = 0 : The motion to readmit Levi is defeated by a large majority. The new Zentrale, under Ernst Meyer and Brandler, is elected by the same majority. Levi's last friends in the hall begin to talk about leaving. ?]
+
+@expel_levi_r
+view-if: e21_jena_winner = 3 and levi_in_party = 1 and offensive_gone = 0
+subtitle: The Left's demand, granted by the Right. Levi goes, his friends with him; the Left is bought, for now.
+on-arrival: {!
+RG.expel('levi', {news: 'Jena expels Paul Levi', priority: 2});
+Q.levi_in_party = 0;
+Q.levi_split = 1;
+Q.levi_advisor = 0;
+Q.e21_levi_fate = 1;
+for (var d of Q.districts) {
+    Q['district_' + d + '_members'] *= 0.95;
+    if (Q['district_' + d + '_faction'] == 'luxemburgist') {
+        Q['district_' + d + '_members'] *= 0.75;
+        Q['district_' + d + '_faction'] = 'unionist';
+        Q['district_' + d + '_loyalty'] = 45;
+    }
+}
+Q.leading_faction = 'unionist';
+Q.junior_faction = 'offensive';
+Q.offensive_satisfaction += 12;
+Q.luxemburgist_satisfaction -= 20;
+Q.unity -= 3;
+Q.lean_offensive += 1;
+Q.lean_unionist += 1;
+RG.ecci('zinoviev', 5);
+!}
+
+The Right gives the Left what it came for. Levi is expelled for the views he has held all year, and the Left takes two seats in Meyer's Zentrale. Zetkin votes against, and stays.
+
+@left_zentrale
+view-if: e21_jena_winner = 2 and levi_in_party = 0
+subtitle: The Left's line. The offensive's defenders lead; the Right is kept as junior partner, to do the union work.
+on-arrival: {!
+Q.leading_faction = 'offensive';
+Q.junior_faction = (Q.unionist_gone == 1) ? 0 : 'unionist';
+Q.e21_left_leads = 1;
+Q.offensive_satisfaction += 8;
+Q.unionist_satisfaction -= 6;
+Q.luxemburgist_satisfaction -= 8;
+Q.independence -= 3;
+Q.lean_offensive += 2;
+if (!Q.congress_leadership_changed) { RG.ledger('The Jena congress handed the Zentrale to Ruth Fischer\'s Left.', 'e21_jena_left'); }
+!}
+
+The Berlin delegation carries the congress. Ruth Fischer is elected to the Zentrale, and the Left holds the majority in it. Brandler's people keep the trade union department, because nobody else knows how to run it.
+
+@left_purge
+view-if: e21_jena_winner = 2 and levi_in_party = 1
+subtitle: The Left's demand. Levi goes, and his friends go with him.
+on-arrival: {!
+RG.expel('levi', {news: 'Jena expels Paul Levi', priority: 2});
+Q.levi_in_party = 0;
+Q.levi_split = 1;
+Q.levi_advisor = 0;
+Q.e21_levi_fate = 1;
+for (var d of Q.districts) {
+    Q['district_' + d + '_members'] *= 0.92;
+    if (Q['district_' + d + '_faction'] == 'luxemburgist') {
+        Q['district_' + d + '_members'] *= 0.65;
+        Q['district_' + d + '_faction'] = 'offensive';
+        Q['district_' + d + '_loyalty'] = 45;
+    }
+}
+Q.leading_faction = 'offensive';
+Q.junior_faction = (Q.unionist_gone == 1) ? 0 : 'unionist';
+Q.e21_left_leads = 1;
+Q.offensive_satisfaction += 12;
+Q.luxemburgist_satisfaction -= 25;
+Q.unity -= 6;
+Q.lean_offensive += 3;
+Q.lean_luxemburgist -= 2;
+RG.ecci('zinoviev', 4);
+RG.ledger('The Jena congress handed the Zentrale to the Left and expelled Levi.', 'e21_jena_left');
+!}
+
+The congress expels Paul Levi for the views he has held all year. He leaves the Volkshaus without a word. The Left takes the Zentrale.
+
+@left_tolerate
+view-if: e21_jena_winner = 2 and levi_in_party = 1
+subtitle: The Left leads, but stops short of a purge. Its own delegates will call it weakness; Levi will not stay grateful.
+on-arrival: {!
+Q.leading_faction = 'offensive';
+Q.junior_faction = (Q.unionist_gone == 1) ? 0 : 'unionist';
+Q.e21_left_leads = 1;
+Q.e21_levi_fate = 2;
+Q.offensive_satisfaction -= 4;
+Q.luxemburgist_satisfaction -= 6;
+Q.unity += 3;
+Q.lean_offensive += 1;
+Q.lean_unionist += 1;
+if (!Q.congress_leadership_changed) { RG.ledger('The Jena congress handed the Zentrale to Ruth Fischer\'s Left.', 'e21_jena_left'); }
+!}
+
+Ruth Fischer's Left takes the Zentrale, and Levi keeps his membership book. Fischer says from the platform that the party will judge him by his deeds. Levi says nothing at all, which in Levi is a sign of contempt.
+
+@levi_line
+view-if: e21_jena_winner = 1 and levi_in_party = 1
+subtitle: The Spartacist line: Levi and Zetkin lead, the Right is the junior partner. The Left may not stay.
+on-arrival: {!
+Q.leading_faction = 'luxemburgist';
+Q.junior_faction = (Q.unionist_gone == 1) ? 0 : 'unionist';
+Q.luxemburgist_satisfaction += 10;
+Q.offensive_satisfaction -= 12;
+Q.independence += 6;
+Q.lean_luxemburgist += 3;
+RG.setRole('levi', 'Chairman of the Zentrale');
+if (Q.offensive_gone != 1 && (Q.offensive_satisfaction < 45 || Q.e21_left_ahead == 1 || Q.e21_jena_share_o >= 30)) {
+    Q.e21_left_split_pending = 1;
+}
+RG.ledger('The Jena congress returned Paul Levi to the chair.', 'e21_jena_levi');
+!}
+
+Levi is elected to the chair again, with Zetkin beside him and Brandler's Right as the junior partner. The congress adopts the united front as the party's method, without reservation. [? if e21_left_split_pending = 1 : The Berlin delegation votes against everything, and leaves Jena without singing the Internationale. ?][? if e21_left_split_pending = 0 : The Left votes against, but it stays in the hall. ?]
+
+@keep_left
+view-if: e21_jena_winner = 1 and levi_in_party = 1 and offensive_gone = 0
+subtitle: Levi's line, but the Left in the Zentrale. No one leaves. No one is happy.
+on-arrival: {!
+Q.leading_faction = 'luxemburgist';
+Q.junior_faction = 'offensive';
+Q.offensive_satisfaction += 8;
+Q.luxemburgist_satisfaction -= 4;
+Q.unionist_satisfaction -= 5;
+Q.unity += 6;
+Q.lean_luxemburgist += 1;
+Q.lean_offensive += 1;
+RG.setRole('levi', 'Chairman of the Zentrale');
+RG.ledger('The Jena congress returned Paul Levi to the chair, with the Left beside him.', 'e21_jena_levi');
+!}
+
+Levi takes the chair; Ruth Fischer and Maslow's friends take three seats in the Zentrale. The resolutions are long and say two things at once. The party stays whole.
+
+@readmit_won
+view-if: e21_jena_winner = 1 and levi_in_party = 0
+subtitle: The motion has carried. Levi comes back, Zetkin leads, and the Left must decide whether it can live with it.
+on-arrival: {!
+RG.free('levi', {news: 'Jena readmits Paul Levi', priority: 2});
+Q.levi_in_party = 1;
+Q.levi_split = 0;
+Q.e21_levi_readmitted = 1;
+Q.levi_advisor = 1;
+Q.e21_levi_fate = 5;
+Q.e21_jena_readmit_ok = 1;
+Q.leading_faction = 'luxemburgist';
+Q.junior_faction = (Q.unionist_gone == 1) ? 0 : 'unionist';
+for (var d of Q.districts) {
+    Q['district_' + d + '_members'] *= 1.06;
+}
+Q.luxemburgist_satisfaction += 15;
+Q.offensive_satisfaction -= 15;
+Q.independence += 5;
+Q.lean_luxemburgist += 2;
+RG.setRole('zetkin', 'Chair of the Zentrale');
+RG.ecci('zinoviev', -6);
+if (Q.offensive_gone != 1 && Q.offensive_satisfaction < 40) {
+    Q.e21_left_split_pending = 1;
+}
+RG.ledger('The Jena congress readmitted Paul Levi.', 'e21_levi_readmitted');
+!}
+
+Levi and those who left with him are readmitted, on condition that they accept the decisions of the congress. Clara Zetkin chairs the Zentrale; Levi sits in it, in a speech so restrained that it sounds like an apology. [? if e21_left_split_pending = 1 : The Berlin delegation leaves the hall during the vote and does not come back. ?]
+
+@no_readmit
+view-if: e21_jena_winner = 1 and levi_in_party = 0
+subtitle: Zetkin and Meyer lead the Spartacists without him. Levi's friends will feel used; the Left will feel spared.
+on-arrival: {!
+Q.leading_faction = 'luxemburgist';
+Q.junior_faction = (Q.unionist_gone == 1) ? 0 : 'unionist';
+Q.luxemburgist_satisfaction -= 4;
+Q.offensive_satisfaction += 2;
+Q.unity += 3;
+RG.setRole('zetkin', 'Chair of the Zentrale');
+!}
+
+The motion is carried, and then quietly not applied. Zetkin and Meyer take the Zentrale and tell Levi's friends that the time is not yet right. Levi writes in his paper that he did not ask to come back.
+
+@carry_on
+view-if: e21_jena_winner = 4
+subtitle: The party goes on.
+
+The congress ends with the Internationale.

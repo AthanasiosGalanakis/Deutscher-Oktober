@@ -15,6 +15,7 @@ for (var d of Q.districts) {
     Q['district_' + d + '_members'] *= g;
 }
 Q.stability -= 4;
+RG.news('The Allies hand Germany their peace terms', 3);
 !}
 
 = The Peace Terms
