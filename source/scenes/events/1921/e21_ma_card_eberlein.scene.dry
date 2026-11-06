@@ -1,6 +1,6 @@
 title: The Eberlein Plan
-subtitle: A comrade proposes to manufacture outrage.
-view-if: crisis_march = 1 and e21_march_mode = 2
+subtitle: A member of the Zentrale proposes to manufacture outrage.
+view-if: crisis_march = 1 and (e21_march_mode = 2 or e21_offensive_plan = 3)
 max-visits: 1
 on-arrival: month_actions += 1
 frequency: 100
@@ -10,38 +10,57 @@ tags: crisis
 
 = The Eberlein Plan
 
-Hugo Eberlein, sent by the Zentrale to Central Germany, has a plan to make the workers angry enough to come out. Bombs at railway lines and munitions trains. Perhaps a staged attack on our own offices, or the faked kidnapping of a party leader, to be blamed on the right.
+Hugo Eberlein, sent by the Zentrale to Central Germany, wants to make the workers angry enough to come out. Bombs on the railway lines and the munitions trains. Perhaps an attack on our own offices, or the faked kidnapping of a party leader, to be blamed on the right.
 
-He says the masses need a shock. Some members of the Zentrale do not want to know the details.
+The masses need a shock, he says. He is sure that nobody will ever trace it back to us. Some members of the Zentrale would rather not hear the details.
 
-- @approve: Approve it.
-- @forbid: Forbid it outright.
-- @remove: Forbid it, and recall Eberlein.
+- @approve: Let him go ahead.
+- @forbid: Forbid it.
+- @recall: Forbid it, and bring Eberlein back to Berlin.
 
 @approve
-subtitle: The Left's logic, carried to its end. If it comes out, it will poison everything.
+subtitle: It may bring men out. If it comes out who did it, it will poison everything.
 on-arrival: {!
 Q.e21_ma_eberlein = 1;
-Q.crisis_momentum += 4;
-Q.repression += 2;
-RG.district('halle', {repression: 8});
-Q.luxemburgist_satisfaction -= 12;
-Q.unionist_satisfaction -= 6;
-Q.offensive_satisfaction += 2;
+if (Math.random() < 0.5) {
+    Q.e21_ma_out += 50;
+    Q.e21_eberlein_result = 1;
+} else {
+    Q.e21_ma_rift += 2;
+    Q.e21_eberlein_result = 2;
+    RG.district('halle', {repression: 10});
+}
+RG.news('Bomb damages a railway bridge near Halle', 2);
 Q.lean_offensive += 1;
-RG.news('Bomb damages railway bridge near Halle', 2);
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-A few bombs go off in the week that follows. A railway bridge is damaged. Nobody believes the right did it.
+A few bombs go off in the week that follows, and a railway bridge near Halle is damaged. [? if e21_eberlein_result = 1 : The right-wing papers blame each other and the miners blame the police. In several towns the workers come out in anger. ?][? if e21_eberlein_result = 2 : Nobody believes the right did it. Social democratic workers say openly that the communists are setting bombs. ?]
 
 @forbid
-subtitle: The Spartacist line: we do not deceive the workers.
-on-arrival: luxemburgist_satisfaction += 5; lean_luxemburgist += 1
+subtitle: Eberlein stays in the field. He has been told no before.
+on-arrival: {!
+Q.lean_luxemburgist += 1;
+if (Math.random() < 0.25) { Q.e21_ma_eberlein = 2; Q.e21_ma_rift += 1; }
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 
-The Zentrale forbids it. Eberlein shrugs and goes back to organising the fighting groups.
+The Zentrale forbids it. Eberlein shrugs and goes back to the fighting groups. [? if e21_ma_eberlein = 2 : Two nights later a charge goes off under a goods train near Ammendorf. Eberlein says he knows nothing about it. ?]
 
-@remove
-subtitle: The Spartacists and the Right together. The Left calls it weakness.
-on-arrival: luxemburgist_satisfaction += 6; unionist_satisfaction += 4; offensive_satisfaction -= 5; unity -= 2; lean_luxemburgist += 1; lean_unionist += 1
+@recall
+subtitle: No risk. The Left will call it weakness in the middle of a battle.
+on-arrival: {!
+Q.e21_ma_eberlein = 3;
+Q.offensive_satisfaction -= 6;
+Q.lean_luxemburgist += 1;
+Q.lean_unionist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 
-Eberlein is recalled to Berlin and his plan goes into the Zentrale's safe. It will not stay secret forever.
+Eberlein is called back to Berlin, and his plan goes into the Zentrale's safe. A copy of it does not.

@@ -1,50 +1,59 @@
-title: The Reckoning
+title: The First of April
 subtitle: The Zentrale must decide whether to go on.
 new-page: true
 tags: event
 view-if: crisis_march = 1 and crisis_time = 3 and e21_ma_calloff = 0
 max-visits: 1
 priority: 10
+on-arrival: {!
+var r = Q.e21_ma_out / Q.e21_ma_need;
+Q.e21_ma_state = (r >= 0.8) ? 1 : ((r >= 0.45) ? 2 : 3);
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 
-= The Reckoning
+= The First of April
 
-[? if crisis_momentum >= 65 : Against every expectation, the line is holding. The police have left half the copper district, the strike committees run Merseburg, and in Berlin and the Ruhr the strike is growing instead of shrinking. Hörsing is asking for the Reichswehr; General von Seeckt is asking for written orders. ?][? if crisis_momentum >= 35 and crisis_momentum < 65 : Nothing is decided. The strike holds in Central Germany and nowhere else. Every day it lasts, the police gain ground and the party loses members to arrest. ?][? if crisis_momentum < 35 : The action is collapsing. Outside Central Germany the strike call has been ignored. In some cities our people have tried to drive other workers out of the factories by force, and been beaten back by them. Thousands are in prison. ?]
+[? if e21_ma_state = 1 : The line is holding. In Berlin and the Ruhr the strike is growing instead of shrinking, and Hörsing is asking for the Reichswehr. General von Seeckt is asking for written orders. ?][? if e21_ma_state = 2 : Nothing is decided. The strike holds in Central Germany and in a few other places. Every day it lasts, the police take more of our people. ?][? if e21_ma_state = 3 : The action is collapsing. Outside Central Germany the call has been ignored, and thousands are in prison. ?][? if e21_ma_rift >= 3 : In some towns the men who stayed at work have beaten our pickets, and in others our pickets have beaten them. ?]
 
-[? if e21_ma_eberlein = 1 : The bombs set off on Hugo Eberlein's orders have killed no one important and convinced no one. The police are already following the trail back to the Zentrale. ?]
+[? if e21_ma_eberlein = 1 : The police have found the detonators from Eberlein's bombs, and are following the trail to Berlin. ?]
 
 - @calloff: Call off the action.
-- @fight: Fight on.
-- @retreat: Retreat in order, and keep the arms.
+- @fight: Fight on for another week.
+- @retreat: Send the men home, and keep the rifles.
 
 @calloff
-subtitle: The Spartacists and the Right ask for it. Saves what can still be saved.
-on-arrival: e21_ma_calloff = 1; luxemburgist_satisfaction += 4; unionist_satisfaction += 4; offensive_satisfaction -= 6; lean_luxemburgist += 1; lean_unionist += 1
+subtitle: Saves what can still be saved.
+on-arrival: e21_ma_calloff = 1; lean_luxemburgist += 1; lean_unionist += 1
 
-The Zentrale decides to end the action. The order goes out to the districts by courier: return to work, together, and hide the arms.
+The order goes out to the districts by courier: back to work, together, and hide the arms.
 
 @fight
-subtitle: The Left's line. One more week, and perhaps the country will move.
+subtitle: One more week, and perhaps the country will move. The pickets are getting rougher.
 on-arrival: {!
-Q.crisis_momentum += (Q.militancy >= 60) ? 6 : 2;
+Q.e21_ma_out += (Q.militancy >= 60) ? 40 : 15;
+Q.e21_ma_rift += 1;
 for (var d of Q.districts) {
     if (Q['district_' + d + '_strike']) { RG.district(d, {repression: 5}); }
 }
-RG.district('halle', {repression: 3});
-Q.offensive_satisfaction += 6;
 Q.lean_offensive += 2;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-The Zentrale orders the districts to hold on. The Rote Fahne, printed in secret, promises that the decisive days are coming.
+The Rote Fahne, printed in secret, tells the districts to hold on.
 
 @retreat
-subtitle: The Right's caution. A little ground lost now; much less lost later.
+subtitle: A little ground lost now. The fighting groups will still be there next year.
 on-arrival: {!
 Q.e21_arms_saved = 1;
-Q.crisis_momentum -= 2;
-Q.red_guards_arms += 4;
-Q.unionist_satisfaction += 4;
+Q.e21_ma_out = Math.max(20, Q.e21_ma_out - 20);
 Q.lean_unionist += 1;
-RG.district('halle', {guards: 0.5, militancy: -3});
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-The fighting groups are told to pull back to the villages, bury their rifles and wait. The strike committees stay in being.
+The fighting groups pull back to the villages and bury their rifles. The strike committees stay in being.

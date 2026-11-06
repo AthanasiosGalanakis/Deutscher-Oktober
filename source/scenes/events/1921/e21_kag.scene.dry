@@ -8,51 +8,46 @@ priority: 8
 on-arrival: {!
 Q.e21_kag_done = 1;
 Q.kag_exists = 1;
-RG.news('Levi\'s friends found the Communist Working Group', 3);
-RG.ledger('Levi\'s friends founded the Communist Working Group, the KAG.', 'e21_kag_founded');
 !}
 
 = The Communist Working Group
 
-Levi's supporters have left the party, or been pushed out of it. Ernst Däumig, Adolph Hoffmann, Otto Brass, Curt Geyer, Paul Malzahn and a group of Reichstag deputies form the **Kommunistische Arbeitsgemeinschaft**, the Communist Working Group, around Levi. They say they are still communists, against Moscow's emissaries and against putschism. They have a newspaper, a Reichstag group and friends in the metalworkers' union.
+Ernst Däumig, Adolph Hoffmann, Otto Brass, Curt Geyer, Paul Malzahn and a group of Reichstag deputies form the **Kommunistische Arbeitsgemeinschaft** around Levi. They say they are still communists, and against Moscow's emissaries and against putschism. They have a paper, a Reichstag group and friends in the metalworkers' union.
 
-[? if e21_levi_fate = 4 : They are few: Levi left almost alone, after a victory, and most of his friends stayed. ?][? if e21_levi_fate != 4 : In the districts, members who agreed with Levi are deciding whether to follow. ?]
+[? if e21_levi_fate = 4 : They are few. Levi left almost alone, after a victory, and most of his friends stayed. ?][? if e21_levi_fate != 4 : In the districts, the members who agreed with Levi are deciding whether to follow him. ?]
 
-- @rank_and_file: Win back the rank and file, not the leaders.
+- @rank_and_file: Win back the rank and file, one by one.
 - @renegades: Denounce them as renegades.
-- @talks: Offer the KAG joint work.
+- @talks: Offer the KAG joint work in the unions.
 
 @rank_and_file
-subtitle: The Right's way. Patient, and it keeps most of the waverers.
+subtitle: Patient. Most of the waverers stay.
 on-arrival: {!
-var f = (Q.e21_levi_fate == 4) ? 0.99 : 0.93;
+var f = (Q.e21_levi_fate == 4) ? 0.99 : 0.95;
 for (var d of Q.districts) {
     Q['district_' + d + '_members'] *= f;
 }
-Q.unionist_satisfaction += 4;
 Q.lean_unionist += 1;
 !}
 
-Party organisers visit every member who has stopped paying dues. Most are not interested in Levi; they are tired, or out of work. Many come back.
+Party organisers visit every member who has stopped paying dues. Most of them are not interested in Levi. They are tired, or out of work, and many come back.
 
 @renegades
 view-if: offensive_gone = 0
-subtitle: The Left's way. Clear lines, and more members lost.
+subtitle: A clean line, and every doubter shown the door. The Left will be pleased.
 on-arrival: {!
 var f = (Q.e21_levi_fate == 4) ? 0.97 : 0.89;
 for (var d of Q.districts) {
     Q['district_' + d + '_members'] *= f;
 }
-Q.offensive_satisfaction += 6;
-Q.luxemburgist_satisfaction -= 6;
-Q.unity += 3;
+Q.unity += 4;
 Q.lean_offensive += 2;
 !}
 
-The Rote Fahne calls the KAG a bridge back to the SPD for deserters. Every member who has doubts is invited to cross it. Thousands do.
+The Rote Fahne calls the KAG a bridge back to the SPD for deserters, and invites every member with doubts to cross it. Thousands do.
 
 @talks
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Spartacist way: treat them as comrades in a different room.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Comrades in another room. Moscow will ask why we are talking to a man the International expelled.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any deal with Levi's group.
 on-arrival: {!
@@ -60,16 +55,12 @@ if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-var f = (Q.e21_levi_fate == 4) ? 0.99 : 0.94;
+var f = (Q.e21_levi_fate == 4) ? 0.99 : 0.96;
 for (var d of Q.districts) {
     Q['district_' + d + '_members'] *= f;
 }
-Q.luxemburgist_satisfaction += 8;
-Q.offensive_satisfaction -= 8;
-Q.independence += 3;
-RG.ecci('zinoviev', -6);
-RG.ecci('lenin', -2);
 Q.lean_luxemburgist += 2;
+RG.ecci('zinoviev', -6);
 !}
 
-The Zentrale proposes joint work in the unions and the Reichstag. Levi accepts, coolly. Moscow asks why we are negotiating with a man the International has expelled.
+The Zentrale proposes joint work in the unions and the Reichstag. Levi accepts, coolly.

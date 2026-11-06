@@ -7,8 +7,13 @@ max-visits: 1
 priority: 10
 on-arrival: {!
 Q.e21_third_done = 1;
-// Lenin's verdict on the German party is coloured by what he thinks of it
 Q.e21_lenin_mood = (Q.ecci_lenin >= 60) ? 1 : ((Q.ecci_lenin >= 40) ? 2 : 3);
+// Levi's chances, if his case is still open, before anyone pleads for him
+var p = 20 + (Q.independence - 50) / 2 + 2 * ((Q.history_luxemburgist || 0) - (Q.history_offensive || 0)) + (Q.ecci_lenin - 50) / 2;
+if (Q.luxemburg_alive == 1) { p += 20; }
+Q.e21_plea_p = Math.max(5, Math.min(75, p + 30));
+Q.e21_plea_odds = (Q.e21_plea_p < 35) ? 1 : ((Q.e21_plea_p < 60) ? 2 : 3);
+Q.e21_levi_open = (Q.e21_levi_fate == 2 && Q.levi_in_party == 1) ? 1 : 0;
 if (Q.comintern_member == 1) {
     RG.directive({
         id: 'masses',
@@ -23,146 +28,94 @@ if (Q.comintern_member == 1) {
         announce: false
     });
 }
-RG.news('World congress in Moscow: Lenin calls the communists "to the masses"', 3);
 !}
 
 = To the Masses
 
-The Third Congress of the Communist International sits in Moscow from 22 June to 12 July, in the throne room of the Kremlin. The German question takes more time than any other.
+The Third Congress of the International sits in the Kremlin from 22 June to 12 July, and the German question takes more of its time than any other.
 
-[? if march_action = 1 : Zinoviev and Bukharin defend the March Action as a step forward. Lenin and Trotsky do not. Lenin says that the theory of the offensive is nonsense, and that a party which has not yet won the majority of the working class cannot seize power for it. His slogan for the congress is: to the masses! ?][? if march_action = 0 : Zinoviev and Kun accuse the German Zentrale of passivity: it let Hörsing occupy Mansfeld without a fight. Lenin cuts them short. A party that has not yet won the majority of the working class, he says, must not be provoked into fighting for it. His slogan for the congress is: to the masses! ?][? if march_action = 2 : Zinoviev hails the victory in Central Germany as the first great success of the International in the West. Lenin is more careful. One district is not Germany, he says, and the party must now win the majority of the working class. His slogan for the congress is: to the masses! ?]
+[? if march_action = 1 : Zinoviev and Bukharin defend the March Action as a step forward. Lenin says that the theory of the offensive is nonsense, and that a party which has not won the majority of the working class cannot take power for it. ?][? if march_action = 0 : Zinoviev and Kun accuse the German Zentrale of letting Hörsing take Mansfeld without a fight. Lenin cuts them short: a party that has not won the majority must not be provoked into fighting for it. ?][? if march_action = 2 : Zinoviev hails the victory in Central Germany. Lenin says that one district is not Germany, and that the party must now win the majority of the working class. ?] His slogan for the congress is: to the masses!
 
-[? if e21_levi_fate = 1 : Clara Zetkin pleads for Levi, who has been expelled. Lenin tells her privately that Levi was right about March, and had no right to say so the way he did. ?][? if e21_levi_fate = 2 : Levi's case is on the agenda. Zetkin will plead for him. Lenin has said privately that Levi was right about much, and broke discipline all the same. ?][? if levi_in_party = 1 and e21_levi_fate != 2 : Levi is not on trial here. Some of the Russians wish he were in the German delegation; some are glad he is not. ?]
+[? if e21_lenin_mood = 1 : Lenin's anger is for Kun and the emissaries, and he speaks of the German comrades as people who can be trusted to learn. ?][? if e21_lenin_mood = 2 : Lenin is not hostile to the German delegation, and not patient with it either. ?][? if e21_lenin_mood = 3 : Lenin names the German Zentrale in his speech, and not kindly. ?][? if e21_levi_open = 1 : Levi's case is on the agenda, and Zetkin has come to plead for him. ?][? if e21_levi_fate = 1 : Zetkin has come to plead for Levi, who has been expelled. ?]
 
-[? if e21_lenin_mood = 1 : Lenin's anger is for Kun and the emissaries, not for the German party. In the commission he speaks of the German comrades as of people who made a mistake and can be trusted to learn from it. ?][? if e21_lenin_mood = 2 : Lenin's speech is a lecture, and the German delegation is in the front row. He is not hostile. He is not patient either. ?][? if e21_lenin_mood = 3 : Lenin names the German Zentrale in his speech, and not kindly. A party that has lost his confidence, the delegates whisper, will not find it again by applauding him. ?]
-
-[? if e21_moscow_friend = 1 : Zetkin has Lenin's ear, and everyone knows it. ?][? if e21_moscow_friend = 2 : Zinoviev defends the German Left from the chair, and earns a look from Lenin that the delegates talk about for days. ?][? if e21_moscow_friend = 3 : Radek drafts the German resolution himself, in a version both sides can sign. ?]
-
-[? if kapd_exists = 1 : The KAPD delegates are told to merge with us within three months or leave the International. They leave the hall instead. ?]
-
-- @accept: Accept the theses: win the majority first.
+- @accept: Accept the theses.
 - @defend: Defend the March Action.
 - @promise: Promise that next time we will fight.
 - @plea: Plead for Levi with Lenin.
-- @own: Insist that the German party decides for itself.
+- @own: Accept the theses, and say we will apply them our own way.
 
 @accept
-subtitle: The Right's line, and Lenin's. Moscow is pleased.
+subtitle: Lenin, Trotsky and Radek will be pleased. The word "offensive" leaves the Rote Fahne.
 on-arrival: {!
-Q.unionist_satisfaction += 10;
-Q.offensive_satisfaction -= 5;
-Q.independence -= 4;
-Q.lean_unionist += 2;
 Q.e21_masses_stance = 1;
+Q.lean_unionist += 2;
 RG.comply(35);
 RG.ecci('lenin', 8);
 RG.ecci('trotsky', 6);
-RG.ecci('radek', 4);
-RG.ecci('zinoviev', -2);
 !}
-
-The German delegation votes for the theses on tactics. The word "offensive" disappears from the Rote Fahne. The word "united front" will soon replace it.
-
-- @verdict: Continue...
+go-to: verdict
 
 @defend
 view-if: march_action != 0 and offensive_gone = 0
-subtitle: The Left's line. Zinoviev will be grateful; Lenin will remember.
+subtitle: Zinoviev will be grateful. Lenin will remember.
 on-arrival: {!
-Q.offensive_satisfaction += 10;
-Q.luxemburgist_satisfaction -= 8;
-Q.independence -= 2;
-Q.lean_offensive += 2;
 Q.e21_masses_stance = 2;
+Q.lean_offensive += 2;
 RG.ecci('zinoviev', 6);
-RG.ecci('bukharin', 8);
 RG.ecci('lenin', -10);
-RG.ecci('trotsky', -6);
 !}
-
-The delegates from Berlin defend every day of March. Lenin listens, and in the commission he makes them rewrite their resolution three times.
-
-- @verdict: Continue...
+go-to: verdict
 
 @promise
 view-if: march_action = 0 and offensive_gone = 0
-subtitle: The Left's answer to Zinoviev. Militancy rises; so does Lenin's eyebrow.
+subtitle: Zinoviev applauds. Lenin asks who will do the fighting.
 on-arrival: {!
-Q.offensive_satisfaction += 8;
-Q.militancy += 4;
-Q.luxemburgist_satisfaction -= 5;
-Q.lean_offensive += 2;
 Q.e21_masses_stance = 2;
+Q.militancy += 4;
+Q.lean_offensive += 2;
 RG.ecci('zinoviev', 5);
-RG.ecci('bukharin', 5);
 RG.ecci('lenin', -5);
 !}
-
-The German delegation promises that the next provocation will be answered. Zinoviev applauds. Lenin asks who will do the fighting.
-
-- @verdict: Continue...
+go-to: verdict
 
 @plea
-view-if: e21_levi_fate = 1 or e21_levi_fate = 2
-subtitle: The Spartacist line. Lenin likes Levi. He likes discipline more.
+view-if: e21_levi_open = 1 or e21_levi_fate = 1
+subtitle: [? if e21_levi_fate = 1 : Levi is out. Lenin might leave the door open for him to come back. ?][? if e21_levi_open = 1 and e21_plea_odds = 1 : Zetkin does not think Lenin can be moved. ?][? if e21_levi_open = 1 and e21_plea_odds = 2 : Zetkin thinks Lenin might go either way. ?][? if e21_levi_open = 1 and e21_plea_odds = 3 : Zetkin thinks Lenin will listen. ?]
 on-arrival: {!
 Q.e21_levi_plea = 1;
-Q.luxemburgist_satisfaction += 8;
-Q.offensive_satisfaction -= 6;
-Q.independence += 2;
-Q.lean_luxemburgist += 2;
 Q.e21_masses_stance = 3;
-RG.comply(10);
-RG.ecci('lenin', 3);
+Q.lean_luxemburgist += 2;
 RG.ecci('zinoviev', -6);
 !}
-
-Zetkin goes to Lenin's office in the Kremlin with the German delegation's mandate behind her. They talk for two hours.
-
-- @verdict: Continue...
+go-to: verdict
 
 @own
-subtitle: The Spartacist line. Moscow's money will be shorter.
+subtitle: A declaration of independence, made politely. Moscow's money will be shorter.
 on-arrival: {!
+Q.e21_masses_stance = 4;
 Q.independence += 8;
 Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
-Q.luxemburgist_satisfaction += 5;
-Q.offensive_satisfaction -= 5;
 Q.lean_luxemburgist += 2;
-Q.e21_masses_stance = 4;
-RG.comply(5);
 RG.ecci('zinoviev', -8);
-RG.ecci('lenin', -3);
 RG.ecci('radek', 2);
 !}
-
-The German delegation accepts the theses but declares that it will apply them as the German party sees fit. Radek calls it a declaration of independence and congratulates them, in private.
-
-- @verdict: Continue...
+go-to: verdict
 
 @verdict
 title: The Verdict
 new-page: true
 on-arrival: {!
 Q.e21_levi_verdict = 0;
-if (Q.e21_levi_fate == 2 && Q.levi_in_party == 1) {
-    var p = 20;
-    if (Q.e21_levi_plea) { p += 30; }
-    p += (Q.independence - 50) / 2;
-    p += 2 * ((Q.history_luxemburgist || 0) - (Q.history_offensive || 0));
-    p += (Q.ecci_lenin - 50) / 2;
-    if (Q.luxemburg_alive == 1) { p += 20; }
-    p = Math.max(5, Math.min(75, p));
+if (Q.e21_levi_open == 1) {
+    var p = Q.e21_levi_plea ? Q.e21_plea_p : Math.max(5, Q.e21_plea_p - 30);
     if (100 * Math.random() < p) {
         Q.e21_levi_verdict = 2;
         Q.e21_levi_fate = 5;
         RG.news('Lenin saves Levi: censured, not expelled', 2);
-        Q.luxemburgist_satisfaction += 8;
-        Q.offensive_satisfaction -= 8;
     } else {
         Q.e21_levi_verdict = 1;
         Q.e21_levi_fate = 1;
-        RG.expel('levi', {news: 'The world congress expels Paul Levi', priority: 2});
+        RG.expel('levi', {news: 'The world congress expels Paul Levi', priority: 3});
         Q.levi_in_party = 0;
         Q.levi_split = 1;
         Q.levi_advisor = 0;
@@ -180,20 +133,14 @@ if (Q.e21_levi_fate == 2 && Q.levi_in_party == 1) {
             Q.junior_faction = 'offensive';
         }
         Q.luxemburgist_satisfaction -= 15;
-        Q.offensive_satisfaction += 6;
     }
 } else if (Q.e21_levi_fate == 1) {
     Q.e21_levi_verdict = 3;
 }
-RG.ledger(Q.e21_lenin_mood == 3 ? 'Lenin condemned the German Zentrale before the Third World Congress.' : 'The Third World Congress sent the German party "to the masses".', 'e21_third_congress');
 !}
 
-= The Verdict
+[? if e21_masses_stance = 1 : The German delegation votes for the theses on tactics without amendment. ?][? if e21_masses_stance = 2 : The Berlin delegates defend every day of March, and Lenin makes them rewrite their resolution three times. ?][? if e21_masses_stance = 3 : Zetkin goes to Lenin's office with the delegation's mandate, and they talk for two hours. ?][? if e21_masses_stance = 4 : Radek calls the German declaration a declaration of independence, and congratulates the delegates in private. ?] The congress adopts Lenin's theses: the communist parties are to win the majority of the working class before they try to lead it to power.
 
-The congress adopts Lenin's theses on tactics. The communist parties are to win the majority of the working class before they try to lead it to power. [? if march_action = 1 : The March Action is called a step forward in the resolution and a mistake in every speech. ?]
+[? if e21_levi_verdict = 2 : On Levi, the congress censures and does not expel. Lenin's formula is that Levi is to be kept, watched and used, and Zetkin brings him the news herself. ?][? if e21_levi_verdict = 1 : On Levi, the congress decides what the Zentrale would not: he is expelled for breach of discipline. Lenin tells Zetkin afterwards that Levi was right about March, and that he lost his head. ?][? if e21_levi_verdict = 3 : The congress confirms Levi's expulsion. Lenin tells Zetkin privately that Levi was right about March, and had no right to say it the way he did. ?][? if e21_levi_verdict = 3 and e21_levi_plea = 1 : He agrees that the door may open again if Levi submits to the party. Levi has not said he will. ?]
 
-[? if e21_levi_verdict = 2 : On Levi, the congress decides to censure, not expel. Lenin's formula is that Levi is to be kept, watched and used. Zetkin brings him the news in person. ?][? if e21_levi_verdict = 1 : On Levi, the congress confirms what the Zentrale would not decide: he is expelled for breach of discipline. His friends in the Reichstag group start to talk about leaving with him. ?][? if e21_levi_verdict = 3 and e21_levi_plea = 0 : The congress confirms Levi's expulsion. ?][? if e21_levi_verdict = 3 and e21_levi_plea = 1 : The congress confirms Levi's expulsion. But Lenin agrees with Zetkin that the door may be opened again if Levi submits to the party. Levi has not said he will. ?]
-
-[? if directive_masses = 1 : The congress's instruction goes home with the delegates: win the majority of the working class. Lenin will want to know, before the year is out, what the German party has done about it. ?]
-
-The delegates go home to prepare the party's congress, called for Jena in August.
+The delegates go home to prepare for the party congress at Jena in August.

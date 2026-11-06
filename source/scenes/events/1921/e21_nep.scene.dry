@@ -1,5 +1,5 @@
 title: Kronstadt and the NEP
-subtitle: News from Russia that the party must explain.
+subtitle: The sailors are crushed and the peasants may trade again.
 new-page: true
 tags: event
 view-if: year = 1921 and month = 4 and crisis = 0
@@ -9,47 +9,41 @@ on-arrival: soviet_russia_status = 'Kronstadt crushed; the New Economic Policy b
 
 = Kronstadt and the NEP
 
-While Central Germany was fighting, the sailors of Kronstadt, the heroes of 1917, rose against the Bolsheviks under the slogan of soviets without communists. The Red Army crossed the ice and crushed them on 18 March. In the same days the Tenth Congress of the Russian party abandoned the requisitioning of grain, allowed the peasants to trade, and banned factions inside the party.
+While Central Germany was fighting, the sailors of Kronstadt rose against the Bolsheviks for soviets without communists. The Red Army crossed the ice and crushed them on 18 March. In the same days the Russian party congress ended the requisitioning of grain, let the peasants trade, and banned factions inside the party.
 
-The SPD press writes that Lenin has restored capitalism and shot the revolution's own sailors. Our members want to know what to say at work.
+The *Vorwärts* writes that Lenin has brought back capitalism and shot the revolution's own sailors. Our members want to know what to say at work.
 
 - @defend: Defend the suppression of Kronstadt without reservation.
-- @explain: Explain the NEP honestly: a retreat, not a defeat.
+- @explain: Explain the NEP as a retreat to save the revolution.
 - @criticise: Say openly what troubles us.
 
 @defend
-subtitle: The Left's line, and Moscow's. Loyalty first.
+subtitle: Zinoviev and Trotsky will be pleased. Not every reader will believe it.
 on-arrival: {!
 Q.independence -= 4;
-Q.offensive_satisfaction += 4;
-Q.luxemburgist_satisfaction -= 3;
 Q.lean_offensive += 1;
 RG.ecci('zinoviev', 3);
 RG.ecci('trotsky', 3);
 !}
 
-The Rote Fahne calls the Kronstadt rebels tools of the White émigrés and the French general staff. Some of our readers believe it.
+The Rote Fahne calls the Kronstadt rebels tools of the White émigrés and the French general staff.
 
 @explain
-subtitle: The Right's way. Workers respect an honest account.
+subtitle: An honest account. Lenin will read it.
 on-arrival: {!
 Q.worker_support += 2;
-Q.unionist_satisfaction += 4;
 Q.lean_unionist += 1;
-RG.ecci('lenin', 4);
-RG.ecci('bukharin', 2);
+RG.ecci('lenin', 5);
 !}
 
-Thalheimer writes that the Russian workers have made a tactical retreat in a ruined country, as an army retreats to save itself. It is the most widely read article the paper prints that spring.
+Thalheimer writes that the Russian workers have made a retreat in a ruined country, as an army retreats to save itself. It is the most widely read article the paper prints that spring.
 
 @criticise
-subtitle: The Spartacist line, in Rosa Luxemburg's spirit. Moscow will not like it.
+subtitle: Rosa Luxemburg's words, used against Moscow. The whole Executive will take offence.
 on-arrival: {!
 Q.independence += 6;
-Q.luxemburgist_satisfaction += 6;
-Q.offensive_satisfaction -= 6;
 Q.lean_luxemburgist += 2;
 RG.ecci('all', -4);
 !}
 
-The Rote Fahne defends the Russian revolution, and says that freedom only for the members of one party is no freedom at all. The quotation is Luxemburg's. Radek asks who authorised it.
+The Rote Fahne defends the Russian revolution, and adds that freedom only for the members of one party is no freedom at all. The words are Luxemburg's. Radek asks who authorised them.

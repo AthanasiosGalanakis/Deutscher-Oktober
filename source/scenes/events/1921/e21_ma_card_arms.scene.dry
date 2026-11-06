@@ -1,6 +1,6 @@
 title: Rifles and Ammunition
 subtitle: The fighting groups are short of everything.
-view-if: crisis_march = 1
+view-if: crisis_march = 1 and e21_march_mode = 2
 on-arrival: month_actions += 1
 frequency: 100
 is-card: true
@@ -9,14 +9,14 @@ tags: crisis
 
 = Rifles and Ammunition
 
-The fighting groups in the Mansfeld villages have shotguns, a few army rifles from 1918 and almost no ammunition. The miners have dynamite. The police have machine guns and armoured cars.
+The fighting groups in the Mansfeld villages have shotguns, a few army rifles from 1918 and almost no ammunition. The miners have dynamite. The police have machine guns and armoured cars. [? if e21_leuna = 0 : Leuna will need every rifle there is. ?]
 
-- @depots: Raid the police and Reichswehr depots.
-- @miners: Arm the Mansfeld miners with what we have.
+- @depots: Raid the police depots.
+- @miners: Arm the miners with what we have.
 - @bury: Bury the rifles for another day.
 
 @depots
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's line. Arms for the fight, and a reason for the state to hit back harder.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] More rifles for Leuna, and harder blows from the police in Halle.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed action.
 on-arrival: {!
@@ -25,26 +25,34 @@ if (Q.lock_uprising == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.red_guards_arms += 10;
-Q.crisis_momentum += 5;
-RG.district('halle', {guards: 1, repression: 8});
-Q.offensive_satisfaction += 3;
+RG.district('halle', {repression: 8});
 Q.lean_offensive += 2;
 !}
 
 A night raid on a police barracks near Eisleben brings in two hundred rifles and a machine gun. Two of our men are killed.
 
 @miners
-subtitle: More men under arms. Better if we already have arms to give them.
+subtitle: More men in the fight, most of them with pick handles.
 on-arrival: {!
-Q.crisis_momentum += (Q.red_guards_arms >= 20) ? 6 : 2;
-RG.district('halle', {guards: 3, repression: 4, militancy: 3});
+RG.district('halle', {guards: 3, repression: 4});
+Q.e21_ma_out += 20;
 Q.lean_offensive += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-The miners' fighting groups double in size in a day. Half of the new men have nothing but a pick handle.
+The miners' fighting groups double in a day. Half of the new men have nothing but a pick handle.
 
 @bury
-subtitle: The Right's caution: keep the arms for a fight we can win.
-on-arrival: e21_arms_saved = 1; crisis_momentum -= 3; red_guards_arms += 3; unionist_satisfaction += 3; luxemburgist_satisfaction += 2; lean_unionist += 1
+subtitle: Some fighters go home. The rifles will still be there when this is over.
+on-arrival: {!
+Q.e21_arms_saved = 1;
+Q.e21_ma_out = Math.max(20, Q.e21_ma_out - 10);
+Q.lean_unionist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 
 The rifles are greased, wrapped in oilcloth and buried in the allotments. The men who bury them are told to forget where.

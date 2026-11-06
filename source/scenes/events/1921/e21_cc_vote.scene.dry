@@ -16,28 +16,18 @@ Q.e21_cc_won = Q.congress_won ? 1 : 0;
 if (Q.e21_cc_mode == 1 && Q.e21_cc_won) {
     // Levi beats Rákosi
     Q.independence += 10;
-    Q.luxemburgist_satisfaction += 8;
-    Q.unionist_satisfaction += 2;
-    Q.offensive_satisfaction -= 10;
     Q.junior_faction = 'unionist';
     RG.defy();
     RG.ecci('zinoviev', -8);
-    RG.ecci('bukharin', -5);
-    RG.ecci('lenin', 3);
     RG.news('Central Committee rejects Rákosi: Levi keeps the chair', 3);
     RG.ledger('Paul Levi defeated Rákosi\'s resolution in the Central Committee and kept the chair.', 'e21_cc_levi_won');
 } else if (Q.e21_cc_mode == 2 && Q.e21_cc_won) {
-    // Brandler's compromise: Levi stays, humbled, with the Right beside him
+    // Brandler's compromise: Levi stays, with the Right beside him
     Q.junior_faction = 'unionist';
-    Q.unionist_satisfaction += 6;
-    Q.luxemburgist_satisfaction -= 2;
-    Q.offensive_satisfaction -= 6;
     Q.unity += 3;
     RG.comply(40);
     RG.ecci('radek', 5);
-    RG.ecci('zinoviev', -3);
     RG.news('Brandler\'s compromise carried: Levi stays, Livorno approved in principle', 3);
-    RG.ledger('Brandler\'s compromise kept Levi in the chair in February 1921.', 'e21_cc_compromise');
 } else {
     // Rákosi's resolution passes: Levi and his friends resign
     Q.e21_levi_resigned = 1;
@@ -45,13 +35,10 @@ if (Q.e21_cc_mode == 1 && Q.e21_cc_won) {
     Q.e21_lux_leads = 0;
     Q.leading_faction = 'offensive';
     Q.junior_faction = 'unionist';
-    Q.luxemburgist_satisfaction -= 10;
-    Q.offensive_satisfaction += 8;
     Q.unity -= 5;
     RG.setRole('levi', 'Reichstag deputy');
     RG.setRole('brandler', 'Chairman of the Zentrale');
     RG.comply(100);
-    RG.ecci('zinoviev', 5);
     RG.news('Rákosi wins the vote: Levi, Zetkin and Däumig leave the Zentrale', 3);
     RG.ledger('Paul Levi lost the vote in the Central Committee and resigned the chair.', 'e21_levi_resigned');
 }
@@ -59,12 +46,8 @@ if (Q.e21_cc_mode == 1 && Q.e21_cc_won) {
 
 = The Committee Votes
 
-The vote is taken late on the third day, by a show of hands, with Rákosi sitting at the end of the table and counting for himself.
+The vote is taken late on the third day by a show of hands. Rákosi sits at the end of the table and counts for himself.
 
-[? if e21_cc_mode = 1 and e21_cc_won = 1 : Rákosi's resolution falls, [+ e21_cc_for +] votes to [+ e21_cc_against +]. Levi keeps the chair. Rákosi leaves Berlin the next morning, promising that Moscow will hear of it, and Moscow does: his report calls the German Zentrale a nest of Serratis. ?]
+[? if e21_cc_mode = 1 and e21_cc_won = 1 : Rákosi's resolution falls, [+ e21_cc_for +] votes to [+ e21_cc_against +], and Levi keeps the chair. Rákosi leaves Berlin the next morning. His report to Moscow calls the German Zentrale a nest of Serratis. ?][? if e21_cc_mode = 2 and e21_cc_won = 1 : Brandler's resolution carries, [+ e21_cc_for +] votes to [+ e21_cc_against +]. Livorno is approved in principle, and Serrati is regretted in a subordinate clause. Levi keeps the chair, with Brandler and Thalheimer at his elbow. Rákosi calls it a rotten compromise. ?][? if e21_cc_won = 0 : Rákosi's resolution passes, [+ e21_cc_against +] votes to [+ e21_cc_for +]. Levi, Zetkin, Däumig, Hoffmann and Brass resign from the Zentrale the same evening. Brandler and Walter Stoecker take the chair. ?]
 
-[? if e21_cc_mode = 2 and e21_cc_won = 1 : Brandler's resolution carries, [+ e21_cc_for +] votes to [+ e21_cc_against +]. Livorno is approved in principle and Serrati is regretted in a subordinate clause. Levi keeps the chair, with Brandler and Thalheimer at his elbow. Rákosi calls it a rotten compromise. Radek, from Moscow, calls it sensible. ?]
-
-[? if e21_cc_won = 0 : Rákosi's resolution passes, [+ e21_cc_against +] votes to [+ e21_cc_for +]. Levi, Zetkin, Däumig, Hoffmann and Brass resign from the Zentrale the same evening. Heinrich Brandler and Walter Stoecker take the chair, and the new Zentrale, with Thalheimer and Frölich at its side, begins to talk about the offensive. ?]
-
-[? if congress_close_call = 1 : Two or three hands decided it. Everybody in the room knows whose they were. ?]
+[? if congress_close_call = 1 : Two or three hands decided it, and everybody in the room knows whose they were. ?]

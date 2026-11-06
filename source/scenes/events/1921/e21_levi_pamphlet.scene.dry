@@ -1,4 +1,4 @@
-title: Against Putschism
+title: Our Path: Against Putschism
 subtitle: Paul Levi publishes his verdict on the March Action.
 new-page: true
 tags: event
@@ -7,31 +7,27 @@ max-visits: 1
 priority: 12
 on-arrival: {!
 Q.e21_after_done = 1;
-RG.news('Levi: the March Action was the greatest Bakuninist putsch in history', 3);
-RG.ecci('lenin', 2);
+RG.news('Levi calls the March Action "the greatest Bakuninist putsch in history"', 3);
 !}
 
-= Against Putschism
+= Our Path: Against Putschism
 
-In the second week of April a pamphlet appears in the bookshops: *Unser Weg. Wider den Putschismus*, "Our Path: Against Putschism", by Paul Levi. It calls the March Action the greatest Bakuninist putsch in history. It says that the party attacked the working class instead of leading it, that communists drove workers out of factories with clubs, and that the action was planned by emissaries from Moscow who answered to nobody in Germany.
+In the second week of April a pamphlet appears in the bookshops: *Unser Weg. Wider den Putschismus*, by Paul Levi. It calls the March Action the greatest Bakuninist putsch in history. The party attacked the working class instead of leading it, he writes. Communists drove workers out of the factories with clubs, and the whole thing was planned by emissaries from Moscow who answer to nobody in Germany.
 
-Every word is read in the Zentrale, in the police headquarters and in the Hotel Lux. Levi has published it without asking anyone, while hundreds of comrades are on trial. Clara Zetkin defends him. So do Däumig, Brass, Adolph Hoffmann and the union men around Paul Malzahn, who say that Levi's crime is to have been right.
+Levi was Rosa Luxemburg's lawyer and her friend. He has led the party since Jogiches was shot. He has published this without asking anyone, while hundreds of comrades are waiting for their trials, and much of what he writes is true.
 
-[? if e21_ma_eberlein = 1 : Levi does not yet know about Eberlein's bombs. If he did, he would have written about them too. ?]
+Clara Zetkin defends him. So do Däumig, Brass, Adolph Hoffmann and the union men around Paul Malzahn. The Zentrale meets on the 15th.
 
-- @expel: Expel Levi for breaking discipline.
-- @censure: Censure him, but keep him in the party.
-- @debate: Admit he is right, and open the debate.
-- @moscow: Leave his case to the Comintern.
+- @expel: Expel him for breach of discipline.
+- @censure: Censure him, and keep him.
+- @debate: Admit he is right.
+- @moscow: Send his case to the International.
 
 @expel
-subtitle: What the Zentrale did on 15 April. The Left and Moscow approve. Levi's friends will follow him out.
+subtitle: What the Zentrale did. His friends will follow him out, and so will many members who never met him.
 on-arrival: {!
 Q.e21_levi_fate = 1;
-RG.expel('levi', {news: 'Levi expelled for gross breach of discipline', priority: 2});
-RG.ecci('zinoviev', 6);
-RG.ecci('bukharin', 4);
-RG.ecci('lenin', -3);
+RG.expel('levi', {news: 'Paul Levi expelled for gross breach of discipline', priority: 3});
 Q.levi_in_party = 0;
 Q.levi_split = 1;
 Q.levi_advisor = 0;
@@ -49,59 +45,43 @@ if (Q.leading_faction == 'luxemburgist') {
     Q.junior_faction = 'offensive';
 }
 Q.luxemburgist_satisfaction -= 20;
-Q.offensive_satisfaction += 10;
-Q.independence -= 5;
-Q.unity -= 5;
 Q.lean_offensive += 2;
-Q.lean_luxemburgist -= 2;
+RG.ecci('zinoviev', 6);
 !}
 
-On 15 April the Zentrale expels Paul Levi for gross breach of discipline. The Central Committee confirms it in May. Zetkin votes against. In the districts, those who agreed with Levi stop coming to meetings, and then stop paying their dues.
+The Zentrale expels Paul Levi for gross breach of discipline. Zetkin votes against. Levi takes his coat from the stand, says good evening to the room, and goes. In the districts, the members who agreed with him stop coming to meetings, and then stop paying their dues.
 
 @censure
-subtitle: The Right's way. The Left will call it cowardice; the case is not closed.
+subtitle: He loses every post he holds. The Left will call it cowardice, and the case stays open.
 on-arrival: {!
 Q.e21_levi_fate = 2;
-RG.ecci('radek', 3);
-RG.ecci('zinoviev', -4);
-Q.unionist_satisfaction += 6;
+RG.setRole('levi', 'Reichstag deputy');
 Q.offensive_satisfaction -= 10;
-Q.luxemburgist_satisfaction += 4;
-Q.unity -= 3;
 Q.lean_unionist += 2;
+RG.ecci('radek', 3);
 !}
 
-The Zentrale publicly condemns the pamphlet and strips Levi of his functions, but does not expel him. Kun and the Berlin Left send a protest to Moscow. Levi waits for the Comintern congress.
+The Zentrale condemns the pamphlet and strips Levi of his posts, but does not expel him. Kun and the Berlin Left protest to Moscow. Levi waits for the world congress.
 
 @debate
-subtitle: The Spartacist line. The leaders of the action must go. The Left will fight it with everything it has.
+subtitle: The leaders of the action step down, and Brandler's people turn back to the united front. The Left will fight this with everything it has.
 on-arrival: {!
 Q.e21_levi_fate = 3;
-RG.ecci('zinoviev', -10);
-RG.ecci('bukharin', -8);
-RG.ecci('radek', -4);
-RG.ecci('lenin', 3);
-RG.setRole('zetkin', 'Zentrale');
-RG.news('The Zentrale admits the March Action was a mistake', 3);
-RG.ledger('The Zentrale publicly admitted that the March Action had been a mistake.', 'e21_admitted');
 Q.leading_faction = 'unionist';
 Q.junior_faction = 'luxemburgist';
-Q.independence += 8;
-Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
-Q.luxemburgist_satisfaction += 15;
-Q.unionist_satisfaction += 2;
 Q.offensive_satisfaction -= 20;
 Q.unity -= 8;
-Q.worker_support += 3;
-Q.spd_relation += 4;
 Q.lean_luxemburgist += 3;
-Q.lean_offensive -= 2;
+RG.setRole('zetkin', 'Zentrale');
+RG.ecci('zinoviev', -10);
+RG.ecci('lenin', 3);
+RG.ledger('The Zentrale publicly admitted that the March Action had been a mistake.', 'e21_admitted');
 !}
 
-The Zentrale does what no communist party has yet done: it says publicly that it was wrong. Brandler and Thalheimer stay, but they turn back towards the united front, and Zetkin returns to the Zentrale. Levi's pamphlet is reprinted as a contribution to the party's discussion. Kun is recalled to Moscow. Ruth Fischer calls it the end of the revolutionary party in Germany.
+The Zentrale says in print that it was wrong. Brandler and Thalheimer stay, and Zetkin returns to the Zentrale. Levi's pamphlet is reprinted as a contribution to the discussion. Kun is recalled to Moscow. Ruth Fischer calls it the end of the revolutionary party in Germany.
 
 @moscow
-subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Let the International judge. It will decide at its congress in June.
+subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] The world congress will decide in June. Until then Levi is suspended.
 choose-if: lock_moscow_orders < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids handing our affairs to Moscow.
 on-arrival: {!
@@ -110,11 +90,8 @@ if (Q.lock_moscow_orders == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.e21_levi_fate = 2;
-RG.ecci('all', 2);
 Q.independence -= 5;
-Q.offensive_satisfaction += 2;
-Q.lean_offensive += 1;
-Q.lean_unionist += 1;
+RG.ecci('all', 2);
 !}
 
 The Zentrale suspends Levi and sends the whole file to Moscow. Both sides start writing their speeches for the congress.

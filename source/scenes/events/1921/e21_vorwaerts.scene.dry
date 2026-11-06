@@ -1,21 +1,24 @@
 title: The Vorwärts Documents
-subtitle: The SPD's paper publishes our secrets.
+subtitle: The SPD's paper prints the secret papers of the March Action.
 new-page: true
 tags: event
 view-if: year = 1921 and month = 11 and crisis = 0 and congress = 0 and march_action != 0
 max-visits: 1
 priority: 8
 on-arrival: {!
-RG.news('Vorwärts prints the secret papers of the March Action', 3);
+// what the papers show depends on what the Zentrale allowed in March
+Q.e21_docs_bad = (Q.e21_ma_eberlein == 1 || Q.e21_ma_eberlein == 2) ? 1 : 0;
+if (Q.e21_docs_bad) {
+    Q.worker_support -= 4;
+    Q.spd_relation -= 6;
+}
 !}
 
 = The Vorwärts Documents
 
-At the end of November the *Vorwärts* begins to print documents from inside the party: minutes of the Zentrale from March, reports of the emissaries, instructions to the districts. Someone who left with Levi, or someone still inside, has passed them on.
+At the end of November the *Vorwärts* begins to print papers from inside the party: minutes of the Zentrale from March, reports of the emissaries, instructions to the districts. Somebody who left with Levi, or somebody still inside, has passed them on.
 
-[? if e21_ma_eberlein = 1 : The worst of them is Hugo Eberlein's plan: the bombs, the staged attacks on our own offices, the faked kidnapping. It is all there, in our own words. ?][? if e21_ma_eberlein != 1 : The worst of them show how Kun and his friends planned to provoke the fight, and how little the Zentrale asked about the workers' mood before it called them out. ?] [? if march_action = 2 : Even in victory, it does not read well. ?]
-
-The bourgeois press reprints everything. The Reichstag wants an inquiry.
+[? if e21_ma_eberlein = 1 : The worst of them is Hugo Eberlein's plan: the bombs, the attack on our own offices, the faked kidnapping. It is all there in our own words, with the Zentrale's approval at the bottom. ?][? if e21_ma_eberlein = 2 : The worst of them is Hugo Eberlein's plan, which the Zentrale forbade, and the police report on the charge under the goods train at Ammendorf, which went off anyway. ?][? if e21_ma_eberlein = 3 : Eberlein's plan for bombs and staged attacks is among them, with the Zentrale's order recalling him pinned to it. It reads badly, and it could have read worse. ?][? if e21_ma_eberlein = 0 : They show how Kun and his friends meant to provoke a fight, and how little the Zentrale asked about the mood in the factories before it called the workers out. ?] [? if march_action = 2 : Even in victory, it does not read well. ?]
 
 - @forgeries: Call the documents forgeries.
 - @admit: Admit the mistakes of March.
@@ -23,48 +26,35 @@ The bourgeois press reprints everything. The Reichstag wants an inquiry.
 
 @forgeries
 view-if: offensive_gone = 0
-subtitle: The Left's answer. Our members will believe it. Nobody else will.
+subtitle: Our members will believe it. [? if e21_docs_bad = 1 : Nobody else will, and the Vorwärts has the originals. ?]
 on-arrival: {!
-Q.worker_support -= (Q.e21_ma_eberlein == 1) ? 3 : 1;
-Q.offensive_satisfaction += 4;
-Q.luxemburgist_satisfaction -= 4;
-Q.spd_relation -= 4;
 Q.lean_offensive += 1;
+if (Q.e21_docs_bad) { Q.worker_support -= 3; }
 RG.ecci('zinoviev', 2);
 !}
 
-The Rote Fahne declares the documents forged by the police and printed by their friends in the SPD. The Vorwärts prints facsimiles.
+The Rote Fahne declares the documents forged by the police and printed by their friends in the SPD. The *Vorwärts* prints facsimiles.
 
 @admit
-subtitle: The Right's and the Spartacists' way. Painful, and it is believed.
+subtitle: Painful, and believed. The Left will not forgive it.
 on-arrival: {!
-Q.unity -= 3;
-Q.worker_support += 2;
-Q.spd_relation += 3;
-Q.uspd_relation += 3;
-Q.unionist_satisfaction += 3;
-Q.luxemburgist_satisfaction += 4;
-Q.offensive_satisfaction -= 6;
+Q.spd_relation += 5;
+Q.unity -= 4;
 Q.lean_unionist += 1;
-Q.lean_luxemburgist += 1;
 RG.ecci('lenin', 3);
-RG.ecci('radek', 2);
-RG.ecci('zinoviev', -3);
 RG.comply(10);
 !}
 
-The Zentrale publishes a statement: mistakes were made in March, they were condemned by the world congress, and those responsible no longer decide the party's line. It is the first time a communist party has said so in print.
+The Zentrale publishes a statement: mistakes were made in March, the world congress condemned them, and the men responsible no longer decide the party's line. It is the first time a communist party has said such a thing in print.
 
 @emissaries
-subtitle: The Spartacist line. Moscow will take it badly.
+subtitle: The documents are genuine, and the plans in them were Kun's. Radek and Zinoviev will take it badly.
 on-arrival: {!
 Q.independence += 8;
 Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
 RG.ecci('radek', -6);
 RG.ecci('zinoviev', -6);
-Q.luxemburgist_satisfaction += 4;
-Q.offensive_satisfaction -= 8;
 Q.lean_luxemburgist += 1;
 !}
 
-The Zentrale says the documents are genuine and the plans in them were Kun's, not the German party's. Radek is summoned back to Moscow to explain why the German comrades are washing the International's linen in public.
+The Zentrale says the papers are genuine and the plans in them came from Moscow's envoys. Radek is summoned to explain why the German comrades are washing the International's linen in public.
