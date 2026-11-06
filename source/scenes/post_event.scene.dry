@@ -232,6 +232,62 @@ Q.unity_display = Math.round(Q.unity);
 // 1921 writer's Jena congress switches back to KPD
 Q.party_name = (Q.vkpd_formed && Q.e21_party != 'KPD' && Q.year <= 1921) ? 'VKPD' : 'KPD';
 
+// ---------------------------------------------------------------- sidebar lines
+// short summaries the sidebar shows instead of long tables
+(function () {
+    var surname = function (n) { var w = String(n).split(' '); return w[w.length - 1]; };
+    var order = {
+        luxemburgist: ['luxemburg', 'liebknecht', 'levi', 'zetkin', 'meyer', 'pieck', 'eberlein', 'jogiches', 'levine'],
+        offensive: ['fischer', 'thalmann', 'maslow', 'frolich', 'munzenberg', 'hoelz'],
+        unionist: ['brandler', 'thalheimer', 'walcher'],
+        ultraleft: ['ruhle', 'laufenberg', 'wolffheim', 'schroder']
+    };
+    var roster = Array.isArray(Q.comrades) ? Q.comrades : [];
+    var byId = {};
+    roster.forEach(function (c) { byId[c.id] = c; });
+    ['luxemburgist', 'offensive', 'unionist', 'ultraleft'].forEach(function (f) {
+        var names = [];
+        roster.forEach(function (c) {
+            if (c.faction == f && (c.status == 'free' || c.status == 'prison') && names.length < 3) {
+                names.push(c);
+            }
+        });
+        names.sort(function (a, b) {
+            var o = order[f] || [];
+            var ia = o.indexOf(a.id), ib = o.indexOf(b.id);
+            return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+        });
+        Q['sb_leaders_' + f] = names.length ? names.map(function (c) {
+            return surname(c.name) + (c.status == 'prison' ? ' (in prison)' : '');
+        }).join(', ') : 0;
+    });
+    var dnames = {berlin: 'Berlin', hamburg: 'Hamburg', bremen: 'Bremen', ruhr: 'the Ruhr', saxony: 'Saxony',
+        thuringia: 'Thuringia', bavaria: 'Bavaria', halle: 'Halle'};
+    var strikes = (Q.districts || []).filter(function (d) { return Q['district_' + d + '_strike']; });
+    Q.sb_strikes = strikes.length ? strikes.map(function (d) { return dnames[d] || d; }).join(', ') : 0;
+    var ecci = [['lenin', 'Lenin'], ['zinoviev', 'Zinoviev'], ['radek', 'Radek'], ['trotsky', 'Trotsky'], ['bukharin', 'Bukharin']];
+    var friends = [], critics = [];
+    ecci.forEach(function (e) {
+        var v = Q['ecci_' + e[0]];
+        if (typeof v != 'number') { return; }
+        if (v >= 60) { friends.push(e[1]); }
+        if (v < 40) { critics.push(e[1]); }
+    });
+    Q.sb_friends = friends.length ? friends.join(', ') : 0;
+    Q.sb_critics = critics.length ? critics.join(', ') : 0;
+    var lines = [['elections', 'elections'], ['united_front', 'the united front'], ['union_work', 'union work'],
+        ['councils', 'councils and occupations'], ['uprising', 'armed uprising'], ['moscow_orders', 'Moscow\'s orders']];
+    var forbidden = [], against = [];
+    lines.forEach(function (l) {
+        var v = Q['lock_' + l[0]];
+        if (v == 2) { forbidden.push(l[1]); }
+        if (v == 1) { against.push(l[1]); }
+    });
+    var cap = function (t) { return t.charAt(0).toUpperCase() + t.slice(1); };
+    Q.sb_forbidden = forbidden.length ? cap(forbidden.join(', ')) : 0;
+    Q.sb_against = against.length ? cap(against.join(', ')) : 0;
+})();
+
 if (sys) {
     sys.finishTurn(month_turns);
 }

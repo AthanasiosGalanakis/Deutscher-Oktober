@@ -12,119 +12,88 @@ Q.crisis_kapp = 1;
 Q.crisis_time = 0;
 Q.week = 1;
 Q.crisis_name = 'The Kapp Putsch';
-Q.crisis_goal = 'Defeat the putsch, and decide what comes after it.';
+Q.crisis_goal = 'Keep the general strike going until the putsch falls, and decide what to demand when it does.';
 Q.crisis_momentum = 50;
+Q.crisis_momentum_label = 0;
 Q.stability -= 15;
 Q.army_loyalty -= 15;
 Q.freikorps_loyalty -= 20;
 Q.e20_lead_ul = (Q.leading_faction == 'ultraleft') ? 1 : 0;
-RG.news('Putsch in Berlin: Kapp proclaims himself Chancellor', 3);
 if (Q.levi_chair == 1 && Q.comrade_levi == 1) { RG.arrest('levi', 1, {quiet: true}); }
 for (var d of Q.districts) { if (d != 'bavaria') { RG.startStrike(d, true); } }
+RG.districtSummary();
+Q.crisis_line_1 = 'Districts on strike: ' + Q.strike_count + ' of 8';
+Q.crisis_line_2 = 'Our voice in the strike: none yet';
+Q.crisis_line_3 = 'The Reichswehr: waiting in its barracks';
+RG.news('Putsch in Berlin: Kapp proclaims himself Chancellor', 3);
 RG.news('General strike: twelve million down tools against the putsch', 3);
 !}
 
 = The Kapp Putsch
 
-Before dawn on 13 March, the Ehrhardt Marine Brigade marches into Berlin from its camp at Döberitz, with swastikas painted on its helmets. The government was ordered to disband it under the peace treaty. General von Lüttwitz has chosen to disband the government instead.
+Before dawn on 13 March the Ehrhardt Marine Brigade marched into Berlin from its camp at Döberitz, with swastikas painted on its helmets. The government had been ordered to disband it under the peace treaty. General von Lüttwitz chose to disband the government instead. The ministers fled to Dresden. "Troops do not fire on troops," General von Seeckt is said to have told Noske. By breakfast a provincial official named Wolfgang Kapp had proclaimed himself Chancellor.
 
-The ministers flee to Dresden. The army does not defend them. "Troops do not fire on troops," General von Seeckt is said to have told Noske. By breakfast, a provincial civil servant named Wolfgang Kapp has proclaimed himself Chancellor of the Reich.
-
-Then something unheard of happens. The unions of Carl Legien, the SPD and the USPD call a general strike to defend the Republic. [? if levi_chair = 1 : Paul Levi is cut off in a prison cell. ?] The members of the Zentrale who are still free meet in a back room and must say, today, where the party stands.
+Then Carl Legien's unions, the SPD and the USPD called a general strike. [? if levi_chair = 1 : Paul Levi is in a prison cell. ?] The members of the Zentrale who are still free meet in a back room. They must say today where the party stands.
 
 - @not_a_finger: "The working class will not lift a finger for the democratic republic."
 - @join_strike: Join the general strike at once, under our own slogans.
 - @to_arms: Call the workers to arms.
-- @councils: Form action committees from below, and take power in the factories.
+- @councils: Call for action committees to take power in the factories.
 
 @not_a_finger
-subtitle: The Left's instinct: this is a quarrel between two gangs of the bourgeoisie. The workers may not see it that way.
+subtitle: A quarrel between two gangs of the bourgeoisie. Our members may not see it that way.
 on-arrival: {!
 Q.kapp_statement = 1;
-Q.crisis_momentum -= 12;
-Q.worker_support -= 4;
-Q.uspd_relation -= 6;
-Q.offensive_satisfaction += 6;
-Q.ultraleft_satisfaction += 4;
-Q.luxemburgist_satisfaction -= 8;
-Q.unionist_satisfaction -= 8;
+Q.e20_kapp_voice = 0;
 Q.lean_offensive += 2;
+Q.worker_support -= 4;
 RG.ecci('lenin', -8);
-RG.ecci('radek', -6);
-RG.ecci('bukharin', 2);
 !}
 
-The statement goes out under the Zentrale's name: we will not defend the republic of Noske, the murderer of Rosa Luxemburg. By the afternoon, it is clear that every factory in Berlin is stopping anyway, without us. Our own members are on the picket lines and ask what the Zentrale is playing at.
+By the afternoon every factory in Berlin has stopped anyway, without us. Our own members are on the picket lines, asking what the Zentrale is playing at.
 
 @join_strike
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Spartacist answer: defeat Kapp first, and fight for more inside the strike.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Defeat Kapp first, and fight for more inside the strike.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids striking alongside the social democrats.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_united_front == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.kapp_statement = 2;
-Q.crisis_momentum += 8;
-Q.worker_support += 4;
-Q.uspd_relation += 5;
-Q.spd_relation += 3;
-Q.luxemburgist_satisfaction += 8;
-Q.unionist_satisfaction += 6;
-Q.offensive_satisfaction -= 3;
+Q.e20_kapp_voice = 2;
 Q.lean_luxemburgist += 2;
-Q.lean_unionist += 1;
+Q.uspd_relation += 5;
+Q.crisis_line_2 = 'Our voice in the strike: leading';
 RG.ecci('lenin', 5);
-RG.ecci('radek', 5);
 !}
 
-Our call goes out the same day: down tools, against Kapp and against the generals, for the arming of the workers and the disarming of the counter-revolution. Our people are on the strike committees from the first hour.
+Our people are on the strike committees from the first hour.
 
 @to_arms
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The generals are divided and the state is paralysed. Risky; the officers will remember.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Ruhr and Central Germany are already arming. The officers will remember who called them out.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_uprising == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.kapp_statement = 3;
 Q.kapp_armed = 1;
-Q.crisis_momentum += 5;
-Q.militancy += 12;
-Q.repression += 8;
-Q.red_guards_strength += 4;
-Q.red_guards_arms += 6;
-Q.offensive_satisfaction += 10;
-Q.luxemburgist_satisfaction -= 4;
+Q.e20_kapp_voice = 1;
 Q.lean_offensive += 2;
+Q.crisis_line_2 = 'Our voice in the strike: heard';
 RG.ecci('bukharin', 6);
-RG.ecci('zinoviev', 4);
-RG.districtSync();
 RG.district('ruhr', {guards: 2});
-RG.district('saxony', {guards: 1});
 RG.district('halle', {guards: 1});
 !}
 
-We call on the workers to arm themselves, from the police stations and the civil guards' depots if need be. In the Ruhr and in Central Germany, they are already doing it.
+We call on the workers to take rifles from the police stations and the civil guards' depots. In the Ruhr they are doing it already.
 
 @councils
-subtitle: The Left Radical answer: neither Kapp nor Ebert, but the councils.
+subtitle: Neither Kapp nor Ebert, but the councils. Hamburg and Bremen will follow.
 view-if: ultraleft_gone = 0
 on-arrival: {!
 Q.kapp_statement = 4;
-Q.crisis_momentum -= 4;
-Q.militancy += 8;
-Q.ultraleft_satisfaction += 10;
-Q.kapd_relation += 5;
-Q.unionist_satisfaction -= 6;
+Q.e20_kapp_voice = 1;
 Q.lean_ultraleft += 2;
-RG.ecci('lenin', -4);
-RG.districtSync();
+Q.crisis_line_2 = 'Our voice in the strike: heard';
 RG.district('hamburg', {militancy: 6});
 RG.district('bremen', {militancy: 6});
 !}
-
-Our call goes out for action committees elected in every factory, to take the works and the towns into the workers' hands. In Hamburg and Bremen, the committees spring up within hours. Elsewhere, workers strike under the unions' banner and ask what councils have to do with Kapp.

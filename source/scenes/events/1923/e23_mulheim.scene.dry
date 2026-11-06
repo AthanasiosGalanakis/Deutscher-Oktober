@@ -1,5 +1,5 @@
 title: The Town Hall at Mülheim
-subtitle: Unemployed workers seize a town in the occupied Ruhr.
+subtitle: Unemployed workers take over a town in the occupied Ruhr.
 new-page: true
 tags: event
 view-if: year = 1923 and month = 4
@@ -10,66 +10,47 @@ RG.news('Red flag over the town hall of Mülheim', 2);
 
 = The Town Hall at Mülheim
 
-In Mülheim an der Ruhr, a march of the unemployed against the price of bread ends at the town hall, and does not leave. The German police, half of them expelled by the French, are nowhere to be seen. A committee of action, led by local communists and syndicalists, declares that it will run food supply until the prices fall. For a few days the red flag flies over a town of a hundred and thirty thousand people.
+In Mülheim an der Ruhr a march of the unemployed against the price of bread ends at the town hall and stays there. The German police, half of them expelled by the French, are nowhere to be seen. A committee of local communists and syndicalists declares that it will run the food supply until prices fall. The Ruhr district asks the Zentrale for orders and for money.
 
-The French commander watches, amused. The nationalist press in Berlin calls it treason behind the lines. The Ruhr district asks the Zentrale for orders and, more urgently, for money.
-
-- @spread: Spread it: every Ruhr town its own committee of action.
-- @hold: Hold the town hall, and send a delegation to negotiate.
+- @spread: Every Ruhr town its own committee.
+- @bargain: Hold the town hall and negotiate the prices.
 - @withdraw: Get our members out before it ends in blood.
 
 @spread
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's answer. A test of strength in the Ruhr, months too early.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] A test of strength months early. The committees will stay in being.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed seizures.
 on-arrival: {!
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('uprising');
 RG.startStrike('ruhr');
-RG.district('ruhr', {repression: 10, guards: 1});
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+RG.district('ruhr', {repression: 10, guards: 1, loyalty: 6, members: -0.04});
 Q.e23_mulheim = 1;
-Q.militancy += 10;
-Q.repression += 8;
-Q.district_ruhr_loyalty += 6;
-Q.district_ruhr_members *= 0.96;
-Q.red_guards_strength += 2;
-Q.offensive_satisfaction += 7;
-Q.unionist_satisfaction -= 6;
-Q.lean_offensive += 2;
 Q.spd_relation -= 4;
+Q.lean_offensive += 2;
 !}
 
-Committees of action appear in Gelsenkirchen and Bochum. After a week, the Ruhr employers and the Social Democratic mayors raise volunteer police, and the committees are cleared out one town at a time. Our dead are buried with red flags.
+Committees of action appear in Gelsenkirchen and Bochum. The employers and the Social Democratic mayors raise volunteer police, and the committees are cleared one town at a time. They meet again the following week in the miners' pubs.
 
-@hold
-subtitle: Costs 1 fund. Wins concessions on prices; some arrests.
+@bargain
+subtitle: Costs 1 fund. Fixed prices for bread, and a procession out with banners.
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds to send.
+unavailable-subtitle: We have nothing to send.
 on-arrival: {!
-RG.district('ruhr', {militancy: 2});
-Q.e23_mulheim = 2;
 Q.resources -= 1;
-Q.worker_support += 4;
-Q.district_ruhr_loyalty += 3;
-Q.unionist_satisfaction += 3;
-Q.offensive_satisfaction += 2;
-Q.lean_unionist += 1;
+RG.district('ruhr', {loyalty: 5, members: 0.04});
+Q.e23_mulheim = 2;
+Q.worker_support += 3;
 !}
 
-The Zentrale's delegation, the town council and the union secretaries agree on fixed prices for bread and potatoes. The committee leaves the town hall in procession, with its banners.
+Our delegation, the town council and the union secretaries agree on fixed prices for bread and potatoes. The committee leaves the town hall in procession.
 
 @withdraw
-subtitle: The careful answer. Fewer martyrs; the Ruhr Left is furious.
+subtitle: No dead. The Ruhr Left will not forgive it.
 on-arrival: {!
-RG.district('ruhr', {militancy: -6});
+RG.district('ruhr', {militancy: -6, loyalty: -8});
 Q.e23_mulheim = 3;
-Q.militancy -= 4;
-Q.district_ruhr_loyalty -= 8;
-Q.offensive_satisfaction -= 7;
-Q.luxemburgist_satisfaction += 3;
-Q.unity -= 2;
+Q.offensive_satisfaction -= 8;
 !}
 
-The Zentrale orders the comrades out. Most obey. The syndicalists stay, and are arrested on the third night.
+The Zentrale orders the comrades out. Most obey. The syndicalists stay and are arrested on the third night.

@@ -4,7 +4,6 @@ view-if: congress_cc21 = 1 and congress_closing = 0 and e21_cc_mode = 1 and cong
 on-arrival: {!
 Q.month_actions += 1;
 Q.congress_used_walkout = 1;
-Q.sys_outcome = 0;
 !}
 frequency: 300
 is-card: true
@@ -13,40 +12,37 @@ tags: congress
 
 = The Resignation Threat
 
-Levi has made up his mind. If Rákosi's resolution passes, he will resign the chair, and Zetkin, Däumig, Hoffmann and Brass will resign with him. Some members of the committee would vote differently if they knew. Some would vote differently because they knew.
+If Rákosi's resolution passes, Levi will resign the chair, and Zetkin, Däumig, Hoffmann and Brass will go with him. Some members of the committee would think twice if they knew. Nobody knows how many.
 
-- @announce: Announce it before the vote.
+- @announce: Say it before the vote.
 - @zetkin: Let Clara Zetkin speak instead.
 - @keep: Keep it to ourselves.
 
 @announce
-subtitle: Many will not risk losing half the Zentrale. Others resent being threatened.
+subtitle: Many will not risk losing half the Zentrale. Others will not be threatened.
 on-arrival: {!
 RG.congress.sway(0.08 + Math.random() * 0.04);
 RG.congress.bitter(4);
-Q.offensive_satisfaction -= 4;
 !}
 
-Levi tells the committee plainly: the resolution or the Zentrale. [? if congress_last_moved > 0 : [+ congress_last_moved +] members who were going to vote with Rákosi think again. ?] Frölich says that the party has never before been blackmailed by its own chairman.
+Levi tells the committee plainly: the resolution or the Zentrale. [? if congress_last_moved > 0 : [+ congress_last_moved +] members who were going to vote with Rákosi think again. ?] Frölich says the party has never before been blackmailed by its own chairman.
 
 @zetkin
-subtitle: The old woman of the movement, not the chairman, pleads for the majority of the workers.
+subtitle: The oldest voice in the movement, pleading for the majority of the workers.
 choose-if: comrade_zetkin = 1
 unavailable-subtitle: Zetkin is not here to speak.
 on-arrival: {!
 RG.congress.sway(0.05 + Math.random() * 0.05);
 RG.congress.bitter(-1);
-Q.luxemburgist_satisfaction += 3;
-Q.lean_luxemburgist += 1;
 !}
 
 Clara Zetkin speaks for half an hour about Italy, where she has never been, and about the masses, whom she has known for forty years. [? if congress_last_moved > 0 : [+ congress_last_moved +] members come over. ?][? if congress_last_moved = 0 : She is applauded, and the votes stay where they were. ?]
 
 @keep
-subtitle: No threats. The committee votes on Italy, not on Levi.
+subtitle: The committee votes on Italy, and finds out about Levi afterwards.
 on-arrival: {!
 RG.congress.bitter(-2);
 Q.unity += 2;
 !}
 
-Levi says nothing about what he will do. The committee will find out afterwards.
+Levi says nothing about what he will do.

@@ -1,47 +1,59 @@
 title: The Workers' Militias
 new-page: true
-view-if: crisis = 0 and c_militias_timer <= 0 and year <= 1921
-on-arrival: c_militias_timer = 4; month_actions += 1
+view-if: crisis = 0 and congress = 0 and c_militias_timer <= 0 and time >= 3
+on-arrival: {!
+Q.c_militias_timer = 4;
+Q.month_actions += 1;
+Q.c_arms_ok = 0;
+!}
 frequency: 200
 is-card: true
 tags: movement
 
 = The Workers' Militias
 
-[? if year = 1919 : Rifles from the army depots of November are still hidden in allotment sheds and cellars. In some towns the old Red Soldiers' League still drills on Sundays. ?][? if year = 1920 and kapp_outcome = 0 : Rifles from the army depots of November are still hidden in allotment sheds and cellars. The Freikorps and the civil guards are better armed every month. ?][? if year = 1920 and kapp_outcome != 0 : The Kapp days showed what armed workers can do, and how quickly the Reichswehr disarms them afterwards. ?][? if year = 1921 : Since the disarmament laws, the police search workers' districts for weapons, while the civil guards of the propertied keep theirs. ?]
+[? if year <= 1920 : Rifles from the army depots of November are still hidden in allotment sheds and cellars, and the Freikorps are better armed every month. ?][? if year = 1921 : Under the disarmament laws the police search the workers' districts for weapons, while the civil guards of the propertied keep theirs. ?][? if year >= 1922 : Works councils in many towns have formed proletarian hundreds, communists and social democrats together, to defend meetings against the nationalist leagues. [? if year >= 1923 : Prussia has banned them. In Saxony and Thuringia they drill openly. ?] ?]
 
-Our armed men are few, and they listen to their own commanders as much as to the Zentrale.
+Our armed men are few, and they listen to their own commanders as much as to the Zentrale. A Reichswehr quartermaster in Spandau has let it be known that he has rifles to sell.
 
-- @arm: Buy rifles for them.
-- @control: Bring them under the Zentrale's command.
-- @joint: Form joint defence units with social democratic workers.
-- @disarm: Stand them down before they give the Freikorps an excuse.
+- @quartermaster: Buy his rifles.
+- @control: Put every unit under the Zentrale's command.
+- @joint: Form joint units with the social democratic workers.
+- @disarm: Stand them down.
 - @easy_discard
 
-@arm
-subtitle: Costs 1 fund. Better armed militias; more police attention. The Left approves.
+@quartermaster
+subtitle: Costs 1 fund. The Spandau comrades think he is probably honest.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
-on-arrival: resources -= 1; red_guards_arms += 8; red_guards_strength += 0.5; repression += 4; militancy += 2; offensive_satisfaction += 4; lean_offensive += 2
+on-arrival: {!
+Q.resources -= 1;
+if (Math.random() < 0.65) {
+    Q.c_arms_ok = 1;
+    Q.red_guards_arms += 10;
+} else {
+    Q.c_arms_ok = 2;
+    Q.repression += 8;
+    Q.red_guards_strength = Math.max(0, Q.red_guards_strength - 0.3);
+    RG.news('Communists arrested buying army rifles in Spandau');
+}
+!}
 
-The rifles come from a demobilised quartermaster and cost twice what they should. The ammunition costs more.
+[? if c_arms_ok = 1 : He is a sergeant with debts and a brother in the USPD. The crates arrive on time. ?][? if c_arms_ok = 2 : He was working for the police. Three comrades are arrested at the handover, and the money is gone. ?]
 
 @control
-subtitle: The militias answer to the Zentrale. Their local commanders resent it.
+subtitle: The militias obey the Zentrale. Their local commanders resent it.
 on-arrival: {!
-Q.red_guards_loyalty += 10;
-Q.militancy -= 2;
-Q[Q.leading_faction + '_satisfaction'] += 3;
+Q.red_guards_loyalty += 12;
 if (!Q.ultraleft_gone) {
-    Q.ultraleft_satisfaction -= 4;
+    Q.ultraleft_satisfaction -= 5;
 }
-Q['lean_' + Q.leading_faction] += 1;
 !}
 
 Every unit now has a political commissar named by the district, and every district answers to Berlin.
 
 @joint
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Larger units, shared with other workers. Our grip on them loosens. The Right's line.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Far more men, and far less say over them.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any deal with the social democrats.
 on-arrival: {!
@@ -49,27 +61,21 @@ if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-Q.red_guards_strength += 1.5;
-Q.red_guards_loyalty -= 5;
+Q.red_guards_strength += 2;
+Q.red_guards_loyalty -= 8;
 Q.spd_relation += 3;
-Q.uspd_relation += 5;
-Q.unionist_satisfaction += 4;
-Q.offensive_satisfaction -= 3;
 Q.lean_unionist += 2;
 !}
 
-In the workers' quarters, socialists of every party stand guard together against the Freikorps. They argue about everything except who the enemy is.
+Every big works elects its own unit at a factory meeting. They argue about everything except who the enemy is.
 
 @disarm
-subtitle: Fewer armed men and less repression. The Spartacists approve; the Left is furious.
+subtitle: Fewer armed men and fewer raids. The Left is furious.
 on-arrival: {!
-Q.militancy -= 5;
-Q.repression -= 5;
+Q.repression -= 6;
 Q.red_guards_strength *= 0.7;
-Q.red_guards_arms -= 5;
-Q.luxemburgist_satisfaction += 4;
 Q.offensive_satisfaction -= 6;
 Q.lean_luxemburgist += 1;
 !}
 
-A rifle in the cellar is an invitation to the Freikorps, the Zentrale argues. The workers' strength is in the factories. Not every unit obeys.
+A rifle in the cellar is an invitation to the Freikorps, the Zentrale argues. Not every unit obeys.

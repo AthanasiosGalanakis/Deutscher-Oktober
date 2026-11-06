@@ -1,94 +1,75 @@
 title: Blood on the Königsplatz
-subtitle: The security police fire on a crowd outside the Reichstag.
+subtitle: The Security Police fire on a crowd outside the Reichstag.
 new-page: true
 tags: event
 view-if: year = 1920 and month = 1
 max-visits: 1
 priority: 3
 on-arrival: {!
-RG.districtSync();
 RG.district('berlin', {repression: 8, militancy: 6});
-RG.news('Security police fire on the crowd outside the Reichstag: forty-two dead', 3);
+RG.news('Security Police fire on the crowd outside the Reichstag: forty-two dead', 3);
 !}
 
 = Blood on the Königsplatz
 
-On 13 January the National Assembly debates the Works Councils Law. The councils of 1918 had demanded control of the factories. The law gives them a right to be consulted, and little else.
+On 13 January the National Assembly debated the Works Councils Law. The councils of 1918 had demanded control of the factories. The law lets them read the balance sheet and speak on dismissals, and forbids them to strike.
 
-The USPD and our party called the Berlin factories out in protest. A hundred thousand workers filled the square before the Reichstag. Then the Security Police opened fire with rifles and machine guns from the steps. Forty-two people are dead and more than a hundred wounded.
+A hundred thousand Berlin workers filled the square in protest. The Security Police opened fire from the steps of the Reichstag with rifles and machine guns. Forty-two people are dead. The law passes the next week, and the first council elections are set for the spring.
 
-That evening the government declares a state of emergency across northern Germany. *Die Rote Fahne* and the USPD's *Freiheit* are banned, and the police are rounding up our functionaries. The bill will pass in a few days.
+[? if e19_council_lists = 1 : Since the summer our people have been drawing up lists in the big works. They are ready. ?]
 
-- @general_strike: Call for a general strike against the murderers.
-- @joint: Bury the dead together with the USPD and the unions.
-- @use_law: Mourn the dead, then fight inside the new councils.
-- @boycott_law: Boycott the councils of the law, and build councils of our own.
+- @strike: Call Berlin out against the murderers.
+- @lists: Stand communist lists in every council election.
+- @network: Link the councils into a network of their own, with Däumig and Richard Müller.
+- @boycott: Boycott the councils of the law.
 
-@general_strike
-subtitle: The Left's answer. The factories may not follow, and the police are ready.
+@strike
+subtitle: Some factories will stop. The police have the lists of our shop stewards.
 on-arrival: {!
 Q.massacre_response = 1;
-Q.militancy += 8;
-Q.repression += 8;
-Q.worker_support -= 1;
-Q.offensive_satisfaction += 8;
-Q.luxemburgist_satisfaction -= 3;
-Q.lean_offensive += 2;
-Q.district_berlin_loyalty -= 3;
-RG.districtSync();
-if (Q.district_berlin_militancy >= 45) { RG.startStrike('berlin'); }
-RG.ecci('bukharin', 3);
-!}
-
-Our call goes out from a cellar print shop. Some Berlin factories stop for a day, most do not, and a dozen more of our people are arrested at the gates.
-
-@joint
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's answer: a common front of mourning with the USPD and the unions.
-choose-if: lock_united_front < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids any common front with the social democrats.
-on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.massacre_response = 2;
-Q.uspd_relation += 8;
-Q.spd_relation += 2;
-Q.worker_support += 3;
-Q.unionist_satisfaction += 8;
-Q.offensive_satisfaction -= 4;
-Q.lean_unionist += 2;
-RG.ecci('radek', 3);
-!}
-
-Behind the coffins walk delegations from the USPD, from the metalworkers and from our party. The police keep their distance. Many workers notice who walked together.
-
-@use_law
-subtitle: The Spartacist answer: take the councils the law allows and fill them with communists.
-on-arrival: {!
-Q.massacre_response = 3;
-Q.worker_support += 2;
-Q.repression -= 2;
-Q.luxemburgist_satisfaction += 8;
-Q.unionist_satisfaction += 3;
-Q.offensive_satisfaction -= 3;
-Q.lean_luxemburgist += 2;
-!}
-
-The Zentrale's circular is sober: the law is a fraud, but every council elected under it is a platform. We will stand in the factory elections and make the councils ours.
-
-@boycott_law
-subtitle: The Left Radical answer. The most bitter workers will like it; the masses will vote in the elections anyway.
-on-arrival: {!
-Q.massacre_response = 4;
-Q.militancy += 5;
-Q.worker_support -= 2;
-Q.ultraleft_satisfaction += 10;
-Q.kapd_relation += 6;
-Q.luxemburgist_satisfaction -= 6;
-Q.unionist_satisfaction -= 8;
-Q.lean_ultraleft += 2;
+RG.startStrike('berlin', true);
+RG.district('berlin', {repression: 8, loyalty: 4});
 Q.lean_offensive += 1;
 !}
 
-We tell the workers to have nothing to do with councils made by the men who shot them. The most bitter workers agree. The rest will vote in the elections without us.
+Our call goes out from a cellar print shop. The AEG works and Siemensstadt stop for two days. A dozen of our stewards are arrested at the gates.
+
+@lists
+subtitle: [? if e19_council_lists = 1 : The lists are drawn up already. ?] Slow work, and it puts us where the workers vote.
+on-arrival: {!
+Q.massacre_response = 3;
+Q.works_councils_line = 1;
+Q.worker_support += Q.e19_council_lists ? 6 : 3;
+if (Q.e19_council_lists) { RG.district('berlin', {members: 0.08}); RG.district('halle', {members: 0.08}); }
+Q.lean_luxemburgist += 1;
+!}
+
+[? if e19_council_lists = 1 : By April our lists hold seats in the machine shops of Berlin, the Leuna works and the yards of the coast. The union officials did not see them coming. ?][? if e19_council_lists = 0 : Our lists win a few hundred seats in the first month. In most works the union men are elected unopposed. ?]
+
+@network
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The USPD left will come closer. The employers will call it sedition.
+choose-if: lock_councils < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
+on-arrival: {!
+if (Q.lock_councils == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
+Q.massacre_response = 2;
+Q.works_councils_line = 3;
+Q.uspd_relation += 6;
+Q.uspd_score += 1;
+Q.lean_luxemburgist += 1;
+!}
+
+A Berlin centre of works councils meets in a hall in Neukölln. Its resolutions go well beyond the law, and the USPD left sits on its executive beside us.
+
+@boycott
+subtitle: The most bitter workers will agree. Most will vote in the elections anyway.
+view-if: ultraleft_gone = 0
+on-arrival: {!
+Q.massacre_response = 4;
+Q.works_councils_line = 4;
+Q.worker_support -= 3;
+Q.ultraleft_satisfaction += 10;
+Q.lean_ultraleft += 2;
+!}
+
+We tell the workers to have nothing to do with councils made by the men who shot them. In the shipyards of Hamburg and Bremen many tear up their union cards.

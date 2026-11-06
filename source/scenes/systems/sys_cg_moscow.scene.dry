@@ -14,7 +14,7 @@ tags: congress
 
 = Moscow's Letter
 
-A courier from the Executive has brought a letter to the congress, signed by Zinoviev for the Communist International. It is long, it quotes Lenin twice, and it leaves no doubt that Moscow stands with the **[+ moscow_backs_name +]**.
+A courier has brought a letter to the congress, signed by Zinoviev for the Executive. It is long, it quotes Lenin twice, and it leaves no doubt that Moscow stands with the **[+ moscow_backs_name +]**.
 
 [? if congress_moscow_with_us = 1 : That is our side. ?][? if congress_moscow_with_us = 0 : That is not our side. ?] The delegates know a letter has come. They do not yet know what it says.
 

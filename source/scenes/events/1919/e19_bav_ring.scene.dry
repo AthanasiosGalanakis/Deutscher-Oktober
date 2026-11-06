@@ -2,49 +2,49 @@ title: The Ring Closes
 subtitle: Late April. Von Oven's army surrounds Munich.
 new-page: true
 tags: event
-view-if: crisis_bavaria = 1 and crisis_time = 3
+view-if: crisis_bavaria = 1 and crisis_time >= 3 and e19_bav_ring = 0 and e19_bav_whites > 7
 max-visits: 1
+priority: 3
+on-arrival: {!
+Q.e19_bav_ring = 1;
+Q.e19_bav_whites -= 7;
+Q.e19_bav_food -= 7;
+if (Q.e19_bav_food < 0) { Q.e19_bav_food = 0; Q.e19_bav_hungry = 1; Q.e19_bav_army = Math.max(1, Q.e19_bav_army - 4); }
+Q.crisis_line_1 = 'Von Oven\'s army: ' + Q.e19_bav_whites + ' days from Munich';
+Q.crisis_line_2 = Q.e19_bav_food > 0 ? 'Food in Munich: ' + Q.e19_bav_food + ' days' : 'Food in Munich: none';
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
+!}
 
 = The Ring Closes
 
-Von Oven's divisions have taken Augsburg and are closing on Munich from three sides. The city is short of milk, coal and money; the Executive printed its own banknotes, and the shops refuse them. [? if crisis_momentum >= 65 : But the Red Army is holding its lines, and in the factories the councils stand firm. ?][? if crisis_momentum < 65 : On 27 April the factory councils, frightened and hungry, vote no confidence in the Executive. ?]
+Von Oven's divisions have taken Augsburg and are closing on Munich from three sides. [? if e19_bav_hungry = 1 : On 27 April the factory councils, hungry and frightened, vote no confidence in the Executive. ?][? if e19_bav_hungry = 0 : The city is short of coal and money, but the factories still stand by the councils. ?]
 
-In the cellars of the Luitpold Gymnasium, Red Army men are guarding hostages: aristocrats and members of the Thule Society, an occult club of anti-Semites who have been plotting against the councils, and two captured soldiers. The Whites are shooting the Red prisoners they take. Some of our own men want revenge.
+In the cellars of the Luitpold Gymnasium, Red Army men guard hostages: aristocrats and members of the Thule Society, a club of anti-Semitic plotters. The Whites are shooting the Red prisoners they take. Some of our men want revenge.
 
 - @fight: Fight for every street.
-- @handover: Hand over to a council government that will negotiate.
+- @handover: Hand over to a council committee that will negotiate.
 - @hostages: Free the hostages, and get the leaders out.
 
 @fight
-subtitle: The Left's answer. If Munich falls, it will fall fighting.
-on-arrival: {!
-Q.crisis_momentum += (Q.crisis_momentum >= 60) ? 8 : 2;
-Q.militancy += 6;
-Q.red_guards_strength -= 1;
-Q.offensive_satisfaction += 6;
-Q.ultraleft_satisfaction += 3;
-Q.lean_offensive += 2;
-Q.bav_hostages = 1;
-!}
+subtitle: Nobody gives clear orders about the hostages.
+on-arrival: bav_hostages = 1; lean_offensive += 2; militancy += 4
 
-Egelhofer puts every armed worker into the line. In the confusion nobody gives clear orders about the hostages.
+Egelhofer puts every armed worker into the line.
 
 @handover
-subtitle: The Right's answer: save what can be saved. The fighters call it surrender.
+subtitle: The fighters will call it surrender. Whether the generals accept depends on how much Bamberg fears a bloodbath.
 on-arrival: {!
 Q.bav_talks += 1;
-Q.bav_negotiated = (Q.bav_talks >= 2 || Q.crisis_momentum >= 50) ? 1 : 0;
+Q.bav_negotiated = (Q.bav_talks >= 2 || Q.e19_bav_army >= 15) ? 1 : 0;
 Q.bav_hostages = Q.bav_negotiated ? 0 : 1;
-Q.crisis_momentum -= 10;
-Q.unionist_satisfaction += 6;
-Q.offensive_satisfaction -= 8;
 Q.lean_unionist += 2;
+Q.offensive_satisfaction -= 6;
 !}
 
-[? if bav_power = 1 : Leviné and the Executive resign. ?] A new council committee under Toller asks von Oven for terms. [? if bav_negotiated = 1 : For once, Bamberg wants to avoid a bloodbath in its own capital, and the generals are told to accept. ?][? if bav_negotiated = 0 : The generals answer that they do not negotiate with rebels. ?]
+[? if bav_power = 1 : Leviné and the Executive resign. ?] A new committee under Toller asks von Oven for terms. [? if bav_negotiated = 1 : Bamberg does not want a massacre in its own capital, and the generals are told to accept. ?][? if bav_negotiated = 0 : The generals answer that they do not negotiate with rebels. ?]
 
 @hostages
-subtitle: The Spartacist answer: no crimes the Whites can use, and no martyrs we do not need.
-on-arrival: bav_hostages = 0; levine_escape = 1; crisis_momentum -= 4; repression -= 4; luxemburgist_satisfaction += 6; lean_luxemburgist += 2; offensive_satisfaction -= 3
+subtitle: No crime the Whites can use. False passports for Leviné and the commanders.
+on-arrival: bav_hostages = 0; levine_escape = 1; lean_luxemburgist += 2
 
-The hostages are released at night through a side door. False passports are found for Leviné, Levien and the commanders. [? if bav_power = 1 : Leviné refuses to go until the end. ?]
+The hostages are let out at night through a side door. [? if bav_power = 1 : Leviné takes his passport and refuses to use it until the end. ?]

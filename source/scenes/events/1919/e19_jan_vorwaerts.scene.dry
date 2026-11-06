@@ -1,74 +1,68 @@
-title: The Vorwärts Building
-subtitle: 11 January. The Freikorps attack.
+title: The Storming of Vorwärts
+subtitle: 11 January. The Potsdam regiment brings up field guns.
 new-page: true
 tags: event
 view-if: crisis_january = 1 and crisis_time = 2
 max-visits: 1
+on-arrival: {!
+Q.e19_noske += 3;
+var lost = Math.round(Q.e19_noske / 2) - Q.e19_arms;
+lost = Math.min(Q.e19_buildings, Math.max(1, lost));
+Q.e19_buildings -= lost;
+Q.e19_left = Q.e19_buildings;
+Q.crisis_line_1 = 'Buildings held: ' + Q.e19_buildings + ' of 6';
+Q.crisis_line_2 = 'Noske\'s volunteers: ' + Q.e19_noske + ',000, in the city';
+RG.news('Government troops storm the Vorwärts building', 3);
+!}
 
-= The Vorwärts Building
+= The Storming of Vorwärts
 
-At dawn on 11 January, Major von Stephani's Potsdam regiment opens fire on the *Vorwärts* building with field guns and mortars. The defenders send out seven men under a white flag to negotiate. The soldiers beat them and shoot them in the courtyard of the Dragoon barracks. Among them is the poet Wolfgang Fernbach.
+At dawn Major von Stephani's regiment shelled the *Vorwärts* building with field guns and mortars. The defenders sent out seven men under a white flag. The soldiers beat them and shot them in the yard of the Dragoon barracks. That afternoon Noske marched into Berlin at the head of his volunteers.
 
-That afternoon Noske marches into Berlin at the head of three thousand men. The other buildings are next.
+[? if e19_left >= 2 : Some of the other buildings still hold, and their defenders have seen what happens to men who surrender. ?][? if e19_left = 1 : One building still holds. ?][? if e19_left = 0 : By evening every building has fallen. What is left is a few hundred armed men in the courtyards and stairwells of the district. ?]
 
-[? if crisis_momentum >= 60 : Whole districts are still on our side. The soldiers move carefully in Moabit and Friedrichshain. ?][? if crisis_momentum < 40 : The working-class districts are quiet. The men in the buildings are alone. ?]
-
-- @hold: Hold the buildings to the last.
-- @retreat: Order a fighting retreat into the workers' districts.
-- @terms: Surrender on terms, through the Independents.
+- @hold: Fight it out where they stand.
+- @retreat: Get the fighters out through the courtyards.
+- @terms: Surrender through the Independents.
 
 @hold
-subtitle: The Left Radicals' choice. A legend, and a massacre.
+subtitle: A legend for the Berlin factories, and a massacre.
 on-arrival: {!
 Q.january_outcome = 1;
-Q.crisis_momentum -= 10;
-Q.militancy += 10;
-Q.repression += 8;
-Q.red_guards_strength -= 1;
+Q.militancy += 8;
 Q.district_berlin_members -= 0.6;
-Q.district_berlin_loyalty += 8;
-Q.ultraleft_satisfaction += 8;
 Q.lean_ultraleft += 2;
-Q.lux_risk += 10;
-Q.lieb_risk += 10;
+Q.e19_buildings = 0;
+Q.crisis_line_1 = 'Buildings held: none';
 !}
 
-The buildings fall one by one under artillery fire. Prisoners are shot in the yards. The legend of the defenders of *Vorwärts* will live in every Berlin factory.
+The last buildings fall under artillery fire. Prisoners are shot in the yards.
 
 @retreat
-subtitle: The Spartacist choice: save the cadres for the next fight.
+subtitle: [? if e19_arms = 0 : Pieck gives it no better than even odds. ?][? if e19_arms >= 1 : With rifles to cover the yards, Pieck thinks most of them can get out. ?]
 on-arrival: {!
-Q.january_outcome = Q.crisis_momentum >= 50 ? 2 : 1;
-Q.crisis_momentum += 3;
-Q.repression += 6;
-Q.red_guards_strength -= 0.5;
-Q.district_berlin_members -= 0.3;
-Q.luxemburgist_satisfaction += 5;
+var chance = Math.min(0.85, 0.45 + 0.2 * Q.e19_arms);
+Q.january_outcome = Math.random() < chance ? 2 : 1;
 Q.lean_luxemburgist += 2;
+Q.e19_buildings = 0;
+Q.crisis_line_1 = 'Buildings held: none';
+if (Q.january_outcome == 1) { Q.district_berlin_members -= 0.4; }
 !}
 
-[? if january_outcome = 2 : Most of the fighters slip away through the courtyards with their rifles. The soldiers find empty rooms. ?][? if january_outcome = 1 : The retreat comes too late for many. The soldiers take the buildings, and their prisoners. ?]
+[? if january_outcome = 2 : Most of the fighters slip away through the back courts of the Lindenstrasse with their rifles under their coats. The soldiers storm empty rooms. ?][? if january_outcome = 1 : The soldiers have closed the courts behind the buildings. Few get out. ?]
 
 @terms
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's choice. Lives saved, if the government keeps its word.
-choose-if: lock_united_front < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids any deal with the social democrats.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The fighters go home and the leaders face the courts. The Left will not forgive it.
+choose-if: e19_talks = 1 and lock_united_front < 2
+unavailable-subtitle: Nobody is talking to the government on our behalf.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.january_outcome = (Q.jan_talks == 1 || Q.crisis_momentum >= 55) ? 2 : 1;
-Q.militancy -= 6;
-Q.repression += (Q.january_outcome == 2) ? 2 : 8;
-Q.uspd_relation += 6;
-Q.unionist_satisfaction += 6;
-Q.ultraleft_satisfaction -= 8;
-Q.offensive_satisfaction -= 6;
+if (Q.lock_united_front == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
+Q.january_outcome = 2;
 Q.lean_unionist += 2;
-Q.district_berlin_loyalty -= 10;
-Q.lux_risk -= 8;
-Q.lieb_risk -= 8;
+Q.offensive_satisfaction -= 6;
+Q.district_berlin_loyalty -= 8;
+Q.e19_buildings = 0;
+Q.crisis_line_1 = 'Buildings held: none';
 !}
 
-[? if january_outcome = 2 : The Independents obtain a promise: no shootings, the fighters go home, the leaders face the courts. It is mostly kept. ?][? if january_outcome = 1 : The government has no reason to keep its promises. The men who come out with their hands up are beaten, and some are shot. ?]
+Oskar Cohn of the Independents gets a promise: no shootings. It is mostly kept.

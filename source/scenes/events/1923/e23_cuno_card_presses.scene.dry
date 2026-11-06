@@ -1,39 +1,67 @@
-title: The Money Presses
-subtitle: Without the Reichsdruckerei, there is no money to pay anyone.
+title: The Reichsdruckerei
+subtitle: Without the money presses there is no money to pay anyone.
 view-if: crisis_cuno = 1
-on-arrival: month_actions += 1
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.cunoTick(Q.crisis_time + 1);
+!}
 frequency: 100
 is-card: true
 new-page: true
 tags: crisis
 
-= The Money Presses
+= The Reichsdruckerei
 
-The printers of the Reichsdruckerei are still out, and so are the private firms that print notes on contract. The government cannot pay its officials, its police or the Ruhr strikers. The banks are rationing cash. Every day the presses stand still is a day Cuno cannot govern.
+[? if e23_cuno_presses = 1 : The printers of the Reichsdruckerei are still out, and so are the private firms that print notes on contract. The government cannot pay its officials or its police, and the banks are rationing cash. Nor can anyone pay the strikers. ?][? if e23_cuno_presses = 0 : One press in the Reichsdruckerei is running under the eyes of the strike committee, and the notes go to the strike kitchens. The ministries have found a way to collect some of them too. ?]
 
-- @picket: Picket the presses day and night.
-- @strike_pay: Let one press run, to print the strikers' pay.
-- @seize: Seize a lorry of fresh notes for the strike fund.
+- @stop: Keep every press stopped.
+- @one: Let one press run, for the strike pay.
+- @stopagain: Stop the last press.
+- @lorry: Take a lorry of new notes for the strike fund.
 
-@picket
-subtitle: The strongest pressure on the government. The police will try to break it.
+@stop
+subtitle: Cuno is starved of money. So are the strikers.
+view-if: e23_cuno_presses = 1
 on-arrival: {!
-Q.crisis_momentum += 7;
-Q.repression += 3;
-Q.red_guards_loyalty += 2;
-RG.district('berlin', {repression: 3, militancy: 3});
+Q.e23_cuno_pressure += 8;
+Q.e23_cuno_endurance -= 4;
+RG.district('berlin', {repression: 3});
+RG.e22.cunoLines();
 !}
 
-The printers and the hundreds stand outside the Reichsdruckerei in shifts. A police charge on the second night is beaten back with cobblestones.
+The printers and the hundreds stand outside the Reichsdruckerei in shifts. A police charge on the second night is driven off with cobblestones.
 
-@strike_pay
-subtitle: The strikers can hold out longer, and the presses work for us for a day.
-on-arrival: crisis_momentum += 4; worker_support += 2
+@one
+subtitle: The strikers can eat. The government will find a way to print as well.
+view-if: e23_cuno_presses = 1
+on-arrival: {!
+Q.e23_cuno_presses = 0;
+Q.e23_cuno_endurance += 15;
+RG.e22.cunoLines();
+!}
 
-For one night, a single press prints notes under the eyes of the strike committee. The money goes to the strike kitchens.
+The strike committee lets one press run at night. By morning there are sacks of new notes for the kitchens.
 
-@seize
-subtitle: +1 fund. The newspapers call it robbery, and they are not wrong.
-on-arrival: resources += 1; crisis_momentum += 2; spd_relation -= 4; repression += 3
+@stopagain
+subtitle: The pressure on Cuno returns, and the kitchens go short.
+view-if: e23_cuno_presses = 0
+on-arrival: {!
+Q.e23_cuno_presses = 1;
+Q.e23_cuno_pressure += 4;
+RG.e22.cunoLines();
+!}
 
-A lorry from the Reichsdruckerei is stopped in Kreuzberg. The notes are worth a fortune at breakfast and much less by supper.
+The printers vote to stop the last press. The overseer is escorted out of the building with his keys.
+
+@lorry
+subtitle: One fund for the party, and the papers call it robbery.
+on-arrival: {!
+Q.resources += 1;
+Q.e23_cuno_endurance += 5;
+Q.spd_relation -= 5;
+RG.district('berlin', {repression: 5});
+RG.e22.cunoLines();
+!}
+
+A Reichsdruckerei lorry is stopped in Kreuzberg. The notes are worth a fortune at breakfast and much less by supper.

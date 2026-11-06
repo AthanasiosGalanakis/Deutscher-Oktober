@@ -13,7 +13,7 @@ tags: movement
 
 = The Strike Committee
 
-[? if sys_target_striking = 1 : In **[+ sys_target_name +]**, [+ sys_target_trade +] are on strike. The strike committee meets every night in a back room of the union hall, and half its members carry our card. They want to know what the Zentrale thinks should happen next. ?][? if sys_target_striking = 0 : **[+ sys_target_name +]** is the most restless district in the party. At the gates of [+ sys_target_trade +], our people say the workers would come out tomorrow if someone asked them. ?]
+[? if sys_target_striking = 1 : In **[+ sys_target_name +]**, [+ sys_target_trade +] are on strike. The strike committee meets every night in the back room of the union hall, and half its members carry our card. ?][? if sys_target_striking = 0 : **[+ sys_target_name +]** is the most restless district in the party. At the gates, our people say [+ sys_target_trade +] would come out tomorrow if someone asked them. ?]
 
 [? if sys_target_repression >= 60 : The police are everywhere in the district already. ?][? if sys_target_ours = 0 : The district follows the [+ sys_target_faction_name +], not the Zentrale. ?]
 
@@ -24,7 +24,7 @@ tags: movement
 - @easy_discard
 
 @spread
-subtitle: The strike may spread to the neighbouring district. The police will follow it there.
+subtitle: The strike spreads, and the police follow it.
 view-if: sys_target_striking = 1 and sys_target_neighbour_name
 on-arrival: {!
 var n = RG.spreadStrike(Q.sys_target);
@@ -36,7 +36,7 @@ Q.lean_offensive += 1;
 Lorries of pickets leave before dawn. By the evening, [+ sys_target_neighbour_name +] is out too.
 
 @call
-subtitle: The district stops work. Members and support grow while it lasts, and so does repression.
+subtitle: The district stops work. The party grows while it lasts, and the police arrive.
 view-if: sys_target_striking = 0
 choose-if: sys_target_militancy >= 45
 unavailable-subtitle: The workers of [+ sys_target_name +] are not ready to strike.
@@ -50,7 +50,7 @@ Q.lean_offensive += 1;
 The call goes out from the factory gates in [+ sys_target_name +]. The next morning, the chimneys are cold.
 
 @settle
-subtitle: The strikers go back with something to show. The district trusts us more.
+subtitle: The strike ends with a win. The district trusts us more.
 view-if: sys_target_striking = 1
 on-arrival: {!
 RG.endStrike(Q.sys_target, 'won');
@@ -62,7 +62,7 @@ Q.lean_unionist += 1;
 Our people on the committee push for a settlement while the employers are still frightened: the wage rise, no victimisations. The strikers vote to accept.
 
 @council
-subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The committee claims power in the works. Militancy soars, and the authorities take note.
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The committee claims power in the works. The district is fired up, and the police take note.
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
@@ -84,4 +84,4 @@ if (Q.ultraleft_gone) {
 }
 !}
 
-The committee declares itself the workers' council of the works and posts its own guards at the gates. The management negotiates with it, for now. The district police chief writes to Berlin.
+The committee declares itself the workers' council of the works and posts its own guards at the gates. The management negotiates with it. The district police chief writes to Berlin.

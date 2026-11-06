@@ -26,17 +26,14 @@ Q.lw_name = s.name;
 
 = A Delegation to Moscow
 
-The Zentrale learns it from a Swedish comrade: a delegation of the **[+ lw_rival_name +]**, led by [+ lw_name +], has been in Moscow for a week. They have not come to see the sights. They have been received by **[+ lw_patron_name +]**, twice, and have left with him a memorandum on the "crisis of leadership in the German party".
-
-[+ lw_patron_name +] is said to have listened with great interest. If he takes up their cause, the [+ lw_rival_name +] will come home with the Executive's blessing, and the next Central Committee will be a different one.
+The Zentrale learns it from a Swedish comrade: a delegation of the **[+ lw_rival_name +]**, led by [+ lw_name +], has been in Moscow for a week. They have been received twice by **[+ lw_patron_name +]**, and have left with him a memorandum on the "crisis of leadership in the German party".
 
 - @counter: Send our own delegation after them.
-- @denounce: Denounce factional diplomacy behind the party's back.
 - @deal: Offer the [+ lw_rival_name +] posts and a say, here in Berlin.
 - @ignore: Let them talk. Moscow is far away.
 
 @counter
-subtitle: Costs 1 fund. The Zentrale's case is heard too. [+ lw_patron_name +] will weigh both.
+subtitle: Costs 1 fund. Our case is heard too. The delegation got there first.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
@@ -53,23 +50,10 @@ if (Math.random() < 0.6) {
 }
 !}
 
-Two members of the Zentrale take the train by way of Riga and spend a week in the corridors of the Executive. [? if lw_out = 1 : [+ lw_patron_name +] receives them too, and in the end declines to take sides "at this stage". The [+ lw_rival_name +] come home with nothing but their travel expenses. ?][? if lw_out = 2 : They are received last, and briefly. [+ lw_patron_name +] has already made up his mind. ?]
-
-@denounce
-subtitle: Discipline and independence. The party rallies; the rivals and their patron are angry.
-on-arrival: {!
-Q.unity += 2;
-Q.independence += 4;
-RG.ecci(Q.lw_patron, -6);
-RG.lw.lean(Q.lw_rival, -1, -7);
-RG.lw.lean(Q.leading_faction, 1, 3);
-RG.news('Zentrale condemns secret delegation to Moscow', 2);
-!}
-
-The Zentrale's statement condemns "diplomacy behind the party's back" and reminds every member that the German section speaks to the International through its elected leadership. In Moscow, [+ lw_patron_name +] takes it personally.
+[? if lw_out = 1 : [+ lw_patron_name +] receives them too, and in the end declines to take sides "at this stage". The [+ lw_rival_name +] come home with nothing but their travel expenses. ?][? if lw_out = 2 : They are received last, and briefly. [+ lw_patron_name +] has already made up his mind. ?]
 
 @deal
-subtitle: The rivals are bought off at home. Unity grows; the Zentrale's own current feels betrayed.
+subtitle: Seats on the editorial board buy them off. Our own current feels betrayed.
 on-arrival: {!
 RG.lw.lean(Q.lw_rival, 1, 9);
 Q[Q.leading_faction + '_satisfaction'] -= 6;
@@ -79,7 +63,7 @@ Q.unity += 3;
 The [+ lw_rival_name +] are offered two seats on the editorial board of the party press and a commission on the party's programme. [+ lw_name +] sends a telegram to Moscow: the delegation is coming home.
 
 @ignore
-subtitle: The rival current gains a patron and grows bolder. Nothing is lost today.
+subtitle: Nothing is lost today. A district on the fence may go over to them.
 on-arrival: {!
 RG.ecci(Q.lw_patron, -3);
 RG.lw.lean(Q.lw_rival, 2, 6);

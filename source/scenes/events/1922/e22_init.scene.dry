@@ -1,4 +1,4 @@
-title: 1922–23 setup
+title: 1922 and 1923 setup
 view-if: e22_init_done = 0
 tags: event
 priority: 100
@@ -51,7 +51,6 @@ var start = {
     crisis_october: 0, e23_rising_phase: 0, e23_october_done: 0, e23_oct_result: 0,
     e23_saxony_decided: 0, e23_saxon_police: 0, e23_muller_done: 0,
     e23_chemnitz_done: 0, e23_hamburg_done: 0, e23_battle_done: 0,
-    e23_focus: 0,              // 1 Saxony and Thuringia, 2 Berlin, 3 the Ruhr and the ports
     e23_red_region: 0,         // 1 Saxony and Thuringia, 2 the Ruhr, 3 Hamburg and the coast
     e23_reich_done: 0,
     e23_ban_done: 0, e23_seeckt_ambition: 0, e23_rentenmark_done: 0, e23_reckoning: 0, e23_directory: 0,
@@ -65,13 +64,38 @@ var start = {
     e23_lz_has_rival: 0, e23_lz_deal_name: 0, e23_lz_saxony_used: 0, e23_lz_sax_ours: 0, e23_lz_moved: 0,
     e23_rk_backing: 'unionist', e23_rk_moscow_left: 0, e23_rk_three: 0, e23_rk_old: 0, e23_rk_can_purge: 0,
     e23_rk_left_present: 0, e23_rk_kept: 0, e23_right_blamed: 0, e23_rk_count: 0, e23_lz_count: 0, e23_lz_dealt: 0,
-    e23_sch_directive: 0, e23_oct_directive: 0, e23_oct_verdict: 0, e23_oct_strength: 0, e23_oct_district_bonus: 0,
-    e23_oct_best_name: 0, e23_oct_worst_name: 0, e23_oct_arrests: 0, e23_oct_has_arrests: 0,
-    e23_oct_fallen: 0, e23_oct_has_fallen: 0, e23_hh_thal: 0, e23_ban_arrested: 0, e23_ban_has_arrests: 0,
+    e23_sch_directive: 0, e23_oct_directive: 0, e23_oct_verdict: 0,
+    e23_oct_arrests: 0, e23_oct_has_arrests: 0,
+    e23_oct_has_fallen: 0, e23_hh_thal: 0, e23_ban_arrested: 0, e23_ban_has_arrests: 0,
     e23_alone_d: 0, e23_alone_name: 0, e23_alone_trade: 0, e23_alone_ours: 0, e23_alone_faction: 0,
     e23_hunger_d: 0, e23_hunger_name: 0, e23_hunger_trade: 0, e23_hunger_striking: 0,
     e23_quarrel: 0, e23_q_rose: 0, e23_q_called: 0, e23_q_never: 0, e23_q_refused: 0,
-    e23_flight_done: 0, e23_fl_id: 0, e23_fl_name: 0, e23_fl_has: 0, e23_fl_ok: 0
+    e23_flight_done: 0, e23_fl_id: 0, e23_fl_name: 0, e23_fl_has: 0, e23_fl_ok: 0, e23_fl_p: 0.5,
+    // third pass
+    crisis_line_1: 0, crisis_line_2: 0, crisis_line_3: 0, crisis_momentum_label: 0,
+    e22_cm_d: 0, e22_cm_name: 0, e22_metal_ok: 0, e22_reuter_leaves: 0,
+    e22_opp_a: 0, e22_opp_b: 0, e22_opp_free: 0,
+    e22_had_uspd: 0, e22_kpd_ministers: 0, e22_labour_branch: 0, e22_let_fall: 0, e22_old_chancellor: 0,
+    e22_sax_ministers: 0, e22_unity: 0, e22_unity_possible: 0,
+    e23_patron: 0,             // 1 Zinoviev, 2 Trotsky, 3 Radek
+    e23_alone: 0, e23_alone_found: 0, e23_afd_dead: 0, e23_had_sax: 0, e23_sax_ministers: 0, e23_sax_police: 0,
+    e23_cuno_pressure: 0, e23_cuno_endurance: 0, e23_cuno_presses: 0, e23_cuno_ticked: 0,
+    e23_cuno_spd: 0, e23_cuno_pay_done: 0, e23_cuno_aim: 0, e23_cuno_can_rise: 0,
+    e23_cuno_weak: 0, e23_cuno_weak_name: 0, e23_cuno_has_weak: 0, e23_cuno_union: 0,
+    e23_cuno_new: 0, e23_cuno_has_new: 0, e23_cuno_rising: 0, e23_cuno_won: 0,
+    e23_rail_p: 0, e23_rail_odds: 0, e23_rail_joined: 0, e23_council_congress: 0, e23_defend_wg: 0,
+    e23_plan: 0, e23_october_refused: 0, e23_lz_broken: 0,
+    e23_oct_arms: 0, e23_oct_hall: 0, e23_oct_couriers: 0, e23_oct_ticked: 0, e23_oct_rising: [],
+    e23_oct_alive: 0, e23_oct_fight: 0, e23_oct_bonus: 0, e23_oct_focus: 0,
+    e23_oct_battle_time: 99, e23_oct_end_time: 99,
+    e23_oct_fallen_names: 0, e23_oct_held_names: 0, e23_oct_arms_words: 0,
+    e23_oct_martyr: 0, e23_oct_martyr_ok: 0, e23_red_names: 0,
+    e23_arms_hidden: 0, e23_armoury_done: 0, e23_raid_ok: 0, e23_spdl_ok: 0, e23_depot_ok: 0,
+    e23_weak_d: 0, e23_weak_name: 0, e23_officers_ok: 0,
+    e23_ch_p: 0, e23_ch_odds: 0, e23_ch_carried: 0, e23_hh_rises: 0, e23_barmbek: 0,
+    e23_berlin_p: 0, e23_berlin_odds: 0, e23_berlin_roll: 0, e23_berlin_up: 0, e23_red_ruhr: 0,
+    e23_had_ministers: 0, e23_beer_front: 0, e23_beer_in_crisis: 0, e23_cells: 0,
+    e23_red_refuge: 0, e23_dir_choice: 0
 };
 for (var k in start) {
     if (Q[k] === undefined) {

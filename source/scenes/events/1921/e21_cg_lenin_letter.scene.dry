@@ -15,18 +15,16 @@ tags: congress
 
 = A Letter from Lenin
 
-The letter is dated 14 August and addressed to the Jena congress: "A Letter to the German Communists". It is long and plain. The March Action was a mistake, Lenin writes, and also a step forward, because hundreds of thousands fought. The party must now win the majority of the working class, and it must stop hunting heretics: the Left is to leave Levi's friends alone, and the Zentrale is to stop looking over its shoulder at the Left. Unity first, the masses second, power third.
+The letter is dated 14 August and addressed to the congress. It is long and plain. The March Action was a mistake, Lenin writes, and the party must now win the majority of the working class. The Left is to stop hunting Levi's friends, and the Zentrale is to stop looking over its shoulder at the Left.
 
-[? if e21_lenin_letter_mood = 1 : Between the lines, the delegates can read that Lenin trusts the German Zentrale. ?][? if e21_lenin_letter_mood = 2 : Lenin is careful to praise no one by name. ?][? if e21_lenin_letter_mood = 3 : Lenin does not mention the German Zentrale at all, and everybody notices. ?]
-
-[? if e21_backing_right = 1 : The letter reads like a speech for our motion. ?][? if e21_backing_right = 0 : The letter reads like a speech for the Right's motion, not ours. ?]
+[? if e21_lenin_letter_mood = 1 : Between the lines, the delegates can read that Lenin trusts the German Zentrale. ?][? if e21_lenin_letter_mood = 2 : Lenin is careful to praise no one by name. ?][? if e21_lenin_letter_mood = 3 : Lenin does not mention the German Zentrale at all, and everybody notices. ?] [? if e21_backing_right = 1 : It reads like a speech for our motion. ?][? if e21_backing_right = 0 : It reads like a speech for the Right's motion. ?]
 
 - @read: Read the whole letter to the congress.
-- @quote: Quote the passages that suit us.
-- @leave: Have it printed, and let the delegates read it themselves.
+- @quote: Quote only the passages that suit us.
+- @leave: Have it printed and laid on every seat.
 
 @read
-subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Lenin's authority moves the hall towards the Right. Lenin will be told who read it.
+subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Lenin's name moves the hall towards the Right, and calms it.
 choose-if: lock_moscow_orders < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids taking orders from Moscow, even from Lenin.
 on-arrival: {!
@@ -38,14 +36,12 @@ var f = (Q.e21_lenin_letter_mood == 1) ? 0.08 : ((Q.e21_lenin_letter_mood == 2) 
 if (Q.unionist_gone != 1) { RG.congress.swayTo('unionist', f); }
 RG.congress.bitter(-2);
 RG.ecci('lenin', 4);
-Q.independence -= 2;
-Q.unity += 2;
 !}
 
-The chair reads the letter from beginning to end. The hall is very quiet. [+ congress_last_moved +] delegates who came to Jena to settle accounts decide that Lenin has settled them already.
+The chair reads the letter from beginning to end, and the hall is very quiet. [+ congress_last_moved +] delegates who came to Jena to settle accounts decide that Lenin has settled them already.
 
 @quote
-subtitle: Only the lines against our rivals. Effective, if nobody has read the whole thing. Somebody always has.
+subtitle: Works if nobody has read the whole letter. Somebody usually has.
 on-arrival: {!
 RG.congress.sway(0.05 + Math.random() * 0.03);
 if (Math.random() < 0.35) {
@@ -58,14 +54,13 @@ if (Math.random() < 0.35) {
 RG.ecci('lenin', -4);
 !}
 
-Our speakers quote Lenin on the passages that suit us, and pass over the rest. [? if sys_outcome = 1 : It works: [+ congress_last_moved +] delegates come over. ?][? if sys_outcome = 2 : Then a delegate from Thuringia reads out the passages we left out. We lose friends we had. ?]
+Our speakers quote Lenin where he agrees with us and pass over the rest. [? if sys_outcome = 1 : [+ congress_last_moved +] delegates come over. ?][? if sys_outcome = 2 : Then a delegate from Thuringia reads out the passages we left out, and we lose friends we had. ?]
 
 @leave
-subtitle: No one can say we used Lenin's name. The letter does its work slowly, and evenly.
+subtitle: Nobody can say we used Lenin's name. The letter does its work slowly.
 on-arrival: {!
 if (Q.unionist_gone != 1) { RG.congress.swayTo('unionist', 0.025); }
 Q.independence += 1;
-Q.unity += 1;
 !}
 
-The letter is printed overnight and laid on every seat. By the morning session most delegates have read it. Some of them have changed their minds, mostly in the Right's direction.
+The letter is printed overnight. By the morning session most delegates have read it, and some have changed their minds, mostly towards the Right.

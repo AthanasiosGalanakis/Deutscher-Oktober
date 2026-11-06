@@ -1,7 +1,14 @@
 title: The Factory Gates
-subtitle: Most workers are still at work.
+subtitle: Most workers are still going in to work.
 view-if: crisis_march = 1
-on-arrival: month_actions += 1
+on-arrival: {!
+Q.month_actions += 1;
+Q.e21_gates_vote = (Q.worker_support >= 25) ? 60 : 30;
+Q.e21_gates_vote = Math.round(Q.e21_gates_vote * Math.max(0.3, 1 - 0.15 * Q.e21_ma_rift));
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 frequency: 100
 is-card: true
 new-page: true
@@ -9,33 +16,32 @@ tags: crisis
 
 = The Factory Gates
 
-In most of the country the factories are working. The strike call has been read and ignored. In some districts our comrades are asking the Zentrale for permission to close the gates themselves, with the unemployed, by force if need be.
+Outside Central Germany the morning shifts are going in as usual. In several towns our comrades ask the Zentrale for leave to close the gates themselves, with the unemployed, by force if need be. [? if e21_ma_rift >= 3 : After the fights of the last days, the men inside are in no mood to listen to us. ?]
 
-- @unemployed: Send the unemployed to close the factories.
-- @meetings: Hold factory meetings and let them vote.
+- @unemployed: Send the unemployed to close the gates.
+- @meetings: Put the strike to the vote in every works.
 - @strike_pay: Pay strike money to those who come out.
 
 @unemployed
-subtitle: The Left's line. It may close the gates. It will also set worker against worker.
+subtitle: Many works will close. The men who are turned back will hate us for it.
 on-arrival: {!
-Q.crisis_momentum += 6;
-Q.worker_support -= 4;
-Q.unity -= 4;
-Q.spd_relation -= 4;
-Q.offensive_satisfaction += 4;
-Q.luxemburgist_satisfaction -= 6;
-Q.lean_offensive += 1;
+Q.e21_ma_out += 60;
+Q.e21_ma_rift += 2;
 RG.target('militancy');
 Q.e21_gates_name = Q.sys_target_name;
 RG.district(Q.sys_target, {loyalty: -5, repression: 6});
 RG.startStrike(Q.sys_target, true);
-RG.news('Workers fight the unemployed at the factory gates in ' + Q.sys_target_name, 2);
+RG.news('Strikers and workers fight at the factory gates in ' + Q.sys_target_name, 2);
+Q.lean_offensive += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-Columns of unemployed men march to the gates at dawn. At some works they turn the shift back. At others the workers fight them with iron bars, and the photographs from [+ e21_gates_name +] are in every newspaper by noon.
+Columns of unemployed men march to the gates at dawn. At some works they turn the shift back. At others the workers fight them with iron bars, and the photographs from [+ e21_gates_name +] are in every paper by noon.
 
 @meetings
-subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The Spartacist way: the workers decide. It works where we are trusted.
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Slower, and it only works where the workers still trust us.
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids council action.
 on-arrival: {!
@@ -43,18 +49,26 @@ if (Q.lock_councils == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-Q.crisis_momentum += (Q.worker_support >= 25) ? 6 : 2;
-Q.worker_support += 1;
-Q.luxemburgist_satisfaction += 3;
+Q.e21_ma_out += Q.e21_gates_vote;
 Q.lean_luxemburgist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-Our factory cells call mass meetings and put the strike to the vote. Where the vote is won, the whole shift walks out together. Where it is lost, we accept it.
+Our factory cells call mass meetings and put the strike to a vote. [? if e21_gates_vote >= 40 : Where the vote is won, the whole shift walks out together. ?][? if e21_gates_vote < 40 : Most of the votes are lost, and we accept it. ?]
 
 @strike_pay
-subtitle: The Right's way. Costs 1 fund.
+subtitle: Costs 1 fund.
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
-on-arrival: resources -= 1; crisis_momentum += 5; worker_support += 1; unionist_satisfaction += 3; lean_unionist += 1
+unavailable-subtitle: The strike funds are empty.
+on-arrival: {!
+Q.resources -= 1;
+Q.e21_ma_out += 35;
+Q.lean_unionist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 
-The strike funds are opened. A worker who knows his family will eat is a worker who can stay out another week.
+The strike funds are opened. A man who knows his family will eat can stay out another week.

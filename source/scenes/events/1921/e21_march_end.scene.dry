@@ -6,66 +6,50 @@ view-if: crisis_march = 1 and (crisis_time >= 4 or e21_ma_calloff = 1)
 max-visits: 1
 priority: 20
 on-arrival: {!
+// the generic crisis cards still count a little
+var out = Q.e21_ma_out + (Q.crisis_momentum - 50) * 3;
+var won = out >= Q.e21_ma_need && (Q.e21_leuna != 2 || out >= Q.e21_ma_need + 100) && !Q.e21_ma_calloff;
+var mode = Q.e21_march_mode;
+var rift = Q.e21_ma_rift;
+Q.march_action = won ? 2 : 1;
+Q.e21_final_momentum = Math.round(out);
 Q.crisis = 0;
 Q.crisis_march = 0;
 Q.crisis_name = 0;
 Q.crisis_goal = 0;
+Q.crisis_line_1 = 0;
+Q.crisis_line_2 = 0;
+Q.crisis_line_3 = 0;
+Q.crisis_momentum_label = 0;
 Q.week = 0;
 Q.comintern_rep = 'Karl Radek';
-Q.e21_final_momentum = Q.crisis_momentum;
-var won = Q.crisis_momentum >= 80;
-Q.march_action = won ? 2 : 1;
-var mode = Q.e21_march_mode;
 if (won) {
-    Q.worker_support += (mode == 1) ? 10 : 8;
-    Q.militancy += (mode == 2) ? 10 : 5;
+    Q.worker_support += (mode == 1) ? 10 : 6;
     Q.stability -= (mode == 2) ? 15 : 6;
-    Q.repression += (mode == 2) ? 4 : 0;
     Q.red_guards_strength += (mode == 2) ? 6 : 3;
-    Q.red_guards_loyalty += 10;
-    Q.police_loyalty -= 5;
-    Q.district_halle_members *= 1.15;
-    Q.district_halle_loyalty += 20;
+    RG.district('halle', {loyalty: 20, members: 0.15});
     Q.unity += 8;
-    Q.offensive_satisfaction += (mode == 2) ? 20 : 8;
-    Q.unionist_satisfaction += (mode == 1) ? 12 : 4;
-    Q.luxemburgist_satisfaction += (mode == 1) ? 8 : 0;
     if (mode == 1) { Q.spd_relation += 5; Q.uspd_relation += 6; }
     Q.world_revolution += 8;
-    Q.e21_soviet_viable = (mode == 2 && Q.crisis_momentum >= 85 &&
+    Q.e21_soviet_viable = (mode == 2 && out >= Q.e21_ma_need + 80 &&
         (Q.red_guards_strength >= 12 || Q.ruhr_red_army == 2 || Q.kapp_outcome == 3)) ? 1 : 0;
 } else {
-    // losses: deaths, prisoners, and members who simply leave
-    var f = (mode == 2) ? 0.76 : 0.90;
+    // deaths, prisoners, and members who simply leave; worse where worker fought worker
+    var f = ((mode == 2) ? 0.78 : 0.92) - 0.02 * rift;
     var fh = (mode == 2) ? 0.60 : 0.80;
     if (Q.e21_ma_calloff) { f += 0.04; fh += 0.06; }
     if (Q.e21_arms_saved) { f += 0.02; }
-    if (Q.crisis_momentum >= 60) { f += 0.03; fh += 0.05; }
-    f = Math.min(f, 0.97);
     for (var d of Q.districts) {
-        Q['district_' + d + '_members'] *= f;
+        Q['district_' + d + '_members'] *= Math.min(0.97, f);
     }
     Q.district_halle_members *= fh;
-    Q.district_halle_loyalty -= 10;
-    // the courts and the Security Police: hardest where the fighting was
-    Q.repression += (mode == 2) ? 5 : 2;
-    RG.district('halle', {repression: (mode == 2) ? 25 : 12, guards: -2});
-    for (var dd of Q.districts) {
-        if (dd != 'halle' && Q['district_' + dd + '_strike']) { RG.district(dd, {repression: (mode == 2) ? 12 : 6}); }
-    }
-    Q.worker_support -= (mode == 2) ? 6 : 2;
-    Q.red_guards_strength *= (mode == 2) ? 0.5 : 0.8;
-    Q.red_guards_arms -= Q.e21_arms_saved ? 4 : ((mode == 2) ? 15 : 6);
-    Q.spd_relation -= (mode == 2) ? 10 : 2;
-    Q.uspd_relation -= (mode == 2) ? 8 : 0;
+    RG.district('halle', {repression: (mode == 2) ? 25 : 12, guards: Q.e21_arms_saved ? 0 : -2, loyalty: -10});
+    Q.worker_support -= ((mode == 2) ? 5 : 2) + rift;
+    Q.spd_relation -= 2 * rift + ((mode == 2) ? 6 : 0);
+    Q.red_guards_arms -= Q.e21_arms_saved ? 3 : ((mode == 2) ? 15 : 6);
     Q.unity -= (mode == 2) ? 10 : 4;
-    Q.luxemburgist_satisfaction -= (mode == 2) ? 15 : 5;
-    Q.unionist_satisfaction -= (mode == 2) ? 6 : 2;
-    Q.offensive_satisfaction -= (mode == 2) ? 4 : 6;
-    Q.world_revolution -= 5;
     Q.stability += 4;
 }
-// the strikes end, district by district
 for (var ds of Q.districts) {
     if (Q['district_' + ds + '_strike']) {
         if (won) { RG.endStrike(ds, 'won'); }
@@ -73,55 +57,39 @@ for (var ds of Q.districts) {
         else { RG.endStrike(ds, 'quiet'); }
     }
 }
-// the comrades
 Q.e21_brandler_jailed = 0;
 if (!won) {
-    if (Q.comrade_hoelz != 4 && Q.comrade_hoelz != 2) {
+    if (Q.comrade_hoelz == 1) {
         RG.arrest('hoelz', 0, {news: 'Max Hoelz arrested in Berlin under a false name', priority: 2});
     }
     if (mode == 2 && Q.comrade_brandler == 1) {
-        RG.arrest('brandler', 8, {news: 'Brandler arrested: the chairman of the party before a special court', priority: 2});
+        RG.arrest('brandler', 8, {news: 'Brandler before a special court', priority: 2});
         Q.e21_brandler_jailed = 1;
     }
-} else {
+} else if (Q.comrade_hoelz == 1) {
     RG.setRole('hoelz', 'The red general of Mansfeld');
 }
-// Moscow: the directive is judged by what the party did, the men by how it ended
 if (Q.directive_offensive == 1) {
     if (mode == 2) { RG.comply(100); } else { RG.comply(won ? 60 : 20); }
 }
 if (won) {
     RG.ecci('zinoviev', 10);
     RG.ecci('bukharin', 10);
-    RG.ecci('lenin', 3);
-    RG.ecci('trotsky', 3);
-    RG.news(mode == 2 ? 'Hörsing\'s police withdraw: armed workers hold Central Germany' : 'The government gives way: police leave Mansfeld, councils recognised at Leuna', 3);
 } else if (mode == 2) {
     RG.ecci('lenin', -10);
     RG.ecci('trotsky', -8);
-    RG.ecci('radek', -4);
-    RG.ecci('zinoviev', 2);
-    RG.ecci('bukharin', 4);
     RG.news('The March Action called off: a hundred and fifty dead, thousands in prison', 3);
 } else {
     RG.ecci('lenin', 2);
     RG.ecci('radek', 3);
-    RG.ecci('zinoviev', -4);
-    RG.news('The Central German strike ends in defeat; the party stands', 3);
+    RG.news('The Central German strike ends in defeat', 3);
 }
-Q.e21_members_now = Math.round(Q['district_berlin_members'] + Q['district_hamburg_members'] + Q['district_bremen_members'] + Q['district_ruhr_members'] + Q['district_saxony_members'] + Q['district_thuringia_members'] + Q['district_bavaria_members'] + Q['district_halle_members']);
 !}
 
 = [? if march_action = 2 : Victory in Central Germany ?][? if march_action = 1 : Defeat ?]
 
-[? if march_action = 2 and e21_march_mode = 2 : The Reichswehr does not march. Seeckt will not risk his army in a civil war for Hörsing's sake, and the Prussian government, frightened by the strikes in Berlin and the Ruhr, orders the Security Police out of the copper district. Armed workers hold Mansfeld, Merseburg and the Leuna works. For the first time since 1919, the party has won a fight. ?]
+[? if march_action = 2 and e21_march_mode = 2 : The Reichswehr does not march. Seeckt will not risk his army in a civil war for Hörsing's sake, and the Prussian government, frightened by the strikes in Berlin and the Ruhr, orders the Security Police out of the copper district. Armed workers hold Mansfeld, Merseburg and the Leuna works. ?][? if march_action = 2 and e21_march_mode = 1 : The Prussian government gives way. Hörsing's police leave the Mansfeld district, nobody is to be punished, and the factory councils at Leuna are recognised. Social democratic workers who struck beside us say so openly. ?]
 
-[? if march_action = 2 and e21_march_mode = 1 : The Prussian government gives way. Hörsing's police are withdrawn from the Mansfeld district, the strikers are promised that nobody will be punished, and the factory councils at Leuna are recognised. Social democratic workers who struck beside us say so openly. It is a victory of the whole class, and everybody knows who called it. ?]
+[? if march_action = 1 and e21_march_mode = 2 : On 1 April the Zentrale calls off the action. About a hundred and fifty workers are dead and thousands are in prison, and the special courts will hand out years of penal servitude. Members are leaving in every district. ?][? if march_action = 1 and e21_march_mode = 1 : The strike ends without victory. The police stay in Mansfeld, the strike leaders are arrested and the Leuna works are cleared. The party fought for something every worker understood, and most of its members are still with it. ?][? if march_action = 1 and e21_ma_rift >= 3 : In the factories, social democratic workers remember who came to the gates with clubs. ?]
 
-[? if march_action = 1 and e21_march_mode = 2 : On 1 April the Zentrale calls off the action. About a hundred and fifty workers are dead, thousands are in prison, and the courts will hand out years of penal servitude. The party that began the year with [+ e21_members_jan +] thousand members has [+ e21_members_now +] thousand left, and the number is still falling. In the factories, social democratic workers remember that communists tried to drive them out with clubs. ?]
-
-[? if march_action = 1 and e21_march_mode = 1 : The strike ends without victory. The police stay in Mansfeld, the leaders of the strike committees are arrested, and the Leuna works are cleared. But the party fought for something every worker understood, and most of its members are still with it: [+ e21_members_now +] thousand. ?]
-
-[? if march_action = 2 and e21_soviet_viable = 1 : In Halle the council of the district is meeting day and night. Some delegates are asking a question nobody dared ask a month ago: why give anything back? ?]
-
-[? if march_action = 1 and e21_brandler_jailed = 1 : Heinrich Brandler, who signed the call to arms for the Zentrale, is arrested in Berlin and will stand before a special court. ?][? if march_action = 1 and comrade_hoelz = 2 : Max Hoelz is caught in Berlin, living under a false name. The papers that called him a bandit now call him a murderer. ?]
+[? if march_action = 2 and e21_soviet_viable = 1 : In Halle the district council meets day and night, and some delegates want to know why anything should be given back. ?][? if e21_brandler_jailed = 1 : Heinrich Brandler, who signed the call to arms, is arrested in Berlin and will stand before a special court. ?][? if march_action = 1 and comrade_hoelz = 2 : Max Hoelz is caught in Berlin, living under a false name. ?]

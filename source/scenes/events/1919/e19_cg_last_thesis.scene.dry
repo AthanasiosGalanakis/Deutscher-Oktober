@@ -16,39 +16,34 @@ tags: congress
 
 = The Last Thesis
 
-On the second day the debate stops being about elections and becomes about the party itself. [? if heid_motion = 1 : Wolffheim says the last thesis is a guillotine with a footnote. ?][? if heid_motion = 2 : The Left Radicals say the missing thesis is still there, written in invisible ink. ?] The Right's delegates from Saxony ask whether a young party can afford to throw out half of itself. [+ heid_speaker_name +] is to answer for the Zentrale tonight.
+On the second day the debate stops being about elections and becomes about the party itself. [? if heid_motion = 1 : Wolffheim calls the last thesis a guillotine with a footnote. ?][? if heid_motion = 2 : The Left Radicals say the missing thesis is still there, in invisible ink. ?] The Saxon delegates ask whether a young party can afford to throw out half of itself. [+ heid_speaker_name +] will answer for the Zentrale tonight.
 
-[? if heid_natbol = 1 : The Zentrale has the Hamburg articles on a people's war against the Entente, with the officers' clubs' letters of thanks. ?]
-
-- @firm: Answer them: a party is a discipline, or it is nothing.
+- @firm: A party is a discipline, or it is nothing.
 - @drop: Drop the clause, and win the waverers.
-- @restore: Put the clause back: name the splitters.
-- @natbol: Read out the Hamburg articles.
+- @restore: Put the clause back, and name the districts it means.
+- @natbol: Read out the Hamburg articles on a people's war.
 
 @firm
-subtitle: Our best speaker against their best. The Spartacists' line, and the hall will remember the speech.
+subtitle: Our best speaker against theirs.
 on-arrival: {!
 RG.congress.sway(0.04 * Q.heid_speaker_power);
 RG.congress.bitter(2);
 Q.lean_luxemburgist += 1;
-Q.luxemburgist_satisfaction += 3;
 !}
 
 [+ heid_speaker_name +] speaks for an hour and a half without a note. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates are won over before the end. ?][? if congress_last_moved = 0 : The hall applauds, and nobody changes sides. ?] Our side has [+ congress_votes_for +]% of the hall.
 
 @drop
 view-if: heid_motion = 1
-subtitle: The Right's advice. Easier to win, and the Left Radicals stay. The Zentrale's own people feel betrayed.
+subtitle: The Left Radicals stay. The Zentrale's own people will feel betrayed.
 on-arrival: {!
 Q.heid_motion = 2;
 RG.congress.sway(0.07);
 Q.luxemburgist_satisfaction -= 6;
-Q.unionist_satisfaction += 5;
 Q.lean_unionist += 2;
-RG.ecci('radek', 4);
 !}
 
-The Zentrale withdraws the last thesis in the middle of the debate. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates who could not vote to expel their comrades can now vote with us. ?] Our side has [+ congress_votes_for +]% of the hall. Some of our own delegates are not speaking to the Zentrale.
+The Zentrale withdraws the last thesis in the middle of the debate. Our side has [+ congress_votes_for +]% of the hall. Some of our own delegates are not speaking to the Zentrale.
 
 @restore
 view-if: heid_motion = 2
@@ -57,21 +52,19 @@ on-arrival: {!
 Q.heid_motion = 1;
 RG.congress.lose(0.05);
 RG.congress.bitter(4);
-Q.luxemburgist_satisfaction += 6;
 Q.lean_luxemburgist += 2;
 !}
 
-The clause goes back into the theses, with the names of the districts it means. Our side now has [+ congress_votes_for +]% of the hall, and the Left Radicals know exactly where they stand.
+Our side has [+ congress_votes_for +]% of the hall, and the Left Radicals know exactly where they stand.
 
 @natbol
 view-if: heid_natbol = 1
-subtitle: Turns the debate on Laufenberg and Wolffheim. Bremen, which dislikes their nationalism, may break away from Hamburg.
+subtitle: Bremen dislikes Laufenberg's nationalism. It may break with Hamburg tonight.
 on-arrival: {!
 var n = RG.congress.convert('bremen', 0.35) + RG.congress.convert('berlin', 0.1);
 RG.congress.tally();
 Q.congress_last_moved = n;
 RG.congress.bitter(3);
-Q.ultraleft_satisfaction -= 5;
 !}
 
-The Hamburg articles are read aloud, slowly, with the officers' letters after them. The Bremen delegates go out to confer, and come back divided. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates come over to us. ?] Our side has [+ congress_votes_for +]% of the hall.
+The articles are read aloud, slowly, with the officers' letters of thanks after them. The Bremen delegates go out to confer. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates come back to vote with us. ?] Our side has [+ congress_votes_for +]% of the hall.

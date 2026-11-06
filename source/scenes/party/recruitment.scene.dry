@@ -1,6 +1,6 @@
 title: Recruitment Drive
 new-page: true
-view-if: crisis = 0 and recruitment_timer <= 0
+view-if: crisis = 0 and congress = 0 and recruitment_timer <= 0
 on-arrival: recruitment_timer = 3; month_actions += 1
 frequency: 300
 is-card: true
@@ -8,50 +8,43 @@ tags: party_affairs
 
 = Recruitment Drive
 
-[? if year = 1919 or (year = 1920 and month < 4) : Thousands of workers are disappointed in Ebert's republic. ?][? if year = 1920 and month >= 4 : After the Kapp days, many workers want a party that will fight. ?][? if year >= 1921 : The party has become a mass party, and it must keep growing or it will shrink. ?] A recruitment drive could bring new members in, but only the districts loyal to the Zentrale will put real effort into it.
+[? if year = 1919 or (year = 1920 and month < 4) : Thousands of workers are disappointed in Ebert's republic. ?][? if year = 1920 and month >= 4 : After the Kapp days, many workers want a party that will fight. ?][? if year >= 1921 : A mass party has to keep growing, or it shrinks. ?] Only the districts loyal to the Zentrale will put real work into a drive.
 
-Members in loyal districts: [+ loyal_share_display +]%.
-
-- @drive: Fund a recruitment drive.
+- @drive: Pay for a national drive.
 - @tested: Admit only tested militants.
-- @local: Leave recruitment to the districts.
+- @open: Open the doors to everyone.
 - @easy_discard
 
 @drive
-subtitle: Costs 1 fund. Loyal districts grow faster than defiant ones.
+subtitle: Costs 1 fund. Loyal districts grow fast; the others take the money.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
 Q.resources -= 1;
 for (var d of Q.districts) {
-    var grow = Q['district_' + d + '_loyalty'] >= 50 ? 0.15 : 0.05;
+    var grow = Q['district_' + d + '_loyalty'] >= 50 ? 0.15 : 0.04;
     Q['district_' + d + '_members'] *= 1 + grow;
 }
-Q.worker_support += 2;
-Q.lean_luxemburgist += 1;
 !}
 
-Organisers fan out to factories and labour exchanges. The loyal districts report a stream of new members; the others take the money and do as they please.
-
 @tested
-subtitle: Slow growth, but the new members are fighters who answer to the party.
+subtitle: Few new members, and the red guards can trust them.
 on-arrival: {!
 for (var d of Q.districts) {
     Q['district_' + d + '_members'] *= 1.02;
 }
-Q.unity += 3;
-Q.red_guards_loyalty += 3;
-Q.offensive_satisfaction += 3;
+Q.red_guards_loyalty += 6;
 Q.lean_offensive += 1;
 !}
 
-A party of action, not of dues-payers. Each new member must be vouched for by two comrades who have seen them in a strike or on the streets.
+Each new member must be vouched for by two comrades who have seen them in a strike.
 
-@local
+@open
+subtitle: Many join everywhere. The districts drift further from Berlin.
 on-arrival: {!
 for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 1.04;
-    Q['district_' + d + '_loyalty'] -= 2;
+    Q['district_' + d + '_members'] *= 1.07;
+    Q['district_' + d + '_loyalty'] -= 4;
 }
 !}
 

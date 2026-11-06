@@ -1,5 +1,5 @@
-title: The January Uprising
-subtitle: Berlin's workers are in the streets.
+title: The January Rising
+subtitle: Armed workers hold the newspaper district of Berlin.
 new-page: true
 tags: event
 view-if: year = 1919 and month = 1 and crisis_january = 0 and spartacist_uprising_done = 0
@@ -9,82 +9,66 @@ Q.crisis = 1;
 Q.crisis_january = 1;
 Q.crisis_time = 0;
 Q.week = 1;
-Q.crisis_name = 'The January Uprising';
+Q.crisis_name = 'The January Rising';
 Q.crisis_goal = 'Decide what the party fights for in Berlin, and keep its leaders alive.';
 Q.crisis_momentum = 40;
-Q.lux_risk = 40;
-Q.lieb_risk = 45;
+Q.crisis_momentum_label = 0;
+Q.e19_buildings = 6;
+Q.e19_noske = 2;
+Q.e19_arms = 0;
+Q.e19_hide = 0;
+Q.e19_lieb_committee = 1;
+Q.crisis_line_1 = 'Buildings held: 6 of 6';
+Q.crisis_line_2 = 'Noske\'s volunteers: 2,000, at Dahlem';
+Q.crisis_line_3 = 'Luxemburg and Liebknecht: in their own flats';
 RG.startStrike('berlin', true);
 RG.district('berlin', {militancy: 15});
 RG.news('Revolutionary Committee declares the Ebert government deposed', 3);
 !}
 
-= The January Uprising
+= The January Rising
 
-On 4 January the government dismissed Emil Eichhorn, the Independent who had run the Berlin police since November. The next day hundreds of thousands of workers marched in protest. Armed groups occupied the offices of *Vorwärts* and the other papers of the newspaper district, and a Revolutionary Committee of the shop stewards, the Independents and our party declared the Ebert government deposed. Karl Liebknecht signed for us.
+On 4 January the government dismissed Emil Eichhorn, the Independent who ran the Berlin police. The next day a vast crowd marched in protest, and armed men occupied *Vorwärts* and the other papers of the newspaper district. A Revolutionary Committee of the shop stewards, the Independents and our party declared Ebert deposed. Karl Liebknecht signed for us without asking the Zentrale.
 
-The Zentrale was not consulted. Rosa Luxemburg thinks the rising has no chance: the provinces are quiet and the garrison will not march. Leo Jogiches wants Liebknecht to leave the Committee at once. Karl Radek, who came from Moscow for our founding congress, urges a retreat. But the Berlin district, which follows the Left Radicals, is already in the buildings, and the crowds in the Siegesallee are waiting for orders.
+Rosa Luxemburg thinks the rising cannot win: the provinces are quiet and the garrison will not march. But the buildings are held, and the men inside want to know what for.
 
-Gustav Noske has been made commander-in-chief. He is gathering the Freikorps at Dahlem.
-
-- @overthrow: Back the Revolutionary Committee and overthrow Ebert.
-- @occupations: Defend the occupations, but no insurrection.
-- @negotiate: Call for talks and a withdrawal from the buildings.
+- @overthrow: Back the Committee: Ebert must go.
+- @occupations: Hold the buildings, but call for no insurrection.
+- @negotiate: Ask the Independents to mediate.
 
 @overthrow
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] What the Left Radicals and the impatient young want. Liebknecht is in the front line.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The occupiers will fight harder, and Noske gets his excuse sooner.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an uprising.
 on-arrival: {!
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_uprising == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.jan_line = 1;
-Q.crisis_momentum += 10;
-Q.militancy += 15;
-Q.repression += 10;
-Q.ultraleft_satisfaction += 12;
-Q.offensive_satisfaction += 12;
-Q.luxemburgist_satisfaction -= 5;
-Q.lean_ultraleft += 2;
-Q.lean_offensive += 3;
-Q.district_berlin_loyalty += 10;
-Q.spd_relation -= 10;
-Q.lux_risk += 15;
-Q.lieb_risk += 20;
+Q.e19_arms += 1;
+Q.e19_noske += 1;
+Q.lean_offensive += 2;
+Q.district_berlin_loyalty += 8;
+Q.crisis_line_2 = 'Noske\'s volunteers: 3,000, at Dahlem';
 !}
 
-Die Rote Fahne calls on the workers of Berlin to finish the work of November. For a few days the government's fate seems uncertain.
+*Die Rote Fahne* calls on the workers of Berlin to finish the work of November.
 
 @occupations
-subtitle: The Spartacist middle course: hold what the workers have taken, and wait for the provinces.
-on-arrival: jan_line = 2; crisis_momentum += 3; militancy += 6; repression += 5; luxemburgist_satisfaction += 6; ultraleft_satisfaction -= 4; lean_luxemburgist += 2; district_berlin_loyalty -= 3; spd_relation -= 5; lux_risk += 5; lieb_risk += 10
+subtitle: Luxemburg's line. The fighters will ask what they are holding the buildings for.
+on-arrival: jan_line = 2; lean_luxemburgist += 2; luxemburgist_satisfaction += 4
 
-The party defends the occupied buildings and demands Eichhorn's return, but it does not call for the government's overthrow. In the buildings, the fighters ask what they are holding them for.
+The party demands Eichhorn's return and the arming of the workers. It does not call for the government's fall.
 
 @negotiate
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's answer, and Radek's: talks through the Independents. Berlin's workers will call it betrayal.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Liebknecht leaves the Committee. Berlin's workers will call it desertion.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids negotiating with the social democrats.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_united_front == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.jan_line = 3;
-Q.jan_talks = 1;
-Q.crisis_momentum -= 5;
-Q.militancy -= 5;
-Q.uspd_relation += 10;
-Q.ultraleft_satisfaction -= 10;
-Q.offensive_satisfaction -= 8;
-Q.unionist_satisfaction += 10;
+Q.e19_talks = 1;
+Q.e19_lieb_committee = 0;
 Q.lean_unionist += 2;
-Q.lean_ultraleft -= 1;
-Q.district_berlin_loyalty -= 12;
-Q.lux_risk -= 10;
-Q.lieb_risk -= 10;
+Q.district_berlin_loyalty -= 10;
 !}
 
-The Zentrale asks the Independents to mediate and calls Liebknecht back from the Committee. Many fighters refuse to leave the buildings, and some tear up our leaflets.
+Kautsky and Breitscheid agree to go between the Chancellery and the Committee. In the *Vorwärts* building, some of the men tear up our leaflet.

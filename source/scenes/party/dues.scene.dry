@@ -1,6 +1,6 @@
 title: Party Finances
 new-page: true
-view-if: crisis = 0 and dues_timer <= 0
+view-if: crisis = 0 and congress = 0 and dues_timer <= 0
 on-arrival: dues_timer = 4; month_actions += 1
 frequency: 300
 is-card: true
@@ -8,65 +8,54 @@ tags: party_affairs
 
 = Party Finances
 
-A revolutionary party still has to pay for paper, printing presses, offices and train tickets. The district treasurers are waiting to hear what the Zentrale expects of them.
-
-[? if inflation >= 60 : The mark is falling by the day. Dues collected on Friday are worth half as much by the time they reach Berlin. ?][? if inflation < 60 and year >= 1921 : The party is far bigger than it was, but most of its members are poor, and many are out of work. ?]
+The district treasurers want to know what the Zentrale expects of them. [? if inflation >= 60 : Dues collected on Friday are worth half as much by the time they reach Berlin. ?][? if inflation < 60 and year >= 1921 : Most members are poor, and many are out of work. ?][? if inflation < 60 and year <= 1920 : Paper, presses, rent and train tickets all have to be paid for. ?]
 
 - @maintain: Collect the usual dues.
-- @raise: Ask the members for more.
-- @lower: Cut dues for the unemployed.
-- @stable: Fix the dues in stable money.
+- @raise: Raise the dues.
+- @lower: Cut the dues for the unemployed.
+- @stable: Fix the dues in gold marks.
 - @easy_discard
 
 @maintain
-subtitle: [? if inflation < 80 : [+ dues +] funds gained. ?][? if inflation >= 80 : One fund gained: the rest is eaten by inflation. ?]
+subtitle: [? if inflation < 80 : [+ dues +] funds. ?][? if inflation >= 80 : One fund: the rest is eaten by inflation. ?]
 on-arrival: {!
 Q.resources += (Q.inflation >= 80) ? 1 : Q.dues;
 !}
 
-The district treasurers send in what they have.
-
 @raise
-subtitle: [+ dues + 1 +] funds gained. Members are poor, and some will drift away.
+subtitle: [+ dues + 1 +] funds now, and more every time after. Some members will not pay it.
 view-if: inflation < 80
 choose-if: dues < 4
 unavailable-subtitle: The members cannot pay any more than they do.
 on-arrival: {!
 Q.dues += 1;
 Q.resources += Q.dues;
-Q.worker_support -= 2;
-Q.unity -= 2;
 for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 0.98;
+    Q['district_' + d + '_members'] *= 0.97;
 }
 !}
 
-The money comes in, with complaints. In a hungry year, every pfennig counts.
+The money comes in, with complaints.
 
 @lower
-subtitle: No funds this month, and less from now on. The unemployed stay in the party, and more join.
+subtitle: Nothing this time, and less from now on. More of the unemployed join and stay.
 choose-if: dues >= 2
 unavailable-subtitle: Dues are already as low as they can go.
 on-arrival: {!
 Q.dues -= 1;
 for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 1.04;
+    Q['district_' + d + '_members'] *= 1.05;
 }
-Q.worker_support += 2;
-Q.luxemburgist_satisfaction += 2;
 !}
 
-The party card stays in the pocket of the man on the dole. He will remember who kept it there.
-
 @stable
-subtitle: [+ dues +] funds gained, whatever the mark does. The poorest members cannot keep up.
+subtitle: [+ dues +] funds, whatever the mark does. The poorest members drop out.
 view-if: inflation >= 60
 on-arrival: {!
 Q.resources += Q.dues;
 for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 0.97;
+    Q['district_' + d + '_members'] *= 0.95;
 }
-Q.unity -= 2;
 !}
 
-Dues are now reckoned in gold marks and collected on payday, before the money loses its value. The treasurers keep their accounts in dollars and rye.
+Dues are collected on payday, before the money loses its value. The treasurers keep their accounts in dollars and rye.

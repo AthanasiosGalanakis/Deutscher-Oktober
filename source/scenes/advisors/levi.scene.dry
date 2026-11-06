@@ -8,7 +8,7 @@ new-page: true
 
 A Frankfurt lawyer, Luxemburg's defender in court and her closest ally. Cool, organised and impatient with fools, he wants a disciplined mass party that wins the majority of the workers before it reaches for power.
 
-[? if levi_chair = 1 : He chairs the Zentrale now, and carries Luxemburg's legacy like a weight. ?]
+[? if levi_chair = 1 : He chairs the Zentrale now, in the chair that should have been Luxemburg's. ?]
 
 - @organise
 - @open_letter
@@ -16,7 +16,7 @@ A Frankfurt lawyer, Luxemburg's defender in court and her closest ally. Cool, or
 
 @organise
 title: Organise the Apparatus
-subtitle: The three least loyal districts move closer to the Zentrale.
+subtitle: The three least loyal districts get secretaries who answer to Berlin.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
 choose-if: advisor_action_timer <= 0
 on-arrival: {!
@@ -28,14 +28,13 @@ var sorted = Q.districts.slice().sort(function(a, b) {
 for (var i = 0; i < 3; i++) {
     Q['district_' + sorted[i] + '_loyalty'] += 12;
 }
-Q.lean_luxemburgist += 1;
 !}
 
-Levi builds a network of district secretaries who answer to the Zentrale, and reads every report they send.
+Levi appoints district secretaries who answer to the Zentrale, and reads every report they send.
 
 @open_letter
-title: Appeal to the Other Workers' Parties
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Proposes common demands to the social democrats and the unions. The Left calls it opportunism.
+title: An Open Letter
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Common demands to the social democrats and the unions. The Left calls it opportunism.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?][? if lock_united_front = 2 : The [+ leading_faction_adj +] line forbids any deal with the social democrats. ?]
 choose-if: advisor_action_timer <= 0 and lock_united_front < 2
 on-arrival: {!
@@ -47,11 +46,7 @@ if (Q.lock_united_front == 1) {
 }
 Q.spd_relation += 5;
 Q.uspd_relation += 5;
-Q.worker_support += 3;
-Q.offensive_satisfaction -= 5;
-Q.ultraleft_satisfaction -= 5;
-Q.lean_luxemburgist += 1;
-Q.lean_unionist += 1;
+Q.offensive_satisfaction -= 6;
 !}
 
-Levi drafts a letter to every workers' party and union: bread, wages, the disarming of the counter-revolution. Let them refuse it in front of their own members.
+Levi drafts a letter to every workers' party and union in Germany: bread, wages, and the disarming of the counter-revolution. If they refuse it, they will have to explain why to their own members.

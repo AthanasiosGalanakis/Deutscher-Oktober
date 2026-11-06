@@ -21,7 +21,7 @@ tags: movement
 - @easy_discard
 
 @drill
-subtitle: Costs 1 fund. The guards grow and answer to the Zentrale.
+subtitle: Costs 1 fund. The guards grow and take orders from Berlin.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
@@ -32,10 +32,10 @@ Q.luxemburgist_satisfaction += 2;
 Q.lean_luxemburgist += 1;
 !}
 
-Officers who served in the war teach the guards to move in sections and to obey one voice. The voice is the district leadership's.
+Men who served as sergeants in the war teach the guards to move in sections and to obey one voice.
 
 @hide
-subtitle: The police lose interest in the district. The Left calls it cowardice.
+subtitle: The police lose interest in the district.
 on-arrival: {!
 RG.district(Q.sys_target, {repression: -8});
 Q.red_guards_arms += 2;
@@ -54,4 +54,4 @@ Q.offensive_satisfaction += 4;
 Q.lean_offensive += 1;
 !}
 
-On Sunday the guards march through the town centre in columns of four, with red armbands and a band. The shopkeepers pull down their shutters. The workers line the pavements.
+On Sunday the guards march through the town centre in columns of four, with red armbands and a band. The shopkeepers pull down their shutters.

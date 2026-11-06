@@ -1,66 +1,69 @@
 title: Palm Sunday
-subtitle: 13 April. Bamberg's putsch fails, and Munich turns to us.
+subtitle: 13 April. Bamberg's putsch fails, and Munich turns to the Communists.
 new-page: true
 tags: event
-view-if: crisis_bavaria = 1 and crisis_time = 1
+view-if: crisis_bavaria = 1 and crisis_time = 1 and e19_bav_whites > 7
 max-visits: 1
+priority: 3
+on-arrival: {!
+Q.e19_bav_whites -= 7;
+Q.e19_bav_food = Math.max(0, Q.e19_bav_food - 7);
+Q.crisis_line_1 = 'The White troops: ' + Q.e19_bav_whites + ' days from Munich';
+Q.crisis_line_2 = 'Food in Munich: ' + Q.e19_bav_food + ' days';
+!}
 
 = Palm Sunday
 
-Before dawn on Palm Sunday, 13 April, the Republican Guard, loyal to Hoffmann, arrested Mühsam and a dozen council leaders and declared the council republic over. By evening armed workers and soldiers had stormed the main station and driven the Guard out of the city. It was the Communists who led the fight.
+Before dawn the Republican Guard, loyal to Hoffmann, arrested Mühsam and a dozen council leaders and declared the council republic over. By evening armed workers had stormed the main station and driven the Guard out of the city. The Communists led the fight.
 
-That night the factory and barracks councils meet in the Hofbräuhaus. They depose the Central Council and offer power to an Executive Council of fifteen, with Leviné at its head. Leviné hesitates. [? if levi_chair = 1 : In Berlin, Levi thinks a soviet republic in a Catholic, peasant Bavaria, alone, is doomed. ?][? if levi_chair = 0 : In Berlin, the Zentrale fears that a soviet Bavaria, alone, is doomed. ?] But Munich's workers are armed and waiting, and they expect an answer tonight.
+That night the factory and barracks councils meet in the Hofbräuhaus. They depose the Central Council and offer power to an Executive Council of fifteen, with Leviné at its head. [? if levi_chair = 1 : In Berlin, Levi thinks a soviet republic in Catholic, peasant Bavaria, alone, is doomed. ?] The councils want an answer tonight.
 
 - @take: Take power. Leviné leads the Executive Council.
 - @coalition: Share power with the Independents and Toller.
-- @defend: Defend the councils, but refuse the government.
+- @defend: Defend the councils, but refuse to govern.
 
 @take
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's answer: the second soviet republic in Europe, after Hungary. The responsibility will be ours alone.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The second soviet republic in Europe after Hungary, and the responsibility is ours alone.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids seizing power.
 on-arrival: {!
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_uprising == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.bav_power = 1;
-Q.crisis_momentum += 15;
-Q.militancy += 10;
-Q.repression += 6;
+Q.e19_bav_army += 8 + (Q.e19_bav_clean ? 4 : 0);
 Q.world_revolution += 5;
-Q.district_bavaria_members += 1.0;
-Q.district_bavaria_loyalty += 10;
-Q.offensive_satisfaction += 12;
-Q.ultraleft_satisfaction += 4;
-Q.luxemburgist_satisfaction -= 4;
 Q.lean_offensive += 3;
+Q.crisis_goal = 'Leviné\'s Executive Council governs Munich. Hold until the Whites arrive, and feed the city.';
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
+RG.setRole('levine', 'Chairman of the Executive Council in Munich');
 !}
 
-Leviné accepts. The Executive Council orders a general strike against Bamberg, the disarming of the bourgeoisie and the formation of a Red Army. Rudolf Egelhofer, a sailor of twenty-three, takes command of it.
+Leviné accepts. The Executive Council orders a general strike against Bamberg, the disarming of the bourgeoisie and a Red Army. Rudolf Egelhofer, a sailor of twenty-three, takes command of it.[? if e19_bav_clean = 1 : The workers who heard us warn against the sham republic come to us now. ?]
 
 @coalition
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's answer: a broader government, and a broader base.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A broader government that argues more and decides less. The Independents keep the shops open.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids sharing power with social democrats.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_united_front == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.bav_power = 3;
-Q.crisis_momentum += 8;
-Q.uspd_relation += 8;
-Q.district_bavaria_members += 0.6;
-Q.unionist_satisfaction += 8;
-Q.offensive_satisfaction -= 2;
+Q.e19_bav_army += 5;
+Q.e19_bav_food += 4;
+Q.uspd_relation += 6;
 Q.lean_unionist += 2;
+Q.crisis_goal = 'A coalition Executive governs Munich. Hold until the Whites arrive, and feed the city.';
+Q.crisis_line_2 = 'Food in Munich: ' + Q.e19_bav_food + ' days';
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
 !}
 
-The Executive Council takes in Independents and Toller's friends. It argues more and decides less, but the Munich Independents now stand and fall with us.
-
 @defend
-subtitle: The Spartacist line. The Communists defend the workers, and keep out of a doomed government.
-on-arrival: bav_power = 2; crisis_momentum += 2; luxemburgist_satisfaction += 6; offensive_satisfaction -= 6; lean_luxemburgist += 2; district_bavaria_loyalty -= 4
+subtitle: The party fights in the ranks and keeps out of a doomed government. Some of our own people will call it cowardice.
+on-arrival: {!
+Q.bav_power = 2;
+Q.e19_bav_army += 2;
+Q.lean_luxemburgist += 2;
+Q.district_bavaria_loyalty -= 4;
+Q.crisis_goal = 'The councils govern Munich without us. Save what can be saved.';
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
+!}
 
-Leviné tells the Hofbräuhaus that the party will fight in the ranks but will not govern. The councils form a weaker executive without us. Some of our own people call it cowardice.
+Leviné tells the Hofbräuhaus that the party will fight but will not govern. The councils form a weaker executive without us.

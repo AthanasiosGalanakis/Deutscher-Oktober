@@ -1,53 +1,62 @@
-title: The Arms Question
+title: The Arms Count
 subtitle: The hundreds have more men than rifles.
-view-if: crisis_october = 1
-on-arrival: month_actions += 1
+view-if: crisis_october = 1 and e23_rising_phase = 0
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.octTick(Q.crisis_time + 1);
+Q.e23_raid_ok = 0;
+!}
 frequency: 100
 is-card: true
 new-page: true
 tags: crisis
 
-= The Arms Question
+= The Arms Count
 
-The military apparatus counted the party's weapons for the plan. The result was not encouraging: a few thousand rifles, some machine guns from 1920, pistols, hand grenades of uncertain age. The Reichswehr, the police and the Black Reichswehr have stores all over Germany. Some of them are badly guarded.
+The military apparatus has counted the party's weapons for the plan: [+ e23_oct_arms_words +], some machine guns from 1920, pistols, and hand grenades of uncertain age. The Russian officers say a rising needs four times as many. The Reichswehr and the Black Reichswehr have stores all over Germany, and some of them are badly guarded.
 
-- @raid: Raid the police and Reichswehr depots.
-- @buy: Buy arms through Moscow's agents.
-- @share: Share out what we have, fairly, to every district.
+- @raid: Raid a Reichswehr depot.
+- @buy: Buy rifles through Moscow's agents.
+- @police: Empty the Saxon police armouries.
 
 @raid
-subtitle: [? if e23_rising_phase = 1 : The fighting needs rifles now. ?] More arms, and blood.
+subtitle: The apparatus thinks it is about even. If it fails, the Reichswehr learns where to look.
 on-arrival: {!
-RG.district('saxony', {guards: 1});
-RG.district('halle', {guards: 1, repression: 4});
-Q.red_guards_arms += 8;
-Q.repression += 5;
-Q.crisis_momentum += (Q.e23_rising_phase == 1) ? 7 : 4;
-Q.lean_offensive += 1;
+Q.e23_raid_ok = Math.random() < 0.5 ? 1 : 0;
+if (Q.e23_raid_ok) {
+    Q.e23_oct_arms += 4;
+} else {
+    Q.e23_oct_arms = Math.max(0, Q.e23_oct_arms - 1);
+    RG.district('halle', {repression: 8, guards: -0.5});
+}
+RG.e22.octLines();
 !}
 
-At night the hundreds take a police barracks in Zwickau and a Black Reichswehr store outside Halle. Two of ours are killed. Six hundred rifles change hands.
+[? if e23_raid_ok = 1 : At night the hundreds take a Black Reichswehr store outside Halle. Two of ours are killed and four thousand rifles change hands. ?][? if e23_raid_ok = 0 : The guards were waiting. Three of ours are killed at the gate, and the next morning the police search every allotment in Merseburg. ?]
 
 @buy
-subtitle: Costs 1 fund. Better arms, if they arrive in time.
+subtitle: Costs 1 fund. Russian money, Dutch smugglers and a barge on the Elbe.
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
+unavailable-subtitle: We have no money.
 on-arrival: {!
 Q.resources -= 1;
-Q.red_guards_arms += 10;
+Q.e23_oct_arms += 3;
 Q.independence -= 2;
-Q.crisis_momentum += (Q.e23_rising_phase == 1) ? 4 : 6;
+RG.e22.octLines();
 !}
 
-Russian money, Dutch smugglers, a barge on the Elbe. Most of the crates arrive. One holds Mexican saddles.
+Most of the crates arrive. One holds Mexican saddles.
 
-@share
-subtitle: Every district gets something. Nobody gets enough.
+@police
+subtitle: Our minister signs the order. Müller will treat it as mutiny.
+view-if: e23_saxon_police = 1 and e23_armoury_done = 0
 on-arrival: {!
-for (var ad of Q.districts) { RG.district(ad, {guards: 0.3}); }
-Q.red_guards_loyalty += 5;
-Q.unity += 3;
-Q.crisis_momentum += 3;
+Q.e23_armoury_done = 1;
+Q.e23_oct_arms += 6;
+Q.army_loyalty += 3;
+RG.district('saxony', {guards: 2});
+RG.e22.octLines();
 !}
 
-The apparatus sends a few dozen rifles to every district. In Hamburg they are glad. In Berlin they ask where the rest went.
+Lorries from the hundreds load the police rifles in Dresden and Leipzig under the eyes of the police officers who are supposed to guard them.

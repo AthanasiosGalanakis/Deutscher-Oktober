@@ -19,12 +19,12 @@ The presidium of the congress meets before breakfast to settle the order of busi
 - @adjourn: Adjourn for a night of caucusing.
 
 @first
-subtitle: A small edge: the first motion sets the terms of the debate.
+subtitle: A small edge. Every other speaker has to answer us.
 on-arrival: {!
 RG.congress.sway(0.03);
 !}
 
-Our motion comes first. Every other speaker has to answer it. Our side now has [+ congress_votes_for +]% of the hall.
+Our motion comes first. Our side now has [+ congress_votes_for +]% of the hall.
 
 @close
 subtitle: The vote comes after this session, while we are ahead. The losers will call it a manoeuvre.

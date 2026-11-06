@@ -1,0 +1,54 @@
+title: The Hall at Chemnitz
+subtitle: The conference will decide on the general strike. Its delegates can be won.
+view-if: crisis_october = 1 and e23_rising_phase = 0
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.octTick(Q.crisis_time + 1);
+!}
+frequency: 100
+is-card: true
+new-page: true
+tags: crisis
+
+= The Hall at Chemnitz
+
+The conference of the Saxon factory councils will meet in Chemnitz in a few days. Its delegates come from the works councils, the unions, the control committees and both workers' parties. Our whips have a list of every name, and next to most of them a question mark.
+
+- @councils: Go through the works councils one by one.
+- @spd_left: Win over the Social Democrats of Leipzig and Dresden.
+- @pack: Fill the hall with control committee delegates.
+
+@councils
+subtitle: Slow work. A few more delegates for the strike.
+on-arrival: {!
+Q.e23_oct_hall += 6;
+RG.e22.octTick(Q.crisis_time + 1);
+!}
+
+Our district men go from works to works with the list. In most of them they find someone who says he will vote for the strike if the others do.
+
+@spd_left
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Costs 1 fund. If they trust us, half the hall follows them.
+choose-if: lock_united_front < 2 and resources >= 1
+unavailable-subtitle: We have no money, or the line forbids talks with the SPD.
+on-arrival: {!
+RG.e22.against('united_front');
+Q.resources -= 1;
+Q.e23_spdl_ok = Q.spd_relation >= 30 ? 1 : 0;
+Q.e23_oct_hall += Q.e23_spdl_ok ? 12 : 3;
+Q.spd_relation += 3;
+RG.e22.octTick(Q.crisis_time + 1);
+!}
+
+[? if e23_spdl_ok = 1 : The Leipzig SPD district secretary meets our people in a beer cellar and promises to keep his delegates in the hall whatever Graupe does. ?][? if e23_spdl_ok = 0 : The Social Democrats listen politely. They will protest. They will not strike. ?]
+
+@pack
+subtitle: More votes in the hall. The Social Democrats will see what we are doing.
+on-arrival: {!
+Q.e23_oct_hall += 9;
+Q.spd_relation -= 6;
+RG.e22.octTick(Q.crisis_time + 1);
+!}
+
+Control committees that have not met since the spring suddenly elect delegates to Chemnitz. The SPD protests to the conference committee and is outvoted.

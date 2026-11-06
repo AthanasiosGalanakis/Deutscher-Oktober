@@ -6,15 +6,15 @@ new-page: true
 
 = Heinrich Brandler
 
-A building worker and trade unionist from Chemnitz, where the party is strong because it never left the unions. Stocky, practical and blunt. [? if c_lead = 3 : He leads the Zentrale now. ?]
+A building worker and trade unionist from Chemnitz, where the party is strong because it never left the unions. He is stocky and blunt. [? if c_lead = 3 : He leads the Zentrale now. ?]
 
 - @branches
 - @workers_government
 - @root: Return to main
 
 @branches
-title: Work the Union Branches
-subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Communists win posts in the unions. Saxony is proud of its own.
+title: The Chemnitz Method
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Saxony grows. Communists win posts in the union branches.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?][? if lock_union_work = 2 : The [+ leading_faction_adj +] line forbids work inside the old unions. ?]
 choose-if: advisor_action_timer <= 0 and lock_union_work < 2
 on-arrival: {!
@@ -24,13 +24,11 @@ if (Q.lock_union_work == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-Q.worker_support += 5;
-Q.district_saxony_loyalty += 6;
-Q.unionist_satisfaction += 5;
-Q.lean_unionist += 2;
+RG.district('saxony', {members: 0.05, loyalty: 8});
+Q.worker_support += 3;
 !}
 
-Brandler sends the Chemnitz method to every district: be the best trade unionists in the branch, and the branch will follow.
+Brandler sends the Chemnitz method to every Saxon branch: be the best trade unionists in the room, and the room will follow.
 
 @workers_government
 title: Propose a Workers' Government
@@ -44,12 +42,8 @@ if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-Q.spd_relation += 6;
-Q.uspd_relation += 4;
-Q.worker_support += 2;
-Q.offensive_satisfaction -= 6;
-Q.unionist_satisfaction += 4;
-Q.lean_unionist += 2;
+Q.spd_relation += 8;
+Q.offensive_satisfaction -= 8;
 !}
 
-If the social democrats mean what they say about socialism, Brandler says, let them govern with us and arm the workers. If they refuse, their own members will ask why.
+If the social democrats mean what they say about socialism, Brandler says, let them govern with us and arm the workers. If they refuse, their members will ask them why.

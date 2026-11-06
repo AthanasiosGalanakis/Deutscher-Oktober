@@ -1,5 +1,5 @@
 title: The Leipzig Congress
-subtitle: The party congress meets to decide who leads in the year of crisis.
+subtitle: The party congress meets to elect the Zentrale for the year of crisis.
 new-page: true
 tags: event
 view-if: year = 1923 and month = 1 and ruhr_occupied = 1 and congress = 0
@@ -16,7 +16,8 @@ if (Q.e22_saxon_toleration == 1 || Q.e22_saxon_toleration == 3) { right += 0.04;
 if (Q.e22_saxon_toleration == 2) { left += 0.03; }
 if (Q.e22_rathenau_front == 1) { right += 0.03; }
 if (Q.e22_rathenau_front == 2 || Q.e22_rathenau_front == 3) { left += 0.03; }
-if (Q.e22_berlin_opposition == 1 && Q.leading_faction == 'unionist') { right += 0.02; }
+if (Q.e22_year_line == 1) { right += 0.02; }
+if (Q.e22_year_line == 3) { left += 0.02; }
 if (Q.e23_ruhr_line == 3) { left += 0.04; }
 if (Q.e23_ruhr_line == 1) { right += 0.02; }
 right += Math.max(-0.03, Math.min(0.04, (Q.spd_relation - 30) / 400));
@@ -29,25 +30,19 @@ RG.news('Party congress opens in Leipzig as French troops hold Essen', 2);
 
 = The Leipzig Congress
 
-From 28 January to 1 February, with French soldiers in Essen, the party's Eighth Congress meets in Leipzig. It is the bitterest congress since Heidelberg, and nobody in the hall can say how the vote will go.
+On 28 January, with French soldiers in Essen, the party's Eighth Congress meets in Leipzig to elect the Zentrale that will lead it through 1923.
 
-[? if unionist_gone = 0 : Heinrich Brandler, a stonemason from Bohemia who came up through the Chemnitz building workers, has written theses that follow the Fourth Congress: the united front, control committees in every works, and a workers' government with the SPD wherever there is a majority for one, beginning with Saxony. August Thalheimer writes the theory, Clara Zetkin lends her name. ?]
+[? if unionist_gone = 0 : Heinrich Brandler, a stonemason from the Chemnitz building trades, has written theses on the lines of the Fourth Congress: the united front, control committees in every works, and a workers' government with the SPD wherever there is a majority for one, beginning in Saxony. ?][? if offensive_gone = 0 : Ruth Fischer and Arkadi Maslow speak for Berlin, Ernst Thälmann for Hamburg. They say the Ruhr is burning and the Zentrale is writing letters to Dresden. ?][? if luxemburgist_gone = 0 : Between them sit Ernst Meyer, Wilhelm Pieck and Hugo Eberlein, who think both camps are half right and say so. ?][? if luxemburg_alive = 1 : Rosa Luxemburg will speak on the second day. ?]
 
-[? if offensive_gone = 0 : Against him stands the Left. Ruth Fischer and Arkadi Maslow speak for Berlin, Ernst Thälmann for Hamburg, and the Ruhr delegates for the pits. They say the party is talking itself into Social Democracy: the Ruhr is burning and the Zentrale is writing letters to Dresden. ?][? if offensive_gone = 1 : The Left that broke away in 1921 heckles from outside the hall. Inside, the argument is between the Right and the old Spartacists. ?]
-
-[? if luxemburgist_gone = 0 : Between them sit the old Spartacists, Ernst Meyer, Wilhelm Pieck and Hugo Eberlein, who think both camps are half right and say so, which makes nobody grateful. ?][? if levi_in_party = 1 : Paul Levi sits in the front row, says little, and is applauded every time he does. ?][? if luxemburg_alive = 1 : Rosa Luxemburg will speak on the second day, for the party's right to decide for itself. ?]
-
-[? if e23_lz_record = 1 : The delegates were elected after a year of the united front, and many of them liked what it brought. ?][? if e23_lz_record = 2 : The delegates were elected in a year of anger, and the Ruhr has made them angrier. ?][? if e23_lz_record = 0 : The delegates were elected district by district, and the districts are split. ?] [? if e23_lz_radek = 1 : Radek has come from Moscow to watch, and to whisper. ?][? if e23_lz_radek = 0 : The Executive has sent a delegation to watch, and to report. ?]
-
-The congress will elect the Zentrale that leads the party through 1923. Which motion does the Zentrale fight for?
+[? if e23_lz_record = 1 : The delegates were elected after a year of the united front, and many of them liked it. ?][? if e23_lz_record = 2 : The delegates were elected in a year of anger, and the Ruhr has made them angrier. ?][? if e22_berlin_opposition = 1 : The Berlin delegates have not forgotten who took their leaders' posts in October. ?]
 
 - @right: Fight for Brandler's theses.
-- @middle: Put a motion of the centre: a Spartacist Zentrale between the camps.
+- @middle: Put a motion of the centre.
 - @left: Fight for the Left's theses.
-- @council: Back the council communists' motion.
+- @council: Back the council communists.
 
 @right
-subtitle: The Right's motion. [? if lead_code = 3 : The Zentrale defends its own line. ?] Moscow's Executive leans the same way.
+subtitle: [? if lead_code = 3 : The Zentrale defends its own line. ?] Moscow leans the same way.
 view-if: unionist_gone = 0
 on-arrival: {!
 Q.e23_lz_backing = 'unionist';
@@ -58,34 +53,32 @@ if (Q.leading_faction != 'unionist') { Q[Q.leading_faction + '_satisfaction'] -=
 - @open: The congress opens.
 
 @middle
-subtitle: The Spartacist motion. The weakest at the start, and the one both camps could live with.
+subtitle: The weakest motion at the start, and the one both camps could live with.
 view-if: luxemburgist_gone = 0
 on-arrival: {!
 Q.e23_lz_backing = 'luxemburgist';
 Q.lean_luxemburgist += 2;
-Q.independence += 2;
 if (Q.leading_faction != 'luxemburgist') { Q[Q.leading_faction + '_satisfaction'] -= 6; }
 !}
 
 - @open: The congress opens.
 
 @left
-subtitle: The Left's motion. Berlin, Hamburg and the Ruhr are behind it; Brandler's Saxons will fight.
+subtitle: Berlin, Hamburg and the Ruhr are behind it. Brandler's Saxons will fight.
 view-if: offensive_gone = 0
 on-arrival: {!
 Q.e23_lz_backing = 'offensive';
 Q.lean_offensive += 2;
-Q.militancy += 2;
 if (Q.leading_faction != 'offensive') { Q[Q.leading_faction + '_satisfaction'] -= 6; }
 !}
 
 - @open: The congress opens.
 
 @council
-subtitle: Out of the unions and the parliaments. The council communists are few, and need every vote.
+subtitle: Out of the unions and the parliaments. They need every vote.
 view-if: ultraleft_gone = 0
 choose-if: e23_lz_council = 1
-unavailable-subtitle: The council communists are far too few to put a motion.
+unavailable-subtitle: The council communists are too few to put a motion.
 on-arrival: {!
 Q.e23_lz_backing = 'ultraleft';
 Q.lean_ultraleft += 2;
@@ -114,12 +107,13 @@ RG.congressStart({
 if (Q.congress_leipzig == 1) {
     if (Q.unionist_gone == 0 && Q.e23_lz_right_pull > 0) { RG.congress.swayTo('unionist', Q.e23_lz_right_pull); }
     if (Q.offensive_gone == 0 && Q.e23_lz_left_pull > 0) { RG.congress.swayTo('offensive', Q.e23_lz_left_pull); }
+    if (Q.e22_berlin_opposition == 1) { RG.congress.bitter(3); }
     RG.congress.tally();
 }
 !}
 
 = The Delegates Take Their Seats
 
-The mandate commission reports on the first morning. [+ congress_delegates_total +] delegates have been seated, district by district. The tellers' first count gives the [+ congress_leader_name +] [+ congress_leader_votes +] per cent of the hall. [? if congress_ahead = 1 : Our motion leads, for now. ?][? if congress_ahead = 0 and congress_votes_for > 0 : Our motion has [+ congress_votes_for +] per cent. It will need work. ?][? if congress_ahead = 0 and congress_votes_for = 0 : As things stand, our motion would not survive the first ballot. It will need a great deal of work. ?]
+The mandate commission seats [+ congress_delegates_total +] delegates on the first morning. The first count gives the [+ congress_leader_name +] [+ congress_leader_votes +] per cent of the hall. [? if congress_ahead = 1 : Our motion leads, for now. ?][? if congress_ahead = 0 and congress_votes_for > 0 : Our motion has [+ congress_votes_for +] per cent. ?][? if congress_ahead = 0 and congress_votes_for = 0 : As things stand our motion would not survive the first ballot. ?]
 
-Three days of sessions remain before the vote. Every speech, every promise in the corridor and every letter from Moscow will count.
+Three days of sessions remain before the vote.

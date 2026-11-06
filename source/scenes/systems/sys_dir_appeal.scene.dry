@@ -1,4 +1,4 @@
-title: A Friend on the Executive
+title: A Private Letter from Moscow
 subtitle: Not everyone in Moscow agrees with the directive.
 new-page: true
 view-if: crisis = 0 and congress = 0 and directive_active = 1 and sys_appeal_timer <= 0 and ecci_friend_favour >= 60 and ecci_friend_is_author = 0
@@ -11,7 +11,7 @@ frequency: 150
 is-card: true
 tags: international
 
-= A Friend on the Executive
+= A Private Letter from Moscow
 
 A private letter has come from Moscow, from **[+ ecci_friend_name +]**. He does not say so in as many words, but he thinks [+ directive_from_name +]'s directive on *[+ directive_title +]* is a mistake, and he is willing to say so in the Executive, for a price he does not need to name.
 
@@ -20,7 +20,7 @@ A private letter has come from Moscow, from **[+ ecci_friend_name +]**. He does 
 - @easy_discard
 
 @withdraw
-subtitle: It may work. Either way, we will owe him, and [+ directive_from_name +] will know.
+subtitle: It may work. Either way we will owe him, and [+ directive_from_name +] will know.
 on-arrival: {!
 var p = 0.45 + (Q.ecci_friend_favour - 60) / 80;
 RG.ecci(Q.directive_from, -6);

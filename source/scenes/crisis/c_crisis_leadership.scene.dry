@@ -1,7 +1,19 @@
 title: Protect the Leadership
 subtitle: The lists of names are already printed in the officers' clubs.
-view-if: crisis = 1
-on-arrival: month_actions += 1
+view-if: crisis = 1 and comrades_free >= 2
+on-arrival: {!
+Q.month_actions += 1;
+Q.c_lead_taken = 0;
+// the best-known free leader of the Zentrale's current whose fate the
+// period events do not decide
+var keep = ['luxemburg', 'liebknecht', 'jogiches', 'levi', 'levine', 'radek', 'hoelz', 'thalmann', 'brandler', 'fischer'];
+var cs = (Q.comrades || []).filter(function (c) {
+    return c.status == 'free' && c.faction != 'ecci' && keep.indexOf(c.id) < 0;
+});
+cs.sort(function (a, b) { return (b.faction == Q.leading_faction) - (a.faction == Q.leading_faction); });
+Q.c_lead_who = cs.length ? cs[0].id : 0;
+Q.c_lead_who_name = cs.length ? cs[0].name : 'a member of the Zentrale';
+!}
 frequency: 60
 is-card: true
 new-page: true
@@ -9,36 +21,29 @@ tags: crisis
 
 = Protect the Leadership
 
-Nobody has forgotten January 1919. In every crisis, the Freikorps and the political police go looking for the party's leaders first, and they do not always bother with a court.
-
-The Zentrale must decide where its members sleep this week.
+Nobody has forgotten January 1919. In every crisis the Freikorps and the political police go looking for the party's leaders first, and they do not always bother with a court. The Zentrale must decide where its members sleep this week.
 
 - @hide: Hide the leaders in safe houses.
 - @openly: Lead openly, in the streets.
-- @couriers: Set up a courier network to every district.
 
 @hide
-subtitle: The leadership is safe; it is also out of sight.
-on-arrival: unity += 3; repression -= 3; crisis_momentum -= 2; lean_luxemburgist += 1
-
-The leaders move every night, from a doctor's flat in Charlottenburg to a gardener's hut in Treptow. The orders still go out, a day late.
-
-@openly
-subtitle: The workers see their leaders with them. So do the police.
-on-arrival: crisis_momentum += 4; militancy += 3; repression += 4; unity += 2; offensive_satisfaction += 3; lean_offensive += 1
-
-The Zentrale's members speak from lorries at the factory gates. The crowds roar. Plain-clothes men in the crowd write down the times and places.
-
-@couriers
-subtitle: Costs 1 fund. The districts hear from the Zentrale every day, and act together.
-choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
+subtitle: The leadership is safe and out of sight. The orders go out a day late.
 on-arrival: {!
-Q.resources -= 1;
-for (var d of Q.districts) {
-    Q['district_' + d + '_loyalty'] += 5;
-}
-Q.crisis_momentum += 2;
+Q.repression -= 4;
+Q.crisis_momentum -= 2;
 !}
 
-Young comrades on bicycles and railwaymen with messages in their boots carry the Zentrale's instructions to every district within a day.
+The leaders move every night, from a doctor's flat in Charlottenburg to a gardener's hut in Treptow.
+
+@openly
+subtitle: The workers see their leaders with them. So do the police: they may take [+ c_lead_who_name +].
+on-arrival: {!
+Q.crisis_momentum += 6;
+Q.militancy += 3;
+if (Q.c_lead_who && Math.random() < 0.3) {
+    Q.c_lead_taken = 1;
+    RG.arrest(Q.c_lead_who, 4, {news: Q.c_lead_who_name + ' arrested at a factory meeting', priority: 2});
+}
+!}
+
+The Zentrale's members speak from lorries at the factory gates. [? if c_lead_taken = 1 : On the third day the police pull [+ c_lead_who_name +] down from the lorry. ?][? if c_lead_taken = 0 : Plain-clothes men in the crowd write down the times and places. ?]

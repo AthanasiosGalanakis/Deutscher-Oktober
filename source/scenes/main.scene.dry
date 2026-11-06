@@ -14,15 +14,13 @@ max-cards: 3
 
 #Here, the main deck will be displayed. Clicking on the deck draws a card into your hand. Clicking on a card activates that card.
 
-[? if crisis : **[+ crisis_name +].** Each action now takes a week. [+ crisis_goal +] ?]
+[? if news_headline and crisis = 0 and congress = 0 : {!<i>!}[+ news_headline +]{!</i>!} ?]
 
-[? if congress : **[+ congress_name +]**, session [+ congress_session +] of [+ congress_sessions +]. At stake: [+ congress_stake +]. We stand with the [+ congress_backing_name +]. ?][? if congress and congress_ahead = 1 : Our side has [+ congress_votes_for +]% of the delegates. ?][? if congress and congress_ahead = 0 : The [+ congress_leader_name +] lead with [+ congress_leader_votes +]% of the delegates; our side has [+ congress_votes_for +]%. ?][? if congress and congress_close_call = 1 : It is too close to call. ?]
+[? if crisis : {!<b>!}[+ crisis_name +].{!</b>!} Each action now takes a week. ?]
 
-[? if directive_active and congress = 0 and directive_deadline > 1 : Moscow's directive, *[+ directive_title +]*: [+ directive_deadline +] months left. ?][? if directive_active and congress = 0 and directive_deadline <= 1 : Moscow's directive, *[+ directive_title +]*: due this month. ?]
+[? if congress : {!<b>!}[+ congress_name +]{!</b>!}, session [+ congress_session +] of [+ congress_sessions +]. At stake: [+ congress_stake +]. ?][? if congress and congress_ahead = 0 : The [+ congress_leader_name +] lead the hall. ?][? if congress and congress_close_call = 1 : It is too close to call. ?]
 
 [? if faction_shift_note : [+ faction_shift_note +] ?]
-
-Party line: **[+ leading_faction_name +]**[? if junior_faction : , with the [+ junior_faction_name +] as junior partner?]. Members in loyal districts: [+ loyal_share_display +]%.
 
 - @crisis_deck
 - @congress_deck

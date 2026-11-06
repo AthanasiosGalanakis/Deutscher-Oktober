@@ -8,57 +8,45 @@ priority: 7
 
 = The Berlin Opposition
 
-The Berlin-Brandenburg district is the biggest in the party, and since the summer it has been run by the Left. Ruth Fischer is twenty-five, Viennese, a brilliant speaker with a gift for contempt. Arkadi Maslow, born in Russia and educated in Germany, writes her theses. Together they have made Berlin into an opposition to the Zentrale.
+Berlin-Brandenburg is the biggest district in the party, and since the summer the Left has run it. Ruth Fischer is twenty-five, Viennese, and a brilliant speaker with a gift for contempt. Arkadi Maslow, born in Russia and educated in Germany, writes her theses. In the Berlin factory cells, where unemployment is rising, their attacks on the united front go down well.
 
-Their complaint is the united front: it is a road back to the SPD, they say, and the leadership has lost its nerve. In the Berlin factory cells, where unemployment is rising, the argument goes down well.
-
-- @co_opt: Bring Fischer into the Zentrale's work.
-- @isolate: Isolate the Berlin leadership.
-- @summon: Ask Moscow to call Maslow to Moscow.
+- @co_opt: Give Fischer work in the Zentrale.
+- @isolate: Build our own minority in Berlin.
+- @summon: Ask Moscow to invite Maslow to Moscow.
 
 @co_opt
-subtitle: The Left's influence grows. Berlin calms down.
+subtitle: Berlin calms down, and Fischer gets a platform across the country.
 on-arrival: {!
-Q.offensive_satisfaction += 10;
-Q.unionist_satisfaction -= 4;
-Q.lean_offensive += 1;
-RG.district('berlin', {loyalty: 10, militancy: 3});
+RG.district('berlin', {loyalty: 10});
 RG.setRole('fischer', 'Head of the work among the unemployed');
-RG.ecci('zinoviev', 3);
+Q.offensive_satisfaction += 10;
 !}
 
-Fischer is given responsibility for the party's work among the unemployed. She uses it to build her following across the country.
+Fischer is given charge of the party's work among the unemployed. She uses it to build a following in every district.
 
 @isolate
-subtitle: The Right's and the Spartacists' way. Berlin will resent it.
+subtitle: Every district meeting in Berlin becomes a battle.
 on-arrival: {!
+RG.district('berlin', {loyalty: -10, militancy: -5});
 Q.offensive_satisfaction -= 10;
-Q.unity -= 2;
-Q.unionist_satisfaction += 4;
-Q.luxemburgist_satisfaction += 4;
 Q.lean_unionist += 1;
-Q.lean_luxemburgist += 1;
-RG.district('berlin', {loyalty: -10});
-RG.ecci('zinoviev', -3);
 !}
 
-The Zentrale sends its own organisers to Berlin and builds a minority of the district around them. Every district meeting becomes a battle.
+The Zentrale sends its own organisers to Berlin and builds a minority of the district around them.
 
 @summon
-subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Moscow solves German problems by inviting them to Moscow.
-choose-if: lock_moscow_orders < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids asking Moscow to intervene.
+subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Moscow solves German problems by inviting them to Moscow. Fischer will carry on alone.
+choose-if: lock_moscow_orders < 2 and comrade_maslow = 1
+unavailable-subtitle: [? if comrade_maslow != 1 : Maslow is not in Berlin to be summoned. ?][? if comrade_maslow = 1 : The [+ leading_faction_adj +] line forbids asking Moscow to intervene. ?]
 on-arrival: {!
 if (Q.lock_moscow_orders == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.e21_maslow_moscow = 1;
-if (Q.comrade_maslow == 1) { RG.exile('maslow', {news: 'Maslow summoned to Moscow, and kept there', priority: 2}); }
-RG.ecci('zinoviev', 4);
+RG.exile('maslow', {news: 'Maslow summoned to Moscow, and kept there', priority: 2});
 Q.independence -= 5;
-Q.offensive_satisfaction -= 5;
-Q.unity += 2;
+RG.ecci('zinoviev', 4);
 !}
 
-The Executive invites Maslow to Moscow to explain his past, and some questions about his conduct in 1919. He goes, and is kept there. Fischer carries on alone, more bitter than before.
+The Executive invites Maslow to Moscow to answer some questions about his conduct in 1919. He goes, and is kept there. Fischer is more bitter than before.

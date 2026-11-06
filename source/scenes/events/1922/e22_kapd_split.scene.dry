@@ -1,5 +1,5 @@
 title: The KAPD Breaks in Two
-subtitle: The Communist Workers' Party splits.
+subtitle: The Communist Workers' Party splits between Essen and Berlin.
 new-page: true
 tags: event
 view-if: year = 1922 and month = 3 and kapd_exists = 1
@@ -7,45 +7,26 @@ max-visits: 1
 
 = The KAPD Breaks in Two
 
-The Communist Workers' Party has broken in two. The Essen tendency, around Karl Schröder, wants a new International of its own and no compromise with anyone. The Berlin tendency wants to keep the party's workers in the factories and its General Workers' Union alive. Both sides accuse the other of betraying the councils.
+The Communist Workers' Party has split. The Essen tendency around Karl Schröder wants an International of its own and no dealings with anyone. The Berlin tendency wants to keep its factory unions alive. Thousands of its workers in Berlin, Hamburg and the Ruhr are left without a home, and many of them were in our party until Heidelberg.
 
-Thousands of KAPD workers in Berlin, Hamburg and the Ruhr are suddenly without a home. Many of them were in our party in 1919.
-
-- @welcome: Invite their workers back into the party.
-- @joint: Propose joint action to the Berlin tendency.
-- @ignore: Let the sect destroy itself.
+- @welcome: Take them back.
+- @ignore: Leave them to it.
 
 @welcome
-subtitle: A few thousand old radicals return. The Right is uneasy.
+subtitle: A few thousand old radicals return to Berlin, Hamburg and the Ruhr, with their old arguments.
 on-arrival: {!
-Q.district_berlin_members += 1.5;
-Q.district_hamburg_members += 1;
-Q.district_ruhr_members += 1;
+RG.district('berlin', {members: 0.05, militancy: 3});
+RG.district('hamburg', {members: 0.06, militancy: 3});
+RG.district('ruhr', {members: 0.03});
 Q.kapd_relation -= 5;
-Q.ultraleft_satisfaction += 6;
-Q.offensive_satisfaction += 2;
-Q.unionist_satisfaction -= 3;
 Q.lean_ultraleft += 1;
-Q.militancy += 2;
+Q.unity -= 2;
 !}
 
-Whole factory groups in Neukölln and Hamburg-Barmbek come back to the party they left at Heidelberg, bringing their old arguments with them.
-
-@joint
-subtitle: Better relations with the KAPD's saner half.
-on-arrival: {!
-Q.kapd_relation += 12;
-Q.worker_support += 1;
-Q.ultraleft_satisfaction += 3;
-!}
-
-A joint committee meets twice in Berlin and agrees on May Day. That is more than anyone expected.
+Whole factory groups in Neukölln and Barmbek come back to the party, and at their first district meeting they move a motion to leave the unions.
 
 @ignore
 subtitle: Nothing gained, nothing spent.
-on-arrival: {!
-Q.kapd_relation -= 3;
-Q.unity += 1;
-!}
+on-arrival: kapd_relation -= 3
 
-By the end of the year the KAPD has a few thousand members and two newspapers that attack each other more than they attack the bourgeoisie.
+By the end of the year the KAPD has two newspapers that attack each other more than they attack anyone else.

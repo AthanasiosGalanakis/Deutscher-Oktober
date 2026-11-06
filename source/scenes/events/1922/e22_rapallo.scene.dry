@@ -1,60 +1,42 @@
 title: Rapallo
-subtitle: Germany and Soviet Russia sign a treaty.
+subtitle: Germany and Soviet Russia sign a treaty on Easter Sunday.
 new-page: true
 tags: event
 view-if: year = 1922 and month = 4
 max-visits: 1
 on-arrival: {!
-RG.news('Germany and Soviet Russia sign a treaty at Rapallo', 3);
+RG.news('Rathenau and Chicherin sign at Rapallo', 3);
 !}
 
 = Rapallo
 
-On Easter Sunday, 16 April, at the edge of the Genoa conference, Walther Rathenau and Georgy Chicherin sign a treaty in a hotel in Rapallo. Germany and Soviet Russia renounce all claims on each other and restore full relations. The Allies are outraged. In Berlin, the nationalists are torn between hating the Bolsheviks and enjoying the Allies' fury.
+On 16 April, in a hotel at Rapallo, Walther Rathenau and Georgy Chicherin sign a treaty. Germany and Soviet Russia give up all claims on each other and restore relations. The Allies at Genoa are furious.
 
-Everyone in the Zentrale knows what the treaty does not say. General von Seeckt's officers have been visiting Russia for a year, and there is talk of Junkers building aircraft near Moscow, out of sight of the Versailles inspectors.
+The treaty does not mention General von Seeckt's officers, who have been travelling to Russia for a year, or the Junkers works that is to build aircraft near Moscow where no Allied inspector will see it. Several people in the Zentrale know about both.
 
-- @hail: Hail the treaty as a victory for the workers' state.
-- @warn: Welcome it, and warn against the generals' secret deals.
-- @trade: Campaign for trade with Russia: work for German workers.
+- @hail: Hail the treaty, and say nothing about the generals.
+- @warn: Welcome it, and ask in the Reichstag what the Reichswehr is doing in Russia.
 
 @hail
-subtitle: Moscow is pleased. Independence falls.
+subtitle: Trotsky and Radek are pleased.
 on-arrival: {!
-RG.ecci('all', 3);
+RG.ecci('trotsky', 6);
+RG.ecci('radek', 4);
 Q.e22_rapallo = 1;
-Q.independence -= 5;
-Q.world_revolution += 3;
-Q.offensive_satisfaction += 2;
-Q.unionist_satisfaction += 2;
-Q.lean_unionist += 1;
+Q.independence -= 4;
 !}
 
-*Die Rote Fahne* prints the treaty under the headline "The Blockade Is Broken". The paper says nothing about Seeckt.
+*Die Rote Fahne* prints the treaty under the headline "The Blockade Is Broken".
 
 @warn
-subtitle: The Spartacist line. More independence; Radek is furious.
+subtitle: The Reichswehr loses a secret, and Trotsky loses patience with us.
 on-arrival: {!
-RG.ecci('radek', -8);
-RG.ecci('trotsky', -4);
+RG.ecci('trotsky', -8);
+RG.ecci('radek', -5);
 Q.e22_rapallo = 2;
 Q.independence += 7;
-Q.luxemburgist_satisfaction += 5;
-Q.lean_luxemburgist += 2;
-Q.army_loyalty -= 2;
-Q.moscow_subsidy = Math.max(0, Q.moscow_subsidy - 1);
+Q.army_loyalty -= 3;
+Q.spd_relation += 3;
 !}
 
-Our Reichstag deputies ask what German officers are doing in Russia. The Reichswehr ministry denies everything. Radek's next letter to the Zentrale is unprintable.
-
-@trade
-subtitle: The Right's line. Practical, and wins a hearing in the factories.
-on-arrival: {!
-RG.ecci('lenin', 3);
-Q.e22_rapallo = 3;
-Q.worker_support += 3;
-Q.unionist_satisfaction += 4;
-Q.lean_unionist += 1;
-!}
-
-Our factory cells collect signatures for orders from Russia: locomotives, turbines, ploughs. Even some engineering employers sign.
+Our deputy asks the Reichswehr minister about German officers in Russia. The minister denies everything. Radek's next letter to the Zentrale is not shown to the typists.

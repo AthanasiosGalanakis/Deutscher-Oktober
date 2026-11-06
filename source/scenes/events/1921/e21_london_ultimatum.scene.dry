@@ -19,35 +19,25 @@ if (Q.kapp_outcome != 2 && Q.kapp_outcome != 3) {
 }
 Q.inflation += 2;
 Q.stability -= 3;
-RG.news('London ultimatum: 132 billion gold marks, or the Ruhr', 3);
 !}
 
 = The London Ultimatum
 
-On 5 May the Allies send Berlin their bill for the war: 132 billion gold marks, paid in instalments, with a demand for acceptance within six days. If Germany refuses, the Ruhr will be occupied. French troops already hold Düsseldorf, Duisburg and Ruhrort since March.
+On 5 May the Allies send Berlin the bill for the war: 132 billion gold marks, to be accepted within six days. If Germany refuses, the Ruhr will be occupied. French troops have held Düsseldorf and Duisburg since March.
 
-[? if e21_new_cabinet = 1 : Fehrenbach's cabinet has already resigned. On 10 May Joseph Wirth of the Centre forms a new government with the SPD and the DDP and accepts the ultimatum. The Reichstag votes yes, 220 to 172. Wirth calls it the policy of fulfilment: pay, and show the world that it cannot be paid. ?][? if kapp_outcome = 3 : The workers' government must answer the ultimatum. Its ministers accept it, with a promise that the rich will pay, and every party to our right accuses them of treason. ?][? if kapp_outcome = 2 : The generals' government blusters, then accepts. There is no Reichstag vote worth the name. ?]
-
-Who will pay? The printing presses of the Reichsbank are already running.
+[? if e21_new_cabinet = 1 : Fehrenbach's cabinet resigns. On 10 May Joseph Wirth of the Centre forms a government with the SPD and the DDP, and the Reichstag accepts the ultimatum. Wirth calls it the policy of fulfilment. ?][? if kapp_outcome = 3 : The workers' government accepts the ultimatum with a promise that the rich will pay, and every party to its right calls it treason. ?][? if kapp_outcome = 2 : The generals' government blusters, and then accepts. ?] The presses of the Reichsbank are already running.
 
 - @against: Vote against: the workers will pay for it.
-- @real_values: Demand that the rich pay: seize real values.
-- @versailles: Denounce Versailles and the Entente.
+- @real_values: Demand that the rich pay, in shares and land.
 
 @against
-subtitle: The Left's line. Clear and simple, and it changes nothing.
-on-arrival: offensive_satisfaction += 4; militancy += 2; lean_offensive += 1
+subtitle: Clear, simple, and it changes nothing.
+on-arrival: militancy += 2; lean_offensive += 1
 
-Our deputies vote no. The Rote Fahne prints a cartoon of Wirth handing over a worker's wage packet to a French general.
+Our deputies vote no. The Rote Fahne prints a cartoon of Wirth handing a worker's wage packet to a French general.
 
 @real_values
-subtitle: The Right's line: a demand the unions can take up, and the start of a programme.
-on-arrival: worker_support += 3; uspd_relation += 3; unionist_satisfaction += 6; lean_unionist += 2
+subtitle: Slow to catch on. If the mark falls, the unions will remember who proposed it.
+on-arrival: e21_real_values = 1; uspd_relation += 3; lean_unionist += 2
 
-The party demands the seizure of real values: a fifth of the shares, land and buildings of the propertied classes, to pay the reparations instead of the printing press. The demand is taken up at union meetings in Saxony and Thuringia.
-
-@versailles
-subtitle: A popular note, but it brings us close to the nationalists.
-on-arrival: worker_support += 1; independence += 2; luxemburgist_satisfaction -= 4; offensive_satisfaction += 2; lean_offensive += 1
-
-The Rote Fahne calls the ultimatum the enslavement of the German people. The nationalist press quotes us approvingly. Zetkin is furious.
+The party demands the seizure of real values: a fifth of the shares, land and buildings of the propertied classes, to pay the reparations instead of the printing press. The demand is read out at a few union meetings in Saxony, and filed.

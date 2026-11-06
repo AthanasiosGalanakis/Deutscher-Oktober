@@ -1,62 +1,71 @@
-title: Spread the Strike
-subtitle: Central Germany cannot win alone.
-view-if: crisis_march = 1
-on-arrival: month_actions += 1
+title: Couriers from Mansfeld
+subtitle: Central Germany cannot hold alone.
+view-if: crisis_march = 1 and (district_ruhr_strike = 0 or district_berlin_strike = 0 or district_hamburg_strike = 0)
+on-arrival: {!
+Q.month_actions += 1;
+Q.e21_card_district = 0;
+!}
 frequency: 100
 is-card: true
 new-page: true
 tags: crisis
 
-= Spread the Strike
+= Couriers from Mansfeld
 
-Couriers come in from Mansfeld every few hours with the same message: we are holding, but we cannot hold alone. The other districts are waiting for a sign from the Zentrale.
+The couriers come in every few hours with the same message: we are holding, but not for long, and not alone. Which district should the Zentrale call out next?
 
-- @ruhr: Bring out the Ruhr miners.
-- @berlin: Call out the Berlin factories.
-- @gates: Speak to the social democratic workers at the gates.
+- @ruhr: The Ruhr miners.
+- @berlin: The Berlin factories.
+- @hamburg: The Hamburg docks and yards.
 
 @ruhr
-subtitle: The Left's line. Strong if the Ruhr district is loyal to us; costly either way.
+view-if: district_ruhr_strike = 0
+subtitle: The biggest prize, if the Ruhr trusts the Zentrale. The police will be waiting at the pitheads.
 on-arrival: {!
-var gain = (Q.district_ruhr_loyalty >= 50 || Q.ruhr_red_army == 2) ? 8 : 3;
-Q.crisis_momentum += gain;
-Q.e21_card_struck = RG.startStrike('ruhr', true) ? 1 : 0;
-RG.district('ruhr', {members: -0.04, repression: 6, militancy: 5});
-Q.lean_offensive += 1;
-if (Q.e21_card_struck) { RG.news('The Ruhr pits come out for Mansfeld', 2); }
+Q.e21_card_district = 1;
+var men = Math.round(Q.district_ruhr_members * (Q.district_ruhr_loyalty >= 50 || Q.ruhr_red_army == 2 ? 1.6 : 0.6));
+Q.e21_card_men = men;
+Q.e21_ma_out += men;
+RG.startStrike('ruhr', true);
+RG.district('ruhr', {repression: 8});
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
-
-Strike committees form at a dozen pits around Bochum and Gelsenkirchen. The police arrest their leaders the same night.
+go-to: done
 
 @berlin
-subtitle: The Left's line. Berlin decides whether this is a national action or a provincial one.
+view-if: district_berlin_strike = 0
+subtitle: Berlin decides whether this is a national action or a provincial one.
 on-arrival: {!
-var gain = (Q.district_berlin_loyalty >= 50) ? 7 : 3;
-Q.crisis_momentum += gain;
-Q.e21_card_struck = RG.startStrike('berlin', true) ? 1 : 0;
-RG.district('berlin', {members: -0.03, repression: 4, militancy: 4});
-if (Q.e21_card_struck) { RG.news('Berlin electrical works strike in solidarity with Central Germany', 2); }
-Q.offensive_satisfaction += 3;
-Q.lean_offensive += 1;
+Q.e21_card_district = 2;
+var men = Math.round(Q.district_berlin_members * (Q.district_berlin_loyalty >= 50 ? 1.5 : 0.6));
+Q.e21_card_men = men;
+Q.e21_ma_out += men;
+RG.startStrike('berlin', true);
+RG.district('berlin', {repression: 5});
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
+go-to: done
 
-The Berlin district calls the factories out. The electrical works answer; the big engineering plants, mostly, do not.
-
-@gates
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's way: persuade, do not command.
-choose-if: lock_united_front < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids appeals to the social democrats.
+@hamburg
+view-if: district_hamburg_strike = 0
+subtitle: Hamburg is angry after the shooting at the yards. It is also far from Mansfeld.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.crisis_momentum += (Q.e21_march_mode == 1) ? 7 : 4;
-Q.spd_relation += 2;
-Q.worker_support += 1;
-Q.lean_unionist += 1;
-RG.district('halle', {loyalty: 3});
-RG.district('saxony', {militancy: 3});
+Q.e21_card_district = 3;
+var men = Math.round(Q.district_hamburg_members * (Q.district_hamburg_militancy >= 60 ? 1.8 : 0.8));
+Q.e21_card_men = men;
+Q.e21_ma_out += men;
+RG.startStrike('hamburg', true);
+RG.district('hamburg', {repression: 6});
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
+go-to: done
 
-At the factory gates our speakers do not shout. They ask the social democratic workers what they would do if the police came to their town. Some of them answer by joining the strike.
+@done
+
+[? if e21_card_district = 1 : Strike committees form at a dozen pits around Bochum and Gelsenkirchen, and the police arrest their leaders the same night. ?][? if e21_card_district = 2 : The Berlin district calls the factories out. The electrical works answer it. The big engineering plants mostly do not. ?][? if e21_card_district = 3 : The dockers stop work, and the yards that were shot clear on the 23rd stay empty. ?] [? if e21_card_men >= 60 : The district comes out in strength. ?][? if e21_card_men < 60 : Fewer come out than the district promised. ?]

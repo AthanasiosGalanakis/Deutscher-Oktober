@@ -12,69 +12,49 @@ Q.stability -= 4;
 
 = The Mark Falls
 
-In January a dollar cost under two hundred marks. In August it costs more than a thousand. Since Rathenau's murder no one abroad believes the Republic will last, and the Reichsbank prints whatever the government needs. Prices are now marked up on Monday and again on Thursday.
+In January a dollar cost two hundred marks. At the end of August it costs more than a thousand. Shops mark up their prices on Monday and again on Thursday. Hugo Stinnes buys mines, hotels and newspapers with loans he will repay in worthless paper, and in the markets of Berlin and Leipzig women turn on the traders they think are hoarding.
 
-The men who own things are doing well. Stinnes buys mines, hotels and newspapers with loans he will repay in worthless paper. The workers' wages are fixed for weeks at a time and are worth a third less by payday. In the markets of Berlin and Leipzig, housewives turn on traders they think are hoarding.
-
-The party must say what the workers should do.
-
-- @committees: Build control committees to police prices and hoarding.
-- @marches: Lead hunger marches on the town halls.
+- @committees: Form control committees to check the shops.
 - @scales: Fight in the unions for wages that rise with prices.
+- @marches: Lead the unemployed on the town halls.
 
 @committees
-subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Committees of workers and housewives check the shops. Popular, and it builds organisation.
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Workers and housewives with price lists, starting in Saxony. It builds something that lasts.
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
-RG.district('saxony', {militancy: 3, loyalty: 3});
-RG.district('thuringia', {militancy: 3, loyalty: 3});
-if (Q.lock_councils == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('councils');
+RG.district('saxony', {loyalty: 5, members: 0.04});
+RG.district('thuringia', {loyalty: 5});
 Q.e22_inflation_line = 1;
-Q.worker_support += 5;
-Q.militancy += 3;
-Q.unionist_satisfaction += 4;
-Q.luxemburgist_satisfaction += 3;
-Q.lean_unionist += 1;
-Q.lean_luxemburgist += 1;
+Q.worker_support += 4;
 !}
 
-The first control committees appear in Saxony and Thuringia, then in Berlin. They go from shop to shop with lists of fair prices. Some shopkeepers lower them; some call the police.
-
-@marches
-subtitle: The Left's answer. The hungry follow us; so do the police.
-view-if: offensive_gone = 0 or ultraleft_gone = 0
-on-arrival: {!
-RG.district('saxony', {militancy: 6, repression: 5});
-RG.district('halle', {militancy: 6, repression: 5});
-RG.district('ruhr', {militancy: 6, repression: 5});
-Q.e22_inflation_line = 2;
-Q.militancy += 8;
-Q.repression += 6;
-Q.worker_support += 3;
-Q.offensive_satisfaction += 6;
-Q.lean_offensive += 2;
-!}
-
-Thousands of unemployed march on the town halls of Chemnitz, Halle and Gelsenkirchen. Some markets are plundered. The police make arrests, and the arrested are mostly ours.
+The first control committees go from shop to shop in Chemnitz and Gera with lists of fair prices. Some shopkeepers lower them. Some call the police, and the police do not always come.
 
 @scales
-subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] The Right's answer. Slow, and it wins respect in the unions.
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Slow work in the metalworkers' union, and respect for it.
 choose-if: lock_union_work < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids work inside the reformist unions.
 on-arrival: {!
-if (Q.lock_union_work == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('union_work');
 Q.e22_inflation_line = 3;
-Q.worker_support += 4;
-Q.spd_relation += 3;
-Q.unionist_satisfaction += 6;
+Q.spd_relation += 4;
 Q.lean_unionist += 2;
 !}
 
-Our members in the metalworkers' union move resolution after resolution for a sliding scale of wages. By the autumn some big works pay weekly bonuses tied to the price of bread.
+Our members move resolution after resolution for a sliding scale of wages. By the autumn some big works pay a weekly bonus tied to the price of bread.
+
+@marches
+subtitle: Food for some, prison for others, in Halle and the Ruhr.
+view-if: offensive_gone = 0 or ultraleft_gone = 0
+on-arrival: {!
+RG.district('halle', {militancy: 8, repression: 8});
+RG.district('ruhr', {militancy: 8, repression: 8});
+Q.e22_inflation_line = 2;
+Q.lean_offensive += 2;
+!}
+
+Thousands of unemployed march on the town halls of Halle and Gelsenkirchen. Two markets are plundered. Most of those arrested are ours.

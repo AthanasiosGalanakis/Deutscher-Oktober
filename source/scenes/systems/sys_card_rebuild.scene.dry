@@ -13,15 +13,15 @@ tags: party_affairs
 
 = Rebuilding a District
 
-The party in **[+ sys_target_name +]** is a shadow of what it was: [+ sys_target_members +] thousand members, where there used to be many more. The district office is open two evenings a week. [? if sys_target_repression >= 60 : The police are the main reason. ?][? if sys_target_repression < 60 : Defeats, quarrels and unemployment have done the rest. ?]
+The party in **[+ sys_target_name +]** has [+ sys_target_members +] thousand members left, where there used to be many more. The district office is open two evenings a week, in the back room of a pub. [? if sys_target_repression >= 60 : The police are the main reason. ?][? if sys_target_repression < 60 : Defeats, quarrels and unemployment have done the rest. ?]
 
-- @organisers: Send organisers from the Zentrale.
+- @organisers: Visit every member who stopped paying.
 - @gates: Recruit at the factory gates.
-- @paper: Start a district paper.
+- @hall: Buy the old brewery hall for the district.
 - @easy_discard
 
 @organisers
-subtitle: Costs 1 fund. Members come back, and the district looks to the Zentrale.
+subtitle: Costs 1 fund. Lapsed members come back, and the district looks to Berlin.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
@@ -33,25 +33,23 @@ Q['lean_' + Q.leading_faction] += 1;
 Three organisers from Berlin rent rooms in [+ sys_target_name +] and visit every member who has stopped paying dues. Many start again.
 
 @gates
-subtitle: New members from the works, if the workers are angry enough.
+subtitle: Young workers join, and the district gets angrier.
 choose-if: sys_target_militancy >= 40
 unavailable-subtitle: The workers of [+ sys_target_name +] are in no mood to join anything.
 on-arrival: {!
 RG.district(Q.sys_target, {members: 0.07, militancy: 3});
-Q.offensive_satisfaction += 2;
 !}
 
 At every shift change, our people are at the gates with leaflets and membership cards. The young workers sign.
 
-@paper
-subtitle: Costs 1 fund. A paper builds support slowly, and members follow.
-choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
+@hall
+subtitle: Costs 2 funds. A home of its own, with a canteen and a cellar. The district holds together.
+choose-if: resources >= 2
+unavailable-subtitle: We need 2 funds.
 on-arrival: {!
-Q.resources -= 1;
-Q.worker_support += 2;
-RG.district(Q.sys_target, {members: 0.04, militancy: 2});
-Q.unionist_satisfaction += 2;
+Q.resources -= 2;
+RG.district(Q.sys_target, {members: 0.08, loyalty: 12});
+RG.news('Communists open a party house in ' + Q.sys_target_name);
 !}
 
-The district gets its own weekly paper, four pages, with the local news the bourgeois papers will not print: the accident at the pit, the foreman who hits apprentices, the price of coal.
+The hall gets a red flag on the roof, a library in the gallery and a canteen where a meal costs half what it costs in town. On Saturday nights there are dances.

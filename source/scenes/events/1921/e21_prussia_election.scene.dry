@@ -9,40 +9,25 @@ on-arrival: e21_prussia_done = 1; e21_prussia_bonus = 0
 
 = Prussia Votes
 
-On 20 February Prussia, two thirds of Germany, elects its Landtag. It is the first real test of the [+ e21_party +]. The campaign is short and cold. Our speakers are shouted down in the Catholic Rhineland and cheered in the Mansfeld copper towns.
+On 20 February Prussia, two thirds of Germany, elects its Landtag. It is the first test of the [+ e21_party +]. The campaign is short and cold. Our speakers are shouted down in the Catholic Rhineland and cheered in the Mansfeld copper towns.
 
-[? if kapp_outcome = 3 : The workers' government in Berlin has not touched Prussia, where Otto Braun's ministers and the old officials still rule. ?]
-
-[? if election_boycott = 1 : The party line is to boycott the parliaments. The question is only what our speakers say at the meetings where we tell the workers not to vote. ?][? if election_boycott = 0 : What should the campaign be about? ?]
+[? if election_boycott = 1 : The party line is to boycott the parliaments, so our speakers will tell the workers not to vote. ?][? if election_boycott = 0 : The Zentrale must decide what the campaign is about. ?]
 
 - @bread: Bread, wages and the price of coal.
 - @soviets: Soviet Russia and the councils.
-- @tribune: Parliament as a tribune: say what no one else will.
 
 @bread
-subtitle: The Right's campaign. Wins votes among the unorganised.
-on-arrival: {!
-Q.worker_support += 3; Q.unionist_satisfaction += 4; Q.lean_unionist += 1; Q.e21_prussia_bonus = 0.8;
-!}
+subtitle: Wins votes among workers who have never read a communist paper.
+on-arrival: worker_support += 3; lean_unionist += 1; e21_prussia_bonus = 0.8
 go-to: result
 
 @soviets
-subtitle: The Left's campaign. Fires up the party, frightens the voters.
+subtitle: Fewer votes, and a party in fighting spirit in Halle and Berlin.
 on-arrival: {!
-Q.worker_support += 1;
-Q.offensive_satisfaction += 4;
 Q.lean_offensive += 1;
 Q.e21_prussia_bonus = -0.4;
-RG.district('halle', {militancy: 5});
-RG.district('berlin', {militancy: 4});
-RG.district('ruhr', {militancy: 3});
-!}
-go-to: result
-
-@tribune
-subtitle: The Spartacist campaign: use the Landtag to expose, not to govern.
-on-arrival: {!
-Q.worker_support += 2; Q.luxemburgist_satisfaction += 4; Q.lean_luxemburgist += 1; Q.e21_prussia_bonus = 0.3;
+RG.district('halle', {militancy: 6});
+RG.district('berlin', {militancy: 5});
 !}
 go-to: result
 
@@ -50,7 +35,7 @@ go-to: result
 title: The Result
 new-page: true
 on-arrival: {!
-// the 1921 Prussian Landtag as it was elected: 428 seats
+// the Prussian Landtag of 1921 as it was elected: 428 seats
 var base = (Q.vkpd_formed == 1)
     ? {spd: 114, zentrum: 81, dnvp: 75, dvp: 58, ddp: 26, uspd: 28, kpd: 31}
     : {spd: 114, zentrum: 81, dnvp: 75, dvp: 58, ddp: 26, uspd: 50, kpd: 9};
@@ -58,24 +43,13 @@ var r = RG.election('prussia', {base: base, size: 428, kpdShare: (Q.vkpd_formed 
     bonus: Q.e21_prussia_bonus, news: false});
 Q.e21_prussia_seats = r.kpd_seats;
 Q.e21_prussia_share = Q.election_kpd_share_display;
-Q.e21_prussia_uspd = r.seats.uspd || 0;
 Q.e21_prussia_spd = r.seats.spd || 0;
-Q.e21_prussia_merseburg = (r.kpd_share >= 6 && Q.district_halle_members >= 20) ? 1 : 0;
 Q.e21_prussia_better = (Q.vkpd_formed == 1) ? (r.kpd_seats >= 36 ? 1 : (r.kpd_seats <= 25 ? 2 : 0)) : 0;
 if (r.kpd_share > 0) {
     RG.news('Prussia votes: Communists win ' + Q.election_kpd_share_display + ' per cent and ' + r.kpd_seats + ' seats', 3);
-} else {
-    RG.news('Prussia votes: no communist list, and the workers stay at home', 3);
-}
-if (r.kpd_share >= 10) {
-    RG.ledger('The party won ' + Q.election_kpd_share_display + ' per cent in the Prussian Landtag election.', 'e21_prussia10');
 }
 !}
 
-= The Result
+[? if election_kpd_seats > 0 : The [+ e21_party +] wins [+ e21_prussia_share +] per cent of the vote and [+ e21_prussia_seats +] of the 428 seats. The SPD, with [+ e21_prussia_spd +], is still the strongest party in Prussia, and the next coalition will be formed without us. ?][? if election_kpd_seats = 0 : The party stands no candidates, and the Landtag is elected without a single communist in it. ?]
 
-[? if election_kpd_seats > 0 : The [+ e21_party +] wins [+ e21_prussia_share +] per cent of the vote and [+ e21_prussia_seats +] of the 428 seats in the Landtag. The Independents keep [+ e21_prussia_uspd +]. The SPD, with [+ e21_prussia_spd +] seats, remains the strongest party in Prussia, and the coalition will be formed without us, as always. ?][? if election_kpd_seats = 0 : The party stands no candidates. The Social Democrats and the Independents divide the workers' vote between them, and the Landtag is elected without a single communist in it. ?]
-
-[? if e21_prussia_merseburg = 1 : In the Merseburg constituency we are the largest party. ?][? if e21_prussia_better = 1 : It is more than anyone in the Zentrale dared to hope. ?][? if e21_prussia_better = 2 : It is less than the unification promised. Many of the Independents who came over in December did not bring their voters with them. ?][? if vkpd_formed != 1 and election_kpd_seats > 0 : The Independents, who kept their left wing, do better than we do in every industrial district. ?]
-
-Ernst Reuter, who signs his articles as Friesland, writes that the result proves the party can become the party of the majority. Ruth Fischer writes that it proves nothing at all.
+[? if e21_prussia_better = 1 : It is more than anyone in the Zentrale dared to hope. ?][? if e21_prussia_better = 2 : Many of the Independents who came over in December did not bring their voters with them. ?]

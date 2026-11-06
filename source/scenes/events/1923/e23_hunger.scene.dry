@@ -7,61 +7,49 @@ max-visits: 1
 on-arrival: {!
 var d = RG.target('militancy');
 Q.e23_hunger_d = d;
-Q.e23_hunger_name = Q.district_names[d];
+Q.e23_hunger_name = Q.sys_target_name;
 Q.e23_hunger_trade = Q.sys_target_trade;
-Q.e23_hunger_striking = Q.sys_target_striking;
 RG.district(d, {militancy: 6});
 RG.news('Hunger riots in ' + Q.e23_hunger_name + ': markets plundered', 3);
 !}
 
 = Hunger
 
-The dollar costs billions of marks, and the price of a loaf is chalked on the bakery doors in the morning and rubbed out at noon. In [+ e23_hunger_name +] the bakers have stopped baking: flour costs more than they can sell bread for. On Thursday the women of the working districts came to the market square and found the stalls empty. By evening the shops on the main street had no windows.
+The dollar costs billions of marks, and the price of a loaf is chalked on the bakery door in the morning and rubbed out at noon. In [+ e23_hunger_name +] the bakers have stopped baking, because flour costs more than they can sell bread for. On Thursday the women came to the market and found the stalls empty, and by evening the shops on the main street had no windows. The farmers will not sell for paper. The police fired over the crowd on Friday.
 
-The farmers will not sell for paper. The wages of [+ e23_hunger_trade +] were paid on Monday and were worthless by Tuesday. [? if e23_hunger_striking = 1 : They are on strike already, and the strike pay is worth nothing. ?] The police fired over the heads of the crowd on Friday. Next time, the officer says, they will not aim high.
-
-The district asks the Zentrale what to do.
-
-- @lead: Lead the hungry to the warehouses and the farms.
-- @kitchens: Open communal kitchens with the control committees.
-- @landtag: Call for calm, and take the district's demands to the Landtag.
+- @lead: Lead the hungry to the warehouses.
+- @kitchens: Open communal kitchens.
+- @munzenberg: Ask Münzenberg for his kitchens.
 
 @lead
-subtitle: The Left's answer. Food tonight, a strike tomorrow, and the police the day after.
+subtitle: Flour tonight, a strike tomorrow, and the police the day after.
 view-if: offensive_gone = 0 or ultraleft_gone = 0
 on-arrival: {!
 RG.startStrike(Q.e23_hunger_d);
 RG.district(Q.e23_hunger_d, {militancy: 10, repression: 10, members: 0.05});
-Q.worker_support += 2;
-Q.offensive_satisfaction += 5;
 Q.lean_offensive += 2;
 !}
 
-The control committees open the grain warehouse at the goods station and hand out sacks of flour by the bucket. The columns that go out to the farms come back with potatoes, and with two men shot by a farmer's son. The works come out on strike for wages in gold.
+The control committees open the grain warehouse at the goods station and hand out flour by the bucket. The works come out the next day for wages in gold.
 
 @kitchens
-subtitle: Costs 1 fund. Feeds the district and wins it; does nothing about the price.
+subtitle: Costs 1 fund. Feeds the district and wins it.
 choose-if: resources >= 1
 unavailable-subtitle: We have nothing to buy food with.
 on-arrival: {!
 Q.resources -= 1;
 RG.district(Q.e23_hunger_d, {loyalty: 8, members: 0.06, militancy: -2});
-Q.worker_support += 3;
-Q.unionist_satisfaction += 3;
-Q.luxemburgist_satisfaction += 3;
 Q.lean_unionist += 1;
-Q.lean_luxemburgist += 1;
 !}
 
-The party's money buys potatoes in Czechoslovakia, for crowns. Kitchens open in four union halls and a school. Every evening a thousand families eat soup under a red banner, and a hundred of them come back the next week to join.
+The party buys potatoes in Czechoslovakia with crowns. Kitchens open in four union halls and a school, and a thousand families eat under a red banner every evening.
 
-@landtag
-subtitle: The careful answer. The SPD is grateful; the district is not.
+@munzenberg
+subtitle: The Workers' International Relief remembers who helped with the Volga.
+view-if: e22_famine = 1
 on-arrival: {!
-RG.district(Q.e23_hunger_d, {militancy: -6, loyalty: -6});
-Q.spd_relation += 3;
-Q.lean_unionist += 1;
-Q.offensive_satisfaction -= 4;
+RG.district(Q.e23_hunger_d, {loyalty: 10, members: 0.08, militancy: -2});
+Q.worker_support += 3;
 !}
 
-Our deputies move a motion for emergency food supplies. The Landtag votes it, and the flour arrives a fortnight later, when the price of flour has doubled again.
+Münzenberg's lorries arrive within the week with flour bought in Holland and soup kettles left over from the Volga. The kitchens carry the name of the International Relief, and the party's speakers stand beside them.

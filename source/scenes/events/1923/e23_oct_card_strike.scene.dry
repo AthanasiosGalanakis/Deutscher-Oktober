@@ -1,54 +1,56 @@
-title: The General Strike
-subtitle: The rising lives or dies with the strike.
-view-if: crisis_october = 1
-on-arrival: month_actions += 1
+title: The Barricades
+subtitle: One of the risen districts is close to breaking.
+view-if: crisis_october = 1 and e23_rising_phase = 1 and e23_oct_alive >= 1
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.octTick(Q.crisis_time + 1);
+Q.e23_weak_d = RG.e22.octWeakest() || 0;
+Q.e23_weak_name = Q.e23_weak_d ? RG.dname(Q.e23_weak_d) : 'the weakest district';
+Q.e23_depot_ok = 0;
+!}
 frequency: 100
 is-card: true
 new-page: true
 tags: crisis
 
-= The General Strike
+= The Barricades
 
-Every plan of the rising begins with a general strike. Without it the hundreds are a few thousand armed men; with it the Reichswehr cannot move its trains, light its barracks or feed its soldiers. But the workers are hungry, the unions are bankrupt, and a strike costs a week's wages that do not exist.
+The reports come in by courier every few hours. [+ e23_weak_name +] is the worst: the hundreds there are short of ammunition, and the Reichswehr has brought up field guns.
 
-- @railways: Stop the railways first.
-- @kitchens: Open strike kitchens in every district.
-- @power: Shut down the power stations.
+- @reinforce: Send the reserve hundreds to [+ e23_weak_name +].
+- @depot: Take a railway arms depot.
+- @kitchens: Feed the strike.
 
-@railways
-subtitle: If the trains stop, the army cannot concentrate. The railwaymen must agree.
+@reinforce
+subtitle: [+ e23_weak_name +] will hold longer. The others get nothing.
 on-arrival: {!
-if (Q.worker_support >= 35 || Q.e23_rail_joined == 1) { RG.startStrike('halle', true); RG.startStrike('berlin', true); }
-var ok = Q.worker_support >= 35 || Q.e23_rail_joined == 1;
-Q.e23_rail_ok = ok ? 1 : 0;
-Q.crisis_momentum += ok ? 8 : 2;
-Q.repression += 3;
+if (Q.e23_weak_d) { RG.district(Q.e23_weak_d, {guards: 2, militancy: 5}); }
+Q.e23_oct_arms = Math.max(0, Q.e23_oct_arms - 1);
+RG.e22.octLines();
 !}
 
-[? if e23_rail_ok = 1 : The depots of Leipzig, Halle and Berlin-Lichtenberg come out. Troop trains stand in sidings with their engines cold. ?][? if e23_rail_ok = 0 : The railwaymen hesitate. Some trains are stopped by our pickets on the tracks; most run late, but run. ?]
+The reserve goes by lorry at night, with the last of the machine-gun belts.
+
+@depot
+subtitle: More rifles for everyone. The apparatus thinks it will probably work.
+on-arrival: {!
+Q.e23_depot_ok = Math.random() < 0.65 ? 1 : 0;
+if (Q.e23_depot_ok) { Q.e23_oct_arms += 3; } else if (Q.e23_weak_d) { RG.district(Q.e23_weak_d, {guards: -0.5}); }
+RG.e22.octLines();
+!}
+
+[? if e23_depot_ok = 1 : The hundreds take the depot at the goods station before the guards are awake. The rifles are handed out from the wagons. ?][? if e23_depot_ok = 0 : The depot has been emptied the day before. The hundreds lose men on the way back. ?]
 
 @kitchens
-subtitle: Costs 1 fund. The strikers can hold out.
+subtitle: Costs 1 fund. The strikers' families eat, and the strike holds.
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
+unavailable-subtitle: We have no money.
 on-arrival: {!
 Q.resources -= 1;
-Q.worker_support += 4;
-Q.crisis_momentum += 5;
-Q.unity += 2;
-RG.district(RG.target('strike'), {loyalty: 5, members: 0.03});
+Q.e23_oct_bonus += 1.5;
+Q.worker_support += 3;
+RG.e22.octLines();
 !}
 
-The control committees requisition potatoes and flour, and the strike kitchens feed the families in every workers' district.
-
-@power
-subtitle: The cities go dark. The strikers' families too.
-on-arrival: {!
-RG.startStrike('berlin', true);
-Q.crisis_momentum += 6;
-Q.worker_support -= 2;
-Q.militancy += 4;
-Q.lean_offensive += 1;
-!}
-
-The Klingenberg station goes silent, and with it half of Berlin. The army's searchlights run on its own generators.
+The control committees requisition the flour in the mills and the potatoes in the station yards. Every workers' district has a kitchen by the evening.

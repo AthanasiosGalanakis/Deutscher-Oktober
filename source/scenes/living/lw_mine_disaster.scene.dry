@@ -21,64 +21,28 @@ RG.ledger(Q.lw_dead + ' miners died in an explosion at ' + Q.lw_pit + '.', 'lw_m
 
 = Firedamp
 
-At the change of shift, an explosion of firedamp tore through the deepest seam of **[+ lw_pit +]**, in [+ lw_d_name +]. The rescue teams worked for three days. They brought up [+ lw_dead +] bodies, and a pit pony that had somehow lived.
+At the change of shift, firedamp exploded in the deepest seam of **[+ lw_pit +]**, in [+ lw_d_name +]. The rescue teams brought up [+ lw_dead +] bodies, and a pit pony that had somehow lived. The miners say the ventilation was cut back in the spring to save money. The funerals are on Saturday, and the whole district will be watching who speaks.
 
-The company says it was an act of God. The miners say the ventilation was cut back in the spring to save money, and that the safety man who complained was moved to the surface. Everyone in the pit village knows somebody on the list.
-
-The funerals are on Saturday. The whole district will be there, and it will be looking at who speaks.
-
-- @strike: Call the coalfield out in a political strike.
-- @socialise: Make it the case for taking the mines from the owners.
-- @relief: Bury the dead and feed the families.
-- @inquiry: Demand a safety inquiry with the miners' union.
+- @strike: Call the coalfield out from the graveside.
+- @relief: Pay for the coffins and feed the families.
 
 @strike
-subtitle: The district stops for its dead. Militancy rises, and the police come with it. The Left's answer.
-view-if: offensive_gone = 0
+subtitle: Every pit in the district stops until the owners answer for the dead.
 on-arrival: {!
 RG.startStrike(Q.lw_d);
-RG.district(Q.lw_d, {militancy: 5, repression: 5, members: 0.03});
-RG.lw.lean('offensive', 2, 6);
-RG.lw.lean('unionist', 0, -3);
+RG.district(Q.lw_d, {repression: 5, members: 0.04});
+Q.lean_offensive += 1;
 !}
 
-From the graveside, our speaker calls for every pit to stop until the owners answer for the dead. The next morning, the winding gear is still across the district.
-
-@socialise
-subtitle: The old demand of the revolution, with the dead as evidence. Worker support grows. The Spartacist line.
-on-arrival: {!
-Q.worker_support += 3;
-Q.stability -= 1;
-RG.district(Q.lw_d, {loyalty: 4});
-RG.news('Communists: the mines to the people after ' + Q.lw_pit_town);
-RG.lw.lean('luxemburgist', 2, 5);
-!}
-
-The coal owners promised in 1919 that the mines would be socialised, and set up a commission. The commission is still sitting. Our leaflet prints its members' names next to the names of the dead.
+The next morning the winding gear is still across the district.
 
 @relief
-subtitle: Costs 1 fund. The party is there when it matters. The district will remember.
+subtitle: Costs 1 fund. The district will remember who was there.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
 Q.resources -= 1;
-RG.district(Q.lw_d, {loyalty: 9, members: 0.05});
-Q.worker_support += 1;
-Q.unity += 1;
+RG.district(Q.lw_d, {loyalty: 12, members: 0.06});
 !}
 
-The party pays for the coffins nobody else would pay for, and our women's group runs the kitchen in the pit village for a month. At the funeral, the red flag is on every third coffin.
-
-@inquiry
-subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] Through the union, a real inquiry and new safety rules. The Right's way.
-choose-if: lock_union_work < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids working through the reformist unions.
-on-arrival: {!
-RG.lw.against('union_work');
-Q.worker_support += 2;
-Q.spd_relation += 2;
-RG.district(Q.lw_d, {militancy: -3, loyalty: 3});
-RG.lw.lean('unionist', 2, 5);
-!}
-
-Our comrades in the miners' union force a joint inquiry. It finds that the ventilation was cut back. The manager is fined, and the pits of the district get safety men elected by the miners.
+The party pays for the coffins nobody else would pay for, and the women's group runs the kitchen in the pit village for a month. At the funeral the red flag is on every third coffin.

@@ -1,0 +1,61 @@
+title: The Strike Pay
+subtitle: The strikers' families have nothing left to eat.
+new-page: true
+tags: event
+view-if: crisis_cuno = 1 and crisis_time >= 2 and e23_cuno_endurance < 40 and e23_cuno_pay_done = 0
+max-visits: 1
+priority: 3
+on-arrival: {!
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.cunoTick(Q.crisis_time);
+Q.e23_cuno_pay_done = 1;
+var s = RG.e22.striking();
+s.sort(function (a, b) { return Q['district_' + a + '_militancy'] - Q['district_' + b + '_militancy']; });
+Q.e23_cuno_weak = s[0] || 0;
+Q.e23_cuno_weak_name = s[0] ? Q.district_names[s[0]] : 0;
+Q.e23_cuno_has_weak = (s.length >= 2) ? 1 : 0;
+!}
+
+= The Strike Pay
+
+The strike committees have paid out the last of their money, and what they paid is worth nothing now. In the working districts the shops have closed their shutters. The women's committees report that children are being kept home from school because they faint in class.
+
+- @farms: Send the control committees out to the farms.
+- @weak: Let [+ e23_cuno_weak_name +] go back to work, and feed the rest.
+- @unions: Ask the union locals to open their strike funds.
+
+@farms
+subtitle: Potatoes at the committees' price, and the gendarmes after them.
+on-arrival: {!
+Q.e23_cuno_endurance += 14;
+RG.district('saxony', {repression: 6});
+RG.district('berlin', {repression: 4});
+RG.e22.cunoLines();
+!}
+
+Lorries go out from Berlin and Chemnitz to the farms of Brandenburg and the Vogtland and come back with potatoes bought at prices the farmers did not set. The gendarmes arrive the next day, too late.
+
+@weak
+subtitle: One district fewer on strike, and more for the others to eat.
+view-if: e23_cuno_has_weak = 1
+on-arrival: {!
+RG.endStrike(Q.e23_cuno_weak, 'quiet');
+Q.e23_cuno_endurance += 20;
+RG.e22.cunoLines();
+!}
+
+The [+ e23_cuno_weak_name +] committees vote to go back on Monday and send what is left in their kitchens to the others.
+
+@unions
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] The federation said no. Some of its locals may say yes.
+choose-if: lock_union_work < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids asking the reformist unions.
+on-arrival: {!
+RG.e22.against('union_work');
+Q.e23_cuno_union = Q.spd_relation >= 25 ? 1 : 0;
+Q.e23_cuno_endurance += Q.e23_cuno_union ? 16 : 4;
+Q.spd_relation += 3;
+RG.e22.cunoLines();
+!}
+
+[? if e23_cuno_union = 1 : The metalworkers' locals in Berlin and Leipzig open their strike funds against the federation's instructions. ?][? if e23_cuno_union = 0 : A few locals send what they have. Most send a letter. ?]

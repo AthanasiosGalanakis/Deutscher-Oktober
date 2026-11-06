@@ -1,89 +1,70 @@
 title: The Reichsexekution
-subtitle: The Reichswehr marches into Saxony to depose its government.
+subtitle: The Reichswehr marches into Dresden to remove the Saxon government.
 new-page: true
 tags: event
-view-if: year = 1923 and month = 10 and e23_reich_done = 0 and crisis = 0 and e23_october_path != 1 and (e23_saxony_decided = 1 or e23_october_done = 1)
+view-if: year = 1923 and month >= 10 and month <= 11 and e23_reich_done = 0 and crisis = 0 and (e23_saxony_decided = 1 or e23_october_done = 1) and german_october != 3 and e23_red_region != 1
 max-visits: 1
 priority: 2
 on-arrival: {!
-RG.district('saxony', {repression: 20});
-RG.district('thuringia', {repression: 10});
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.district('saxony', {repression: 15});
+RG.district('thuringia', {repression: 8});
 RG.news('Reichswehr deposes the Saxon government', 3);
-RG.ledger('The Reichswehr deposed the workers\' government of Saxony.', 'e23_reichsexekution');
 Q.e23_reich_done = 1;
-Q.repression += 6;
+Q.e23_had_ministers = Q.saxony_government == 1 ? 1 : 0;
+Q.saxony_government = 0;
 Q.spd_in_government = 0;
 Q.government_name = 'Stresemann cabinet (DVP, Centre, DDP)';
 !}
 
 = The Reichsexekution
 
-In late October the Reichswehr marches into Saxony. General Müller's troops occupy Dresden, Leipzig and Chemnitz, and on 29 October an officer with a squad of soldiers removes Erich Zeigner from his office. A Reich commissioner governs Saxony in his place. [? if saxony_government = 1 : Our ministers are driven out with him. ?] Thuringia's government is threatened with the same.
+On 29 October a lieutenant and a squad of soldiers walk into the State Chancellery in Dresden and tell Erich Zeigner that he is no longer Minister-President. A Reich commissioner moves into his office the same afternoon. [? if e23_had_ministers = 1 : Our two ministers are escorted out of the building behind him. ?]
 
-[? if bavaria_soviet != 2 : Against the Saxon Social Democrats, the Reich sends the army. Against Kahr's Bavaria, which openly defies Berlin, it sends letters. ?][? if bavaria_soviet = 2 : The Reich sends the army against the Saxon Social Democrats because it dares not send it against Red Bavaria. ?] The SPD leaves the Stresemann coalition in protest on 2 November, and does nothing else.
+[? if bavaria_soviet != 2 : Kahr's Bavaria has defied Berlin for a month and received letters. Saxony has received three divisions. ?][? if bavaria_soviet = 2 : The Reich sends its army into Saxony because it does not dare to send it into Red Bavaria. ?] The Social Democrats leave Stresemann's cabinet in protest, and do nothing else.
 
-[? if german_october = 2 : The party, beaten in the streets weeks ago, can only watch. ?][? if german_october != 2 and e23_october_done = 0 : The Saxon workers are looking to the party. Some of them have rifles. ?]
+[? if e23_october_done = 1 and german_october = 2 : The party has already had its October, and the Saxon workers know what it cost. ?][? if e23_october_done = 1 and german_october < 2 : The party called off its October, and the Saxon workers have not forgotten it. ?][? if e23_october_done = 0 : The Saxon workers are waiting to hear from the party. Some of them still have rifles. ?]
 
-- @defend: Call a general strike in defence of Saxony, and fight.
-- @protest: Call a protest strike in Saxony, and no more.
-- @yield: Yield: the party will not be provoked.
+- @defend: Call the hundreds out to defend Saxony.
+- @protest: Call a one-day protest strike.
+- @yield: Protest in the press and the Landtag.
 
 @defend
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] An improvised rising. The Reichswehr is already inside the fortress.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Reichswehr is already inside the fortress.
 view-if: e23_october_done = 0
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
-RG.startStrike('saxony', true);
-RG.district('saxony', {militancy: 10});
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.crisis = 1;
-Q.crisis_october = 1;
+RG.e22.against('uprising');
 Q.e23_october_path = 4;
-Q.e23_rising_phase = 1;
-Q.crisis_time = 2;
-Q.week = 1;
-Q.crisis_name = 'The Defence of Saxony';
-Q.crisis_goal = 'Drive the Reichswehr out of Saxony, and spread the rising to the Reich.';
-var m = 26 + Q.worker_support * 0.2 + Q.red_guards_arms * 0.15 + (Q.saxony_government == 1 ? 4 : 0);
-Q.crisis_momentum = Math.max(20, Math.min(60, m));
-Q.militancy += 10;
-Q.repression += 8;
-Q.offensive_satisfaction += 8;
-Q.unionist_satisfaction -= 4;
+RG.e22.octRise(['saxony', 'thuringia'], 'The Defence of Saxony', 'Hold Saxony and Thuringia until the Reichswehr gives up.', -2);
+RG.district('saxony', {militancy: 10});
 Q.lean_offensive += 3;
 !}
 
-The sirens of Chemnitz sound at noon. The hundreds take the station and the post office while the Reichswehr is still at lunch.
+The sirens in Chemnitz go at noon. The hundreds take the main station and the post office while the soldiers are still in their billets.
 
 @protest
-subtitle: Shows that Saxony's workers object. The army takes their names.
+subtitle: Saxony's workers say no for a day. The army takes their names.
 on-arrival: {!
 RG.startStrike('saxony', true);
 RG.endStrike('saxony', 'crushed');
 RG.news('Soldiers fire on strikers in Freiberg', 2);
+RG.ledger('Soldiers fired on our protest strike in Freiberg.', 'e23_freiberg');
 if (!Q.e23_october_done) { Q.german_october = 0; Q.e23_october_done = 1; }
-Q.militancy += 3;
-Q.repression += 4;
 Q.worker_support += 2;
 Q.spd_relation += 3;
-Q.lean_unionist += 1;
 !}
 
-For a day the Saxon works stand still. In Freiberg soldiers fire into a crowd of strikers and kill twenty-three. Then the strike ends.
+For a day the Saxon works stand still. In Freiberg soldiers fire into a crowd of strikers in the market square and kill twenty-three. The next morning the works open again.
 
 @yield
-subtitle: The careful course. No martyrs. The Left calls it capitulation.
+subtitle: Nobody is killed. The Left will call it capitulation.
 on-arrival: {!
 RG.district('saxony', {loyalty: -6, militancy: -5});
 if (!Q.e23_october_done) { Q.german_october = 0; Q.e23_october_done = 1; }
-Q.militancy -= 5;
-Q.worker_support -= 3;
 Q.offensive_satisfaction -= 8;
 Q.unity -= 2;
 !}
 
-The party publishes a protest and holds meetings in halls the army has not yet closed.
+Our deputies walk out of the Landtag. The party holds protest meetings in the halls that the army has not closed yet.

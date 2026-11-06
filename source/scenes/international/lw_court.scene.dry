@@ -1,4 +1,4 @@
-title: Friends on the Executive
+title: Our Man in Moscow
 new-page: true
 view-if: crisis = 0 and congress = 0 and lw_court_timer <= 0 and comintern_member = 1 and time >= 6
 on-arrival: {!
@@ -12,70 +12,49 @@ frequency: 130
 is-card: true
 tags: international
 
-= Friends on the Executive
+= Our Man in Moscow
 
-The Executive of the International is five men, and each of them reads the German reports for something different. A party that wants to be heard in Moscow needs a friend there; a party that has none will be spoken about, not spoken to.
+The Zentrale's representative at the Executive lives in the Hotel Lux and writes every week. The Executive is five men, he reminds us, and each reads the German reports for something different. He asks whose door he should knock on this month. [? if ecci_friend_name : Our best friend there is [+ ecci_friend_name +]. ?]
 
-The Zentrale's representative in Moscow asks whose door he should knock on this month. [? if ecci_friend_name : Our best friend there is said to be [+ ecci_friend_name +]. ?] [? if directive_active = 1 : The directive from [+ directive_from_name +] is still open. ?]
-
-- @lenin: Send Lenin the facts he always asks for.
+- @lenin: Take Lenin the facts he always asks for.
 - @zinoviev: Pledge discipline to Zinoviev.
-- @radek: Share the Berlin gossip with Radek.
-- @bukharin: Ask Bukharin to write for the German party.
-- @trotsky: Send Trotsky a report on the Reichswehr.
+- @radek: Tell Radek the Berlin gossip.
+- @trotsky: Give Trotsky a report on the Reichswehr.
 - @easy_discard
 
 @lenin
-subtitle: A long report on wages, prices and the unions. Lenin is pleased; the others notice he is the one who was asked.
+subtitle: Sixty pages on wages, prices and the unions. Lenin is pleased, and Zinoviev notices who was asked.
 view-if: ecci_lenin_ill = 0
 on-arrival: {!
 RG.ecci('lenin', 10);
-RG.ecci('zinoviev', -2);
-RG.lw.lean('luxemburgist', 1, 2);
-RG.lw.lean('unionist', 1, 1);
+RG.ecci('zinoviev', -3);
 !}
 
-The report runs to sixty pages, with tables. It comes back with pencil marks in the margins, and one note at the end: "Good. More of this."
+The report comes back with pencil marks in the margins, and one note at the end: "Good. More of this."
 
 @zinoviev
-subtitle: The President likes obedience. Zinoviev is pleased; our independence suffers, and the Left is encouraged.
+subtitle: The President likes obedience, and our independence pays for it.
 on-arrival: {!
 RG.ecci('zinoviev', 10);
-Q.independence -= 4;
-RG.lw.lean('offensive', 1, 2);
-RG.lw.lean('luxemburgist', 0, -2);
+Q.independence -= 5;
 !}
 
-The Zentrale's letter to the President promises iron discipline, the unconditional application of the Executive's decisions and the struggle against every deviation. It is a letter Zinoviev likes to read aloud.
+The letter promises iron discipline and the struggle against every deviation. It is a letter Zinoviev likes to read aloud.
 
 @radek
-subtitle: Radek likes to know everything first. He is pleased; something may leak the other way.
+subtitle: Radek likes to know everything first. Some of it may come back to Berlin, with names.
 on-arrival: {!
 RG.ecci('radek', 10);
-if (Math.random() < 0.3) { Q.lw_out = 1; Q.unity -= 3; }
-RG.lw.lean('unionist', 1, 2);
+if (Math.random() < 0.3) { Q.lw_out = 1; Q.unity -= 4; }
 !}
 
-Our man in Moscow spends an evening with Radek and tells him who said what at the last three meetings of the Zentrale. [? if lw_out = 1 : A month later, half of it is repeated at a session of the Executive, with names, and the German comrades concerned are not amused. ?][? if lw_out = 0 : Radek laughs a great deal, and promises to put in a word. ?]
-
-@bukharin
-subtitle: An article from Bukharin for the party press. He is flattered; the theory of the offensive comes with it.
-on-arrival: {!
-RG.ecci('bukharin', 9);
-Q.militancy += 2;
-RG.lw.lean('offensive', 1, 3);
-RG.lw.lean('unionist', 0, -2);
-!}
-
-Bukharin writes for the German party within a week: twelve pages on the German revolution, which he has never seen, and which he describes very vividly.
+[? if lw_out = 1 : A month later, half of it is repeated at a session of the Executive, and the German comrades concerned are not amused. ?][? if lw_out = 0 : Radek laughs a great deal, and promises to put in a word. ?]
 
 @trotsky
-subtitle: The Commissar for War values hard information. Trotsky is pleased; the police would be very interested.
+subtitle: The Commissar for War values hard information. The police would value it too.
 on-arrival: {!
-RG.ecci('trotsky', 9);
-Q.red_guards_arms += 1;
-Q.repression += 1;
-RG.lw.lean('offensive', 1, 1);
+RG.ecci('trotsky', 10);
+Q.repression += 2;
 !}
 
-The report lists the Reichswehr's garrisons, its secret reserves and the names of officers who drink too much. Trotsky sends back a short letter of thanks and a longer list of questions.
+The report lists the Reichswehr's garrisons, its secret reserves and the officers who drink too much. Trotsky sends back a short letter of thanks and a longer list of questions.

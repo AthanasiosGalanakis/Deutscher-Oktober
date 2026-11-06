@@ -1,0 +1,45 @@
+title: Munich Holds Out
+subtitle: The strikes in the north have bought the council republic a week.
+new-page: true
+tags: event
+view-if: crisis_bavaria = 1 and crisis_time >= 4 and e19_bav_ring = 1 and e19_bav_whites > 7
+max-visits: 1
+priority: 3
+on-arrival: {!
+Q.e19_bav_whites -= 7;
+Q.e19_bav_food -= 7;
+if (Q.e19_bav_food < 0) { Q.e19_bav_food = 0; Q.e19_bav_hungry = 1; Q.e19_bav_army = Math.max(1, Q.e19_bav_army - 4); }
+Q.crisis_line_1 = 'Von Oven\'s army: ' + Q.e19_bav_whites + ' days from Munich';
+Q.crisis_line_2 = Q.e19_bav_food > 0 ? 'Food in Munich: ' + Q.e19_bav_food + ' days' : 'Food in Munich: none';
+Q.crisis_line_3 = 'Red Army: ' + Q.e19_bav_army + ',000 men';
+!}
+
+= Munich Holds Out
+
+Von Oven has had to leave regiments in Saxony and the Ruhr, and his attack is put off by a week. In Munich the milk is gone, and the queues outside the bakeries start before dawn.
+
+- @cellars: Open the cellars of the hotels and the villas.
+- @peasants: Pay the peasants of the Dachau moor in Reich marks.
+
+@cellars
+subtitle: Food for a week. The middle class will welcome the Whites as liberators.
+on-arrival: {!
+Q.e19_bav_food += 7;
+Q.lean_ultraleft += 1;
+Q.crisis_line_2 = 'Food in Munich: ' + Q.e19_bav_food + ' days';
+!}
+
+The cellars of the Bayerischer Hof give up hams and flour. The working-class districts eat for a week.
+
+@peasants
+subtitle: Costs 1 fund. Less food, and the villages will not shoot at the Red Army.
+choose-if: resources >= 1
+unavailable-subtitle: We have no money to send.
+on-arrival: {!
+Q.resources -= 1;
+Q.e19_bav_food += 4;
+Q.bav_peasants += 1;
+Q.crisis_line_2 = 'Food in Munich: ' + Q.e19_bav_food + ' days';
+!}
+
+Carts roll in from the moor with milk and potatoes, paid for in real money.

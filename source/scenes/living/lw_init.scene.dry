@@ -28,17 +28,16 @@ for (var k in start) {
 if (!Q.lw_fired || typeof Q.lw_fired !== 'object') { Q.lw_fired = {}; }
 if (!Q.lw_abroad || typeof Q.lw_abroad !== 'object') { Q.lw_abroad = {}; }
 // each event starts on its own cooldown, so the first year does not get them all at once
-var ev = ['strike_fund', 'rogue_leader', 'raid', 'rifles', 'defy_vote', 'council_election', 'mine_disaster',
-    'lockout', 'hunger_riot', 'paper_banned', 'recruits', 'informer', 'shooting', 'red_town',
-    'c_arrest', 'c_trial', 'c_hunger', 'c_jailbreak', 'c_amnesty', 'c_quarrel', 'c_defection', 'c_assassin', 'c_return',
-    'm_zinoviev', 'm_radek', 'm_bukharin', 'm_trotsky', 'm_lenin', 'm_suitcase', 'm_envoy', 'm_patron'];
+var ev = ['rifles', 'defy_vote', 'council_election', 'mine_disaster', 'lockout', 'paper_banned', 'informer',
+    'shooting', 'red_town', 'c_trial', 'c_amnesty', 'c_quarrel', 'c_defection', 'c_assassin', 'c_return',
+    'm_zinoviev', 'm_trotsky', 'm_lenin', 'm_envoy', 'm_patron'];
 for (var e of ev) {
     if (Q['lw_' + e + '_next'] === undefined) {
         Q['lw_' + e + '_next'] = (e == 'c_return') ? 0 : rnd(3, 14);
     }
 }
 // the living-world cards: post_event decrements every name in Q.timers each month
-var timers = ['lw_house', 'lw_campaign', 'lw_cells', 'lw_safehouse', 'lw_ministry', 'lw_couriers', 'lw_mission', 'lw_court'];
+var timers = ['lw_ministry', 'lw_couriers', 'lw_mission', 'lw_court'];
 if (Array.isArray(Q.timers)) {
     for (var t of timers) {
         if (Q.timers.indexOf(t) < 0) { Q.timers.push(t); }

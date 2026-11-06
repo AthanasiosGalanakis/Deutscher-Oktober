@@ -1,6 +1,6 @@
 title: Artists and Intellectuals
 new-page: true
-view-if: crisis = 0 and c_intellectuals_timer <= 0
+view-if: crisis = 0 and congress = 0 and c_intellectuals_timer <= 0
 on-arrival: c_intellectuals_timer = 5; month_actions += 1
 frequency: 150
 is-card: true
@@ -8,31 +8,31 @@ tags: germany
 
 = Artists and Intellectuals
 
-Revolution is fashionable in the cafés of Berlin. George Grosz draws generals and profiteers with pigs' faces; John Heartfield and his brother Wieland Herzfelde print them at the Malik-Verlag. [? if time >= 2 : Käthe Kollwitz has drawn Liebknecht on his bier. ?] [? if year >= 1920 : Erwin Piscator has opened a Proletarian Theatre in the workers' halls. ?] Professors and students, some of them veterans, come to our meetings and write to our papers.
+Revolution is fashionable in the cafés of Berlin. George Grosz draws generals and profiteers with pigs' faces, and John Heartfield and Wieland Herzfelde print them at the Malik-Verlag. [? if year >= 1920 : Erwin Piscator has opened a Proletarian Theatre in the workers' halls. ?] Some comrades think the artists will be useful. Others think they are tourists.
 
-Some comrades think the artists will be useful. Others think they are tourists.
-
-- @welcome: Open the party to them.
-- @workers_culture: Build a culture of the workers themselves.
-- @posters: Put them to work for the press.
+- @welcome: Take their money.
+- @posters: Put them to work on the posters.
 - @easy_discard
 
 @welcome
-subtitle: New members, new ideas and donations from the comfortable. Some workers are suspicious.
-on-arrival: resources += 1; worker_support += 1; unity -= 2; luxemburgist_satisfaction += 4; lean_luxemburgist += 1
+subtitle: 2 funds from the comfortable. The workers in the districts are suspicious.
+on-arrival: {!
+Q.resources += 2;
+for (var d of Q.districts) {
+    Q['district_' + d + '_loyalty'] -= 2;
+}
+!}
 
-The party's meetings fill with people in good coats. Their donations pay for the printing; their arguments go on until midnight.
-
-@workers_culture
-subtitle: Choirs, theatre and sport clubs, made by workers for workers. The Left approves.
-on-arrival: worker_support += 2; militancy += 1; unity += 2; offensive_satisfaction += 3; lean_offensive += 1
-
-Workers' choirs sing the Internationale in four voices, and amateur theatres play the Paris Commune in back rooms. It belongs to the workers, and they know it.
+A gallery owner on the Kurfürstendamm holds an auction for the party. The workers' delegates who are invited do not know where to put their caps.
 
 @posters
-subtitle: Costs 1 fund. Brilliant posters and caricatures. Worker support rises.
+subtitle: Costs 1 fund. Berlin is papered with them. Worker support rises.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
-on-arrival: resources -= 1; worker_support += 4; militancy += 2
+on-arrival: {!
+Q.resources -= 1;
+Q.worker_support += 4;
+RG.district('berlin', {militancy: 3});
+!}
 
-Heartfield's montages and Grosz's drawings appear on every hoarding in Berlin. The police tear them down in the morning; by evening there are new ones.
+Heartfield's montages appear on every hoarding in Berlin. The police tear them down in the morning, and by evening there are new ones.
