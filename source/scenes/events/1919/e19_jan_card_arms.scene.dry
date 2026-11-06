@@ -9,39 +9,32 @@ tags: crisis
 
 = The Spandau Arsenal
 
-The men in the *Vorwärts* building have rifles, a few machine guns and not much ammunition. In Spandau, workers at the arsenal say the depots could be opened. Others in the party want the weapons kept back for a better day.
+The men in the newspaper district have rifles, a few machine guns and little ammunition. Workers at the Spandau arsenal say the depots could be opened.
 
 - @seize: Seize the arsenal.
-- @share: Share out what we have among the occupiers.
-- @hide: Hide the guns for another day.
+- @share: Share out what we have among the buildings.
+- @bury: Bury the guns for another day.
 
 @seize
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's answer. Better armed fighters, and a harder blow from Noske.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The buildings will hold longer. The government will call it proof of a Bolshevik plot.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids an armed rising.
 on-arrival: {!
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.crisis_momentum += 10;
-Q.red_guards_arms += 15;
-Q.red_guards_strength += 1;
-Q.repression += 5;
-Q.offensive_satisfaction += 8;
+if (Q.lock_uprising == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
+Q.e19_arms += 2;
+Q.e19_noske += 1;
 Q.lean_offensive += 2;
+Q.crisis_line_2 = 'Noske\'s volunteers: ' + Q.e19_noske + ',000';
 !}
 
-A column of Spandau workers comes into the city on lorries, rifles stacked behind the cabs. The government calls it proof of a Bolshevik plot.
+A column of Spandau workers comes into the city on lorries, rifles stacked behind the cabs.
 
 @share
-subtitle: The Left Radicals' way: every factory arms itself. A little stronger, a little more chaotic.
-on-arrival: crisis_momentum += 4; red_guards_strength += 1; ultraleft_satisfaction += 5; lean_ultraleft += 1
+subtitle: A little stronger everywhere, and nobody keeps a list.
+on-arrival: e19_arms += 1; lean_ultraleft += 1
 
-Rifles pass from hand to hand in the courtyards. Nobody keeps a list.
+@bury
+subtitle: The occupiers will feel abandoned. The rifles will be there next time.
+on-arrival: e19_buried = 1; red_guards_arms += 10; lean_luxemburgist += 1; ultraleft_satisfaction -= 4
 
-@hide
-subtitle: The Spartacist caution. The occupiers feel abandoned; the weapons survive.
-on-arrival: crisis_momentum -= 5; red_guards_arms += 8; luxemburgist_satisfaction += 4; ultraleft_satisfaction -= 4; lean_luxemburgist += 1; lux_risk -= 3
-
-Crates of rifles disappear into allotment sheds in Neukölln and Lichtenberg. They will be needed again.
+Crates of rifles disappear into allotment sheds in Neukölln and Lichtenberg.

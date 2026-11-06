@@ -19,97 +19,51 @@ if (Q.comintern_member == 1) {
 
 = The Red Army Marches West
 
-In April, Piłsudski's Poland invaded the Ukraine and took Kiev. Now the Red Army has thrown it back. In July, Tukhachevsky's armies take Minsk and Vilna and cross into ethnic Poland. "Over the corpse of White Poland lies the road to world conflagration," his order of the day says. In a few weeks the Red Army may stand on the border of East Prussia.
+In April Piłsudski's Poland invaded the Ukraine and took Kiev. The Red Army has thrown it back, and in July Tukhachevsky's armies take Minsk and Vilna and cross into Poland proper. In a few weeks they may stand on the border of East Prussia.
 
-The German government declares its neutrality. Trains full of French munitions for Poland still roll across Germany, and ships unload them in Danzig. The dockers of Danzig have refused to touch them, and railwaymen in Saxony and the Rhineland are stopping the trains on their own. [? if e20_polish_dir = 1 : A telegram from Lenin himself has reached the Zentrale: not one train for Piłsudski. Moscow will want to know by the end of the month what we did. ?]
+The German government declares its neutrality. French munitions for Poland still cross Germany by rail. The Danzig dockers have refused to unload them, and railwaymen in Saxony and the Rhineland are stopping trains on their own account. [? if e20_polish_dir = 1 : A telegram from Lenin has reached the Zentrale: not one train for Piłsudski. ?]
 
 - @unions: Block the munitions with the unions and the USPD.
-- @committees: Build our own control committees on the railways.
 - @prepare: Prepare to rise when the Red Army reaches the border.
-- @no_bayonets: Solidarity, but no adventures: revolution cannot come on bayonets.
+- @bayonets: Stop the trains, and say the German revolution will not come on Russian bayonets.
 
 @unions
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's answer. A legal blockade, with the unions behind it.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A legal blockade, with the transport workers' union behind it.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids a common front with the social democrats.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_united_front == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.warsaw_bonus += 1;
-Q.uspd_relation += 6;
 Q.uspd_score += 1;
-Q.spd_relation += 2;
-Q.worker_support += 2;
-Q.unionist_satisfaction += 8;
-Q.lean_unionist += 2;
+Q.lean_unionist += 1;
 RG.comply(30);
-RG.ecci('radek', 3);
 !}
 
-The transport workers' union declares a ban on war material for Poland. The USPD calls meetings in every city: not one shell for the White Guards.
-
-@committees
-subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Workers' control of the railways, from below.
-choose-if: lock_councils < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
-on-arrival: {!
-if (Q.lock_councils == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.warsaw_bonus += 1;
-Q.militancy += 5;
-Q.repression += 3;
-Q.offensive_satisfaction += 4;
-Q.ultraleft_satisfaction += 4;
-Q.lean_offensive += 1;
-Q.lean_ultraleft += 1;
-RG.comply(35);
-RG.districtSync();
-RG.district('halle', {militancy: 5});
-RG.district('thuringia', {militancy: 4});
-!}
-
-Our railwaymen form control committees at the junctions of Halle, Erfurt and Cologne, and search every train bound east. Two trains of shells end up in a canal.
+The transport workers' union bans war material for Poland. The USPD holds meetings in every city.
 
 @prepare
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's dream: the Red Army and the German workers, hand in hand.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The districts in the east will be ready if the Red Army comes. So will the police.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids preparing an armed rising.
 on-arrival: {!
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_uprising == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.warsaw_bonus += 1;
 Q.border_rising = 1;
-Q.militancy += 8;
 Q.repression += 8;
-Q.red_guards_strength += 2;
-Q.offensive_satisfaction += 10;
-Q.luxemburgist_satisfaction -= 6;
 Q.lean_offensive += 2;
 RG.comply(45);
 RG.ecci('bukharin', 6);
-RG.ecci('lenin', 3);
 !}
 
-In East Prussia and Silesia, our members dig up the rifles of March. The district leaders draw up lists of bridges, railway stations and police barracks.
+In East Prussia and Silesia our members dig up the rifles of March and draw up lists of bridges and police barracks.
 
-@no_bayonets
-subtitle: Levi's line. Independence from Moscow's war aims.
+@bayonets
+subtitle: Radek will call it pacifism.
 on-arrival: {!
 Q.independence += 5;
-Q.worker_support += 1;
-Q.offensive_satisfaction -= 6;
-Q.luxemburgist_satisfaction += 6;
 Q.lean_luxemburgist += 2;
 RG.comply(15);
-RG.ecci('lenin', -8);
 RG.ecci('radek', -6);
-RG.ecci('trotsky', 2);
 !}
 
-We call for peace with Soviet Russia and an end to the munitions trains. We also say, plainly, that the German revolution must be made by German workers, and cannot be carried in on the Red Army's bayonets. Radek calls it pacifism.
+Our railwaymen stop two trains at Halle. *Die Rote Fahne* calls for peace with Soviet Russia and adds that the German workers will make their own revolution.

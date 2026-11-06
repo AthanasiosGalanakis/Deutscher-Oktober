@@ -1,5 +1,5 @@
 title: The Heidelberg Congress
-subtitle: The party congress meets in secret in Baden
+subtitle: The party congress meets in secret in Baden.
 new-page: true
 tags: event
 view-if: year = 1919 and month = 10 and crisis = 0 and heidelberg_outcome = 0 and congress = 0
@@ -12,7 +12,6 @@ Q.heid_motion = 0;
 if (Q.heid_already) {
     Q.heid_support = 90;
 } else {
-    // the delegates are elected: the congress opens, and the Zentrale counts the hall
     RG.congressStart({id: 'heidelberg', name: 'The Heidelberg Congress', stake: 'The Zentrale\'s theses, and whether the Left Radicals stay in the party',
         sessions: 3, positions: ['luxemburgist', 'ultraleft'], backing: 'luxemburgist', kind: 'motion',
         mandates: ['members', 'zentrale', 'districts'][Q.heid_mandates] || 'members', delegates: 50, ownClose: true});
@@ -21,15 +20,12 @@ if (Q.heid_already) {
     var h = Q.history_luxemburgist + Q.history_unionist + 0.5 * Q.history_offensive - 1.5 * Q.history_ultraleft;
     var m = clamp(h / 300, -0.06, 0.06) + clamp((Q.unity - 50) / 1000, -0.03, 0.03);
     if (Q.luxemburg_alive) { m += 0.08; }
-    if (Q.e19_conf_outcome == 1) { m += 0.04; }
     if (Q.natbol_line == 2) { m -= 0.03; }
     if (Q.heid_natbol == 1) { RG.congress.convert('hamburg', 0.2); RG.congress.convert('bremen', 0.25); }
     if (Q.heid_left == 1) { RG.congress.convert('berlin', 0.15); }
     if (m > 0) { RG.congress.sway(m); }
     if (m < 0) { RG.congress.swayTo('ultraleft', -m); }
-    if (Q.e19_conf_outcome == 2) { RG.congress.swayTo('ultraleft', 0.04); }
     RG.congress.tally();
-    Q.heid_open_votes = Q.congress_votes_for;
     Q.heid_support = Q.congress_votes_for;
 }
 Q.heid_for = Math.round(50 * Q.heid_support / 100);
@@ -39,36 +35,30 @@ RG.news('Communists meet in secret congress: the boycotters face expulsion', 3);
 
 = The Heidelberg Congress
 
-The second congress of the party meets illegally near Heidelberg from 20 October, moving between rooms, inns and a castle in the hills so that the police cannot find it. The Zentrale's theses are the only real business. [+ party_chair +] will open the debate: the party must stand in elections, work in the unions, and be one party with one discipline. Whoever will not accept this must go.
+The second congress of the party opens near Heidelberg on 20 October, moving between inns and back rooms so that the police cannot find it. The theses are the only real business.
 
-[? if heid_already = 0 : The Left Radicals have come to fight. Laufenberg and Wolffheim of Hamburg, Otto Rühle of Dresden, Karl Schröder of Berlin and the Bremen delegates have a counter-motion of their own: the unions are the bosses' police, parliament is a swamp, and a party with a Zentrale is a party of generals. Before the first session the Zentrale's people count the hall. About **[+ heid_for +]** of the fifty delegates look ready to vote for the theses as they stand. ?][? if heid_already = 1 : The Left Radicals are not in the hall. Their districts broke with the Zentrale months ago, and most of their members went with them. The congress has only to say what that break means. ?]
+[? if heid_already = 0 : The Left Radicals have come to fight. Laufenberg and Wolffheim of Hamburg, Otto Rühle of Dresden and the Bremen delegates have a motion of their own: the unions are the bosses' police, parliament is a swamp, and a party with a Zentrale is a party of generals. Before the first session the Zentrale's people count the hall: about **[+ heid_for +]** of the fifty delegates look ready to vote for the theses. ?][? if heid_already = 1 : The Left Radicals are not in the hall. Their districts broke with the Zentrale months ago. The congress has only to say what that break means. ?] [? if luxemburg_alive = 1 and heid_already = 0 : Many who doubt the theses will not vote against Luxemburg herself. ?]
 
-[? if heid_mandates = 1 and heid_already = 0 : The mandates were drawn up by the Zentrale, and its own members sit with votes. The Left Radicals will say the congress is packed. ?][? if heid_mandates = 2 and heid_already = 0 : The small districts carry as much weight as the large ones, and the Left Radicals say so loudly. ?][? if heid_mandates = 0 and heid_already = 0 : The delegates were freely elected, one for so many members. Nobody can deny that the congress speaks for the party, whatever it says. ?] [? if e19_conf_outcome = 1 : The summer conference already voted that the boycott was a mistake. ?][? if e19_conf_outcome = 2 : The summer conference upheld the boycott, and the Left Radicals mean to do it again. ?] [? if heid_radek >= 1 : A letter from Radek in Moabit has been smuggled in, and is waiting to be read. ?] [? if heid_left = 1 : Ruth Fischer's Berlin supporters are with the Zentrale, for now. ?][? if heid_left = 2 : Ruth Fischer, kept out in the cold, is waiting to see who wins. ?][? if heid_left = 3 : Ruth Fischer is working the corridors for a compromise. ?] [? if luxemburg_alive = 1 and heid_already = 0 : Many delegates who doubt the theses will not vote against Luxemburg herself. ?]
-
-What does the Zentrale put before the congress?
-
-- @expel: The theses, the last thesis included.
-- @soft: The theses, without the expulsion clause.
-- @action: Shelve the theses, and unite the party around action.
-- @withdraw: Withdraw the theses: let each district choose its tactics.
+- @expel: Put the theses, the last one included.
+- @soft: Put the theses without the expulsion clause.
+- @withdraw: Withdraw the theses, and let each district choose its tactics.
 - @confirm: Adopt the theses, and declare the break final.
 
 @expel
 view-if: heid_already = 0
-subtitle: The Spartacist line, Levi's line. A clean party, at a heavy price. A defining decision, and a hard vote to win.
+subtitle: A clean party at a heavy price, and the harder vote to win.
 on-arrival: {!
 Q.heid_motion = 1;
 Q.lean_luxemburgist += 3;
 Q.lean_ultraleft -= 2;
 RG.congress.bitter(6);
-// the expulsion clause frightens some of our own waverers
 RG.congress.lose(0.04);
 !}
 go-to: mood
 
 @soft
 view-if: heid_already = 0
-subtitle: The Right's answer, and Radek's advice: the principles, but no expulsions. Easier to carry, and it settles nothing.
+subtitle: Easier to carry. It settles nothing.
 on-arrival: {!
 Q.heid_motion = 2;
 Q.lean_unionist += 2;
@@ -78,19 +68,8 @@ RG.congress.sway(0.06);
 !}
 go-to: mood
 
-@action
-view-if: heid_already = 0
-subtitle: The Left's answer: the party should argue less and fight more. Fischer's people will carry the motion.
-on-arrival: {!
-Q.heid_motion = 3;
-Q.lean_offensive += 2;
-RG.congress.back('offensive');
-RG.congress.bitter(1);
-!}
-go-to: mood
-
 @withdraw
-subtitle: The Left Radicals' demand. No vote and no fight: the party stays together, on their terms.
+subtitle: No vote and no split. The party stays together on the Left Radicals' terms, and Lenin will be appalled.
 view-if: ultraleft_gone = 0 and heid_already = 0
 on-arrival: {!
 Q.heid_motion = 4;
@@ -105,13 +84,12 @@ Q.congress_heidelberg = 3;
 Q.congress_name = 0;
 Q.congress_stake = 0;
 RG.ecci('lenin', -6);
-RG.ecci('radek', -4);
 !}
 go-to: e19_heid_vote.result
 
 @confirm
 view-if: heid_already = 1
-subtitle: The Spartacist line. The break has happened; the congress only names it.
+subtitle: The break has happened. The congress only names it.
 on-arrival: heidelberg_outcome = 1; election_boycott = 0; lean_luxemburgist += 2
 go-to: e19_heid_vote.result
 
@@ -119,6 +97,6 @@ go-to: e19_heid_vote.result
 
 = The First Session
 
-[+ party_chair +] reads the theses. [? if heid_motion = 1 : The last of them is read slowly, so that nobody can say later that they did not hear it: whoever rejects these principles stands outside the party. Laufenberg is on his feet before the reading is over. ?][? if heid_motion = 2 : The last thesis, the one about expulsions, has been struck out. The Left Radicals are suspicious of the gift, and some of the Zentrale's own people are angry at it. ?][? if heid_motion = 3 : Then, to the hall's surprise, the Zentrale proposes to shelve them: the party has a programme of action to agree, and the theory can wait for a calmer year. ?]
+[+ party_chair +] reads the theses. [? if heid_motion = 1 : The last of them is read slowly: whoever rejects these principles stands outside the party. Laufenberg is on his feet before the reading is over. ?][? if heid_motion = 2 : The last thesis, the one about expulsions, has been struck out. The Left Radicals are suspicious of the gift. ?]
 
-The Left Radicals table their counter-motion: no elections, no unions, the districts free to fight in their own way. At the end of the first evening the count stands at **[+ congress_votes_for +]%** for our motion[? if congress_ahead = 0 : , and the [+ congress_leader_name +] are ahead?].
+At the end of the first evening the count stands at **[+ congress_votes_for +]%** for our motion[? if congress_ahead = 0 : , and the [+ congress_leader_name +] are ahead?].

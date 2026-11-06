@@ -13,69 +13,45 @@ tags: congress
 
 = The Hamburg Mandates
 
-The fight over the theses starts as a fight over paper. The mandate commission, chaired by Wilhelm Pieck, has the credentials of the Hamburg and Bremen delegations on the table. Hamburg elected its delegates at a mass meeting nobody from the Zentrale was allowed to address; Bremen sent men who have not paid dues to the Zentrale since the spring. [? if heid_mandates = 1 : The Left Radicals already say that the mandates were drawn up to beat them. ?][? if heid_mandates = 0 : The mandates were freely elected, and the Left Radicals want the commission to say so. ?]
+The fight over the theses begins as a fight over paper. Wilhelm Pieck's mandate commission has the credentials of Hamburg and Bremen on the table. Hamburg elected its delegates at a mass meeting nobody from the Zentrale was allowed to address. Bremen has paid no dues to the Zentrale since the spring.
 
 Laufenberg tells the commission that if Hamburg's delegates are struck off, Hamburg will draw its own conclusions.
 
 - @annul: Strike off the irregular mandates.
 - @consult: Seat them with a voice, but no vote.
 - @seat: Seat them in full, and beat them in the debate.
-- @vote: Let the whole congress vote on the mandates.
 
 @annul
-subtitle: The Spartacist commission does its duty. Many of their votes vanish; the split will be uglier.
+subtitle: Many of their votes vanish. The split, if it comes, will be uglier.
 on-arrival: {!
 var n = RG.congress.annul('hamburg', 'ultraleft', 0.6) + RG.congress.annul('bremen', 'ultraleft', 0.5);
 Q.congress_last_moved = n;
 RG.congress.bitter(6);
 Q.unity -= 5;
-Q.ultraleft_satisfaction -= 10;
 Q.heid_split_share = Math.min(0.85, Q.heid_split_share + 0.05);
-Q.lean_luxemburgist += 1;
 RG.district('hamburg', {loyalty: -10});
 RG.district('bremen', {loyalty: -8});
 !}
 
-The commission finds that the Hamburg and Bremen meetings were improperly called. [? if congress_last_moved > 0 : [+ congress_last_moved +] Left Radical delegates lose their votes and watch from the back of the room. ?][? if congress_last_moved = 0 : It turns out that few of the delegates it can strike off were Left Radicals anyway. ?] Our side now has [+ congress_votes_for +]% of the hall. In Hamburg, the story will be told for years.
+The commission finds that the Hamburg and Bremen meetings were improperly called. [? if congress_last_moved > 0 : [+ congress_last_moved +] Left Radical delegates lose their votes and watch from the back of the room. ?] Our side has [+ congress_votes_for +]% of the hall.
 
 @consult
-subtitle: A lawyer's answer. Fewer of their votes are lost, and fewer tempers.
+subtitle: A lawyer's answer. Fewer votes lost, and fewer tempers.
 on-arrival: {!
 var n = RG.congress.annul('hamburg', 'ultraleft', 0.3) + RG.congress.annul('bremen', 'ultraleft', 0.25);
 Q.congress_last_moved = n;
 RG.congress.bitter(3);
 Q.unity -= 2;
-Q.ultraleft_satisfaction -= 4;
-Q.lean_unionist += 1;
 !}
 
-Hamburg and Bremen may speak as long as they like. [? if congress_last_moved > 0 : [+ congress_last_moved +] of their delegates may not vote. ?] Our side now has [+ congress_votes_for +]% of the hall.
+Hamburg and Bremen may speak as long as they like. [? if congress_last_moved > 0 : [+ congress_last_moved +] of their delegates may not vote. ?] Our side has [+ congress_votes_for +]% of the hall.
 
 @seat
-subtitle: Party democracy. It costs votes now, and it may win the argument later.
+subtitle: Party democracy. Fewer will follow them out if they walk.
 on-arrival: {!
 Q.unity += 4;
-Q.ultraleft_satisfaction += 6;
 Q.heid_split_share = Math.max(0.55, Q.heid_split_share - 0.05);
 RG.congress.sway(0.03);
-Q.lean_luxemburgist += 1;
 !}
 
-Every delegate is seated. The Left Radicals, who expected to be robbed, are disarmed for an evening. [? if congress_last_moved > 0 : [+ congress_last_moved +] waverers are impressed enough to come over to us. ?] Our side has [+ congress_votes_for +]% of the hall.
-
-@vote
-subtitle: Whoever wins the test vote very likely wins the congress. A gamble.
-on-arrival: {!
-var n = 0;
-if (Q.congress_ahead) {
-    n = RG.congress.annul('hamburg', 'ultraleft', 0.45);
-    RG.congress.sway(0.02);
-    RG.congress.bitter(3);
-} else {
-    RG.congress.lose(0.04);
-}
-RG.congress.tally();
-Q.congress_last_moved = n;
-!}
-
-[? if congress_last_moved > 0 : The test vote goes our way, and [+ congress_last_moved +] Hamburg mandates are struck off by the congress itself. Nobody can call it the commission's fix. ?][? if congress_last_moved = 0 : The congress votes to seat Hamburg in full, and the waverers notice who lost. ?] Our side has [+ congress_votes_for +]% of the hall.
+Every delegate is seated. The Left Radicals, who expected to be robbed, are disarmed for an evening. Our side has [+ congress_votes_for +]% of the hall.

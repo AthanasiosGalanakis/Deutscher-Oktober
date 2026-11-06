@@ -8,27 +8,27 @@ priority: 2
 
 = The Expelled
 
-[? if heid_already = 0 : The Zentrale's emissaries have gone to Hamburg, Bremen and Berlin with the congress's decision. In Hamburg, the district meeting votes almost to a man to stay with Laufenberg and Wolffheim. In Berlin, the old district committee takes most of the members and the offices with it. In Bremen the Left Radicals hold the party paper. In Dresden Rühle declares that the time of parties is over. ?][? if heid_already = 1 : The Left Radicals who broke away in the summer have been holding conferences of their own. Now that Heidelberg has closed the door, the last of their sympathisers in our districts are choosing sides, and Laufenberg, Wolffheim and Rühle are talking about a new party. ?]
+[? if heid_already = 0 : The Zentrale's emissaries have taken the congress's decision to Hamburg, Bremen and Berlin. Hamburg votes almost to a man to stay with Laufenberg and Wolffheim. In Berlin the old district committee takes the offices with it. In Dresden Rühle declares that the time of parties is over. ?][? if heid_already = 1 : Now that Heidelberg has closed the door, the last sympathisers of the Left Radicals in our districts are choosing sides. ?]
 
-The expelled are not yet a party of their own. They call themselves the opposition, and they say that the real Communist Party is the one the Zentrale threw out. Moscow, which did not want this split, is asking questions.
+The expelled call themselves the opposition, and say that the real Communist Party is the one the Zentrale threw out. How many members go with them depends on how we fight for the rest.
 
-- @rebuild: Rebuild the lost districts from the Zentrale.
+- @rebuild: Send loyal secretaries to rebuild the lost districts.
 - @door: Keep the door open for the workers who left.
 - @fight: Fight them for every factory.
 
 @rebuild
-subtitle: The Spartacist way: new committees, loyal secretaries.
-on-arrival: heid_split_share = 0.72; lean_luxemburgist += 1
+subtitle: New committees from Berlin. Most of the members will go anyway.
+on-arrival: {! Q.heid_split_share = Math.min(Q.heid_split_share, 0.72); Q.lean_luxemburgist += 1; !}
 go-to: exodus
 
 @door
-subtitle: The Right's way: no insults, and a way back for the rank and file.
-on-arrival: heid_split_share = 0.66; kapd_relation += 20; lean_unionist += 1
+subtitle: No insults, and a way back. More will stay, and the opposition will stay friendly.
+on-arrival: {! Q.heid_split_share = Math.min(Q.heid_split_share, 0.66); Q.kapd_relation += 20; Q.lean_unionist += 1; !}
 go-to: exodus
 
 @fight
-subtitle: The Left's way: hard, loud and in every workplace. Some will stay.
-on-arrival: heid_split_share = 0.64; kapd_relation -= 10; offensive_satisfaction += 4; lean_offensive += 2
+subtitle: Hard and loud in every workplace. The most members kept, and an enemy for years.
+on-arrival: {! Q.heid_split_share = Math.min(Q.heid_split_share, 0.6); Q.kapd_relation -= 15; Q.lean_offensive += 2; !}
 go-to: exodus
 
 @exodus
@@ -36,9 +36,6 @@ title: After the Split
 new-page: true
 on-arrival: {!
 var share = Q.heid_split_share;
-if (Q.heid_fight) {
-    share -= 0.06;
-}
 var lost = 0;
 var names = [];
 var heirs = {
@@ -67,14 +64,11 @@ Q.heid_lost_names = names.length > 1 ? names.slice(0, -1).join(", ") + " and " +
 Q.ultraleft_gone = 1;
 Q.ultraleft_satisfaction = 0;
 Q.lean_ultraleft = 0;
-if (Q.junior_faction == 'ultraleft') {
-    Q.junior_faction = 0;
-}
+if (Q.junior_faction == 'ultraleft') { Q.junior_faction = 0; }
 Q.kapd_split = 1;
 Q.e19_split_done = 1;
 Q.worker_support -= 3;
 Q.unity += 15;
-Q.militancy -= 4;
 RG.districtSync();
 for (var d2 of ['hamburg', 'bremen', 'berlin']) { RG.district(d2, {militancy: -5}); }
 RG.news('Expelled Left Radicals take ' + Q.heid_lost_names + ' with them', 3);
@@ -83,8 +77,6 @@ RG.ledger('The split after Heidelberg cost the party about ' + Q.heid_members_lo
 
 = After the Split
 
-By the end of the year the party has lost about **[+ heid_members_lost +] thousand** members. [? if heid_already = 0 : Most of the members in [+ heid_lost_names +] have gone over to the opposition. ?][? if heid_already = 1 : The districts were lost months ago; now the last doubters go. ?] Those who stay accept the theses.
+By the end of the year the party has lost about **[+ heid_members_lost +] thousand** members. [? if heid_already = 0 : Most of the members in [+ heid_lost_names +] have gone over to the opposition. ?] Those who stay accept the theses.
 
-The opposition will hold its own congress in the spring and call itself the Communist Workers' Party. For now it is a rival for the same workers, in the same factories, with the same red flags.
-
-The party that remains is smaller, poorer and of one mind. [+ party_chair +] calls it the beginning of a real Communist party. In Moscow, Lenin is less sure.
+The opposition will hold its own congress in the spring and call itself the Communist Workers' Party. For now it is a rival for the same workers, in the same factories, under the same red flags.

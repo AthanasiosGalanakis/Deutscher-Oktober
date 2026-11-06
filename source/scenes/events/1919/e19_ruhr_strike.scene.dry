@@ -1,5 +1,5 @@
 title: Socialisation in the Ruhr
-subtitle: The miners want the pits for themselves.
+subtitle: The miners strike for the pits.
 new-page: true
 tags: event
 view-if: year = 1919 and month = 2 and crisis = 0
@@ -12,92 +12,49 @@ RG.news('General strike in the Ruhr for the socialisation of the mines', 3);
 
 = Socialisation in the Ruhr
 
-In January a conference of the Ruhr workers' councils in Essen, with Social Democrats, Independents and Communists side by side, declared the coal mines socialised and elected a Commission of Nine to run them. The government in Berlin promised to consider it, then sent General von Watter and the Lichtschlag Freikorps to disarm the councils.
+In January a conference of the Ruhr's workers' councils at Essen, Social Democrats, Independents and Communists together, declared the mines socialised and elected a Commission of Nine to run them. Berlin promised to consider it, then sent General von Watter and the Lichtschlag Freikorps to disarm the councils.
 
-In mid-February the councils call a general strike. In Hamborn, Mülheim and the northern pits our people and the syndicalists lead it; in Bochum and Essen the Social Democrats are against. Watter's troops are already shooting.
+Now the councils have called a general strike. In Hamborn and the northern pits our people and the syndicalists lead it. Watter's troops are already shooting.
 
-- @arm: Spread the strike, and arm the pits.
-- @councils: The councils take the mines and run them themselves.
-- @nine: Stay with the Commission of Nine and the united councils.
-- @organise: Use the strike to build the party in the pits.
+- @arm: Arm the pits and fight.
+- @nine: Stand by the Commission of Nine and the united councils.
+- @cells: Use the strike to build the party pit by pit.
 
 @arm
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's answer. The Freikorps will make the Ruhr pay.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Ruhr will have guns and martyrs. The Freikorps will make it pay.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed action.
 on-arrival: {!
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_uprising == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.ruhr_line = 1;
-Q.militancy += 10;
-Q.repression += 5;
-Q.red_guards_strength += 1;
-Q.red_guards_arms += 5;
-Q.district_ruhr_members += 0.6;
-Q.district_ruhr_loyalty += 5;
-Q.offensive_satisfaction += 8;
 Q.lean_offensive += 2;
-RG.districtSync();
-RG.district('ruhr', {guards: 1, repression: 10});
+RG.district('ruhr', {guards: 1, repression: 10, loyalty: 5});
 RG.endStrike('ruhr', 'crushed');
 !}
 
-In Bottrop and Hamborn armed miners fight the volunteers street by street. They lose, but the pits now know the party's name.
-
-@councils
-subtitle: The Left Radicals' answer, and the syndicalists'. Inspiring, and isolated.
-choose-if: lock_councils < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids council action.
-on-arrival: {!
-Q.ruhr_line = 2;
-Q.militancy += 6;
-Q.repression += 5;
-Q.district_ruhr_members += 0.5;
-Q.district_ruhr_loyalty += 6;
-Q.ultraleft_satisfaction += 8;
-Q.lean_ultraleft += 2;
-Q.unionist_satisfaction -= 4;
-RG.districtSync();
-RG.district('ruhr', {repression: 6});
-RG.endStrike('ruhr', 'crushed');
-!}
-
-Pit councils lock out the managers in a dozen mines and run the winding gear themselves. Within two weeks the troops have retaken them all, but the idea has spread.
+In Bottrop and Hamborn armed miners fight the volunteers street by street, and lose.
 
 @nine
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's answer: unity with the Social Democratic miners first.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] No victory, no massacre, and the Social Democratic miners see us keep our word.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids common work with the social democrats.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (Q.lock_united_front == 1) { Q.unity -= 10; Q[Q.leading_faction + '_satisfaction'] -= 10; }
 Q.ruhr_line = 3;
-Q.worker_support += 4;
 Q.spd_relation += 4;
 Q.uspd_relation += 4;
-Q.district_ruhr_members += 0.3;
-Q.unionist_satisfaction += 6;
-Q.ultraleft_satisfaction -= 6;
 Q.lean_unionist += 2;
 RG.endStrike('ruhr');
 !}
 
-The Commission of Nine holds together a little longer. The strike ends without victory, but without a massacre, and the miners of every party have seen us keep our word.
-
-@organise
-subtitle: The Spartacist way: fewer heroics, more members.
+@cells
+subtitle: Slow work. The cells will still be there the next time the Ruhr rises.
 on-arrival: {!
 Q.ruhr_line = 4;
-Q.worker_support += 2;
-Q.district_ruhr_members += 0.8;
-Q.district_ruhr_loyalty += 8;
-Q.luxemburgist_satisfaction += 4;
+Q.e19_ruhr_cells = 1;
 Q.lean_luxemburgist += 1;
-RG.district('ruhr', {members: 0.05});
+RG.district('ruhr', {members: 0.1, loyalty: 6});
+RG.endStrike('ruhr');
 !}
 
-Our organisers go from pit to pit with membership books. When the strike collapses, the new local groups stay.
+Our organisers go from pit to pit with membership books. When the strike collapses, the new groups stay.
