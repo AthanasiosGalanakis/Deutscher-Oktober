@@ -6,7 +6,7 @@ new-page: true
 
 = Ruth Fischer
 
-Born Elfriede Eisler in Leipzig, a founder of the Austrian party, now the fiery leader of the Berlin organisation. She speaks for the impatient young workers of the capital, and she has nothing but scorn for what she calls the opportunism of the Zentrale. [? if c_lead = 2 : Now the Zentrale is hers. ?]
+Born Elfriede Eisler in Leipzig, a founder of the Austrian party, now the fiery leader of the Berlin organisation. She speaks for the impatient young workers of the capital, and she makes no secret of her contempt for the Zentrale. [? if c_lead = 2 : Now the Zentrale is hers. ?]
 
 - @berlin
 - @opportunism
@@ -14,26 +14,24 @@ Born Elfriede Eisler in Leipzig, a founder of the Austrian party, now the fiery 
 
 @berlin
 title: Rouse the Berlin District
-subtitle: Berlin grows and grows angrier. The Left's hold on the capital tightens.
+subtitle: Berlin grows angrier. If it is angry enough, it walks out.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
 choose-if: advisor_action_timer <= 0
 on-arrival: {!
 Q.advisor_action_timer = 4;
 Q.last_advisor_action = 1;
-Q.district_berlin_members *= 1.05;
-if (Q.district_berlin_faction == 'offensive') {
-    Q.district_berlin_loyalty += (Q.leading_faction == 'offensive') ? 10 : -4;
+RG.district('berlin', {members: 0.04, militancy: 8});
+if (Q.district_berlin_militancy >= 60) {
+    RG.startStrike('berlin');
 }
-Q.militancy += 5;
-Q.offensive_satisfaction += 6;
 Q.lean_offensive += 2;
 !}
 
-Fischer speaks at the AEG gates, at the Neukölln labour exchange, at every district meeting. Berlin's young communists would follow her anywhere.
+Fischer speaks at the AEG gates, at the Neukölln labour exchange, at every district meeting she can reach.[? if district_berlin_strike = 1 : By the end of the week the Berlin works are out. ?]
 
 @opportunism
 title: [? if c_lead = 2 : Purge the Opportunists ?][? if c_lead != 2 : Attack the Opportunists ?]
-subtitle: [? if c_lead = 2 : The Right's officials are removed. The Left is delighted; the party is shaken. ?][? if c_lead != 2 : Fischer attacks the Zentrale's line openly. The Left rallies to her. ?]
+subtitle: [? if c_lead = 2 : The Right's officials are removed, and their districts resent it. ?][? if c_lead != 2 : Fischer attacks the Zentrale openly. The Left rallies to her. ?]
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
 choose-if: advisor_action_timer <= 0
 on-arrival: {!
@@ -41,19 +39,16 @@ Q.advisor_action_timer = 5;
 Q.last_advisor_action = 1;
 if (Q.leading_faction == 'offensive') {
     Q.unionist_satisfaction -= 10;
-    Q.offensive_satisfaction += 6;
-    Q.unity -= 4;
     for (var d of Q.districts) {
         if (Q['district_' + d + '_faction'] == 'unionist') {
-            Q['district_' + d + '_loyalty'] -= 5;
+            Q['district_' + d + '_loyalty'] -= 6;
         }
     }
 } else {
     Q.offensive_satisfaction += 10;
     Q[Q.leading_faction + '_satisfaction'] -= 8;
-    Q.unity -= 4;
 }
-Q.lean_offensive += 2;
+Q.unity -= 4;
 !}
 
-The trade union bureaucrats in our own ranks, Fischer says, are the SPD's fifth column inside the party. The hall rises to its feet. Half of it, anyway.
+The trade union officials in our own ranks, Fischer says, are the SPD's fifth column inside the party. Half the hall rises to its feet.

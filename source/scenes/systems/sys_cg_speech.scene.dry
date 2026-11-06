@@ -16,16 +16,14 @@ tags: congress
 
 = From the Platform
 
-The chair calls [+ congress_speaker_name +]. The hall is full and the gallery fuller; the delegates who were drinking coffee in the corridor come back in. [? if congress_speaker_star = 1 : When this speaker has the floor, even the opposition takes notes. ?]
-
-The motion of the [+ congress_backing_name +] needs to be argued, and the hall is waiting to hear how.
+The chair calls [+ congress_speaker_name +] to speak for the motion of the [+ congress_backing_name +]. The delegates who were drinking coffee in the corridor come back in. [? if congress_speaker_star = 1 : When this speaker has the floor, even the opposition takes notes. ?]
 
 - @principle: Speak to principle.
 - @attack: Go after the opposition's record.
 - @unity: Appeal for the unity of the party.
 
 @principle
-subtitle: A serious speech wins some delegates, and offends nobody.
+subtitle: Wins some delegates and offends nobody. A great speaker wins more.
 on-arrival: {!
 RG.congress.sway((0.04 + Math.random() * 0.04) * Q.congress_speaker_power);
 Q['lean_' + Q.congress_backing] += 1;
@@ -34,7 +32,7 @@ Q['lean_' + Q.congress_backing] += 1;
 [+ congress_speaker_name +] speaks for an hour and ten minutes about what the party is for. [? if congress_last_moved > 0 : By the end, [+ congress_last_moved +] delegates who came against us are applauding. ?][? if congress_last_moved = 0 : It is admired, and it changes no votes. ?]
 
 @attack
-subtitle: Wins more delegates, if it works. The losers will not forget it.
+subtitle: Wins more delegates, unless the opposition turns it round. The losers will not forget it.
 on-arrival: {!
 RG.congress.sway(0.07 * Q.congress_speaker_power);
 RG.congress.bitter(3);
@@ -56,4 +54,4 @@ RG.congress.bitter(-2);
 Q.unity += 2;
 !}
 
-[+ congress_speaker_name +] reminds the delegates who is waiting outside: the police, the Freikorps and the employers. Whatever we decide, we decide it together. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates are moved, and say so. ?]
+[+ congress_speaker_name +] reminds the delegates who is waiting outside: the police, the Freikorps and the employers. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates are moved, and say so. ?]

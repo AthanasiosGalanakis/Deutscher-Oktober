@@ -6,35 +6,17 @@ new-page: true
 
 = Clara Zetkin
 
-The grand old woman of the socialist women's movement, friend of Luxemburg and of Lenin alike. She founded International Women's Day, edits the party's women's paper, and is one of the few comrades every current still listens to.
+The grand old woman of the socialist women's movement, friend of Luxemburg and of Lenin alike. She founded International Women's Day, edits the party's women's paper, and every current in the party still listens to her.
 
 [? if kpd_seats > 0 : She sits in the Reichstag for the party. ?]
 
-- @women
 - @mediate
+- @lenin
 - @root: Return to main
-
-@women
-title: Rally Working Women
-subtitle: Women in the factories and the queues come to the party. The Spartacists are pleased.
-unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
-choose-if: advisor_action_timer <= 0
-on-arrival: {!
-Q.advisor_action_timer = 4;
-Q.last_advisor_action = 1;
-for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 1.03;
-}
-Q.worker_support += 4;
-Q.luxemburgist_satisfaction += 3;
-Q.lean_luxemburgist += 1;
-!}
-
-Zetkin tours the textile towns of Saxony and the munitions plants now laid off. Women who were told politics was not for them fill the meeting halls.
 
 @mediate
 title: Mediate Between the Currents
-subtitle: The most aggrieved current is heard out. The party draws together.
+subtitle: The angriest current is heard out.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
 choose-if: advisor_action_timer <= 0
 on-arrival: {!
@@ -49,7 +31,21 @@ for (var f of Q.factions) {
 if (low) {
     Q[low + '_satisfaction'] += 10;
 }
-Q.unity += 5;
+Q.unity += 3;
 !}
 
-Zetkin spends long evenings with the angriest comrades. She scolds them like a mother and defends them like one, and they leave calmer than they came.
+Zetkin spends long evenings with the angriest comrades. She scolds them and then defends them, and they leave calmer than they came.
+
+@lenin
+title: Write to Lenin
+subtitle: She has known him for twenty years. He will read it himself.
+unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?][? if comintern_member = 0 : We are not in the International. ?]
+choose-if: advisor_action_timer <= 0 and comintern_member = 1
+on-arrival: {!
+Q.advisor_action_timer = 6;
+Q.last_advisor_action = 1;
+RG.ecci('lenin', 10);
+Q.independence += 2;
+!}
+
+Zetkin writes to Lenin in longhand, eleven pages, about what the German party needs and what it does not need from Moscow. An answer comes within the month, short and friendly.

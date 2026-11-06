@@ -1,5 +1,5 @@
 title: The Mandate Commission
-subtitle: Who has the right to vote here?
+subtitle: Who has the right to vote, and how many votes.
 view-if: congress = 1 and congress_closing = 0 and congress_used_mandates = 0
 on-arrival: {!
 Q.month_actions += 1;
@@ -23,7 +23,7 @@ The [+ congress_target_name +] delegation, the strongest against us, was elected
 - @challenge: Challenge the mandates from [+ congress_target_name +].
 
 @members
-subtitle: The big districts gain weight. Fair, and everyone knows it.
+subtitle: The big districts get more votes.
 view-if: congress_mandates_code != 1
 on-arrival: {!
 RG.congress.setMandates('members');
@@ -33,7 +33,7 @@ RG.congress.bitter(1);
 The commission recounts: one delegate for so many paid-up members, everywhere. Our side now has [+ congress_votes_for +]% of the hall.
 
 @districts
-subtitle: The small districts gain weight. The big ones protest.
+subtitle: The small districts get more votes. The big ones protest.
 view-if: congress_mandates_code != 2
 on-arrival: {!
 RG.congress.setMandates('districts');

@@ -6,11 +6,11 @@ max-visits: 1
 on-arrival: {!
 Q.c_init_done = 1;
 // card cooldowns: post_event decrements every name in Q.timers each month
-var timers = ['dues', 'recruitment', 'rote_fahne', 'organisers', 'factory_councils', 'unions', 'uspd', 'moscow',
-    'c_youth', 'c_women', 'c_m_apparat', 'c_opposition', 'c_school',
-    'c_strike', 'c_unemployed', 'c_red_aid', 'c_militias', 'c_hundreds', 'c_arms', 'c_prices',
-    'c_spd', 'c_reichstag', 'c_landtag', 'c_courts', 'c_peasants', 'c_intellectuals', 'c_police', 'c_far_right',
-    'c_subsidy', 'c_congress', 'c_famine', 'c_italy', 'c_hungary', 'c_poland', 'c_reichswehr', 'c_french', 'c_returnees'];
+var timers = ['dues', 'recruitment', 'rote_fahne', 'organisers', 'factory_councils', 'unions', 'uspd',
+    'c_women', 'c_m_apparat', 'c_opposition', 'c_school',
+    'c_militias', 'c_prices',
+    'c_spd', 'c_reichstag', 'c_landtag', 'c_peasants', 'c_intellectuals', 'c_far_right',
+    'c_subsidy', 'c_congress', 'c_famine', 'c_italy', 'c_hungary', 'c_poland', 'c_reichswehr', 'c_french'];
 for (var t of timers) {
     if (Q.timers.indexOf(t) < 0) {
         Q.timers.push(t);
@@ -24,20 +24,26 @@ Q.c_school_timer = Math.max(Q.c_school_timer, 2);
 Q.c_opposition_timer = Math.max(Q.c_opposition_timer, 3);
 // the cards' own variables; only set what is not set yet
 var start = {
-    c_landtag_seats: 0,       // KPD deputies in the state parliaments (cards only)
-    c_m_apparat_built: 0,     // times the M-Apparat was expanded
-    c_hundreds_built: 0,      // times the proletarian hundreds were expanded
+    c_m_apparat_built: 0,     // times the M-Apparat was expanded since it was last found or wound up
+    c_m_found: 0,
     c_famine_relief: 0,       // 1 once the party joined the famine relief
     c_reichswehr_exposed: 0,  // 1 if the party exposed the Reichswehr's deal with the Red Army
-    c_strike_trade: 0, c_strike_district: 0, c_strike_district_name: 0,
-    c_police_district: 0, c_police_district_name: 0,
-    c_landtag_state_name: 0, c_landtag_state: 0,
-    c_opp_faction: 0, c_opp_faction_name: 0, c_arms_ok: 0
+    c_hungary_refugees: 0,
+    c_school_class: 0, c_school_due: 0, c_school_fname: 0,
+    c_landtag_left: 4, c_landtag_state: 0, c_landtag_state_name: 0, c_landtag_bavaria: 0,
+    c_landtag_won: 0, c_landtag_majority: 0,
+    c_opp_faction: 0, c_opp_faction_name: 0, c_opp_is_rival: 0, c_opp_junior: 0, c_opp_leader: 0, c_opp_leader_name: 0,
+    c_arms_ok: 0, c_paper_banned: 0, c_union_expelled: 0, c_spd_answer: 0, c_far_right_out: 0,
+    c_lead_taken: 0, c_lead_who: 0, c_lead_who_name: 0,
+    target_district: 0, target_district_name: 0, target_faction: 0, target_faction_name: 0, target_is_rival: 0, target_flipped: 0
 };
 for (var k in start) {
     if (Q[k] === undefined) {
         Q[k] = start[k];
     }
+}
+if (!Q.c_landtag_done || typeof Q.c_landtag_done !== 'object') {
+    Q.c_landtag_done = {};
 }
 // Jogiches is alive at the start of the game (the 1919 events set 0 when he dies).
 if (Q.jogiches_alive === undefined && Q.time <= 2) {

@@ -6,7 +6,7 @@ new-page: true
 
 = Arkadi Maslow
 
-Born Isaak Tschemerinski in Yelisavetgrad, raised in Germany, once a concert pianist and a student of Einstein's. Ruth Fischer's partner and the Left's sharpest mind. He knows the Russian party from the inside and believes the German revolution is a matter of will.
+Born Isaak Tschemerinski in Yelisavetgrad, raised in Germany, once a concert pianist and a student of Einstein's. Ruth Fischer's partner and the Left's sharpest mind. He knows the Russian party from the inside, and its leaders by their first names.
 
 - @theory
 - @zinoviev
@@ -14,18 +14,29 @@ Born Isaak Tschemerinski in Yelisavetgrad, raised in Germany, once a concert pia
 
 @theory
 title: Theorise the Offensive
-subtitle: The revolution needs a party that attacks. Militancy rises; the Left's ideas spread.
+subtitle: The Left's ideas spread through the party schools.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
 choose-if: advisor_action_timer <= 0
-on-arrival: advisor_action_timer = 4; last_advisor_action = 1; militancy += 4; offensive_satisfaction += 5; unionist_satisfaction -= 3; lean_offensive += 2
+on-arrival: {!
+Q.advisor_action_timer = 4;
+Q.last_advisor_action = 1;
+Q.lean_offensive += 3;
+Q.offensive_satisfaction += 4;
+!}
 
-Maslow's articles argue that a revolutionary party which waits for the majority will wait for ever. The young comrades copy them out by hand.
+Maslow argues that a party which waits for the majority will wait for ever. The young comrades copy his articles out by hand.
 
 @zinoviev
-title: Court Zinoviev
-subtitle: Maslow works his friends in the Executive. Moscow leans towards the Left.
+title: Write to Zinoviev and Bukharin
+subtitle: Maslow's friends on the Executive hear that the Zentrale is timid.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?][? if comintern_member = 0 : We are not in the International. ?]
 choose-if: advisor_action_timer <= 0 and comintern_member = 1
-on-arrival: advisor_action_timer = 5; last_advisor_action = 1; independence -= 5; offensive_satisfaction += 6; world_revolution += 2; lean_offensive += 1
+on-arrival: {!
+Q.advisor_action_timer = 5;
+Q.last_advisor_action = 1;
+RG.ecci('zinoviev', 8);
+RG.ecci('bukharin', 5);
+Q.independence -= 4;
+!}
 
-Maslow's letters to Moscow are long and well informed. The Executive learns that the German Zentrale is timid, and that the German Left is not.
+Maslow's letters to Moscow are long and well informed, and they are written in Russian. The Executive learns that the German Zentrale is timid and the German Left is not.

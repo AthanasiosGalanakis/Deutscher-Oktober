@@ -21,43 +21,21 @@ else { Q.lw_where = 'the SPD'; }
 
 = A Letter of Resignation
 
-A letter has arrived at the Zentrale, by hand, from **[+ lw_cm_name +]** ([+ lw_cm_role +]). It is four pages long and very calm. The party, it says, has stopped listening to the [+ lw_cm_fname +], and to the workers who think as they do. The line is wrong, the methods are worse, and [+ lw_cm_name +] can no longer defend either in public.
+A letter has arrived at the Zentrale by hand from **[+ lw_cm_name +]** ([+ lw_cm_role +]). It is four pages long and very calm. The party has stopped listening to the [+ lw_cm_fname +], it says, and [+ lw_cm_name +] can no longer defend the line in public. A copy has gone to the press. Everyone knows that [+ lw_where +] would be glad to have the author.
 
-The letter does not say so, but everyone knows where [+ lw_cm_name +] would go: [+ lw_where +] would welcome him with open arms. A copy has gone to the press. Nothing has been printed yet.
-
-- @plead: Meet him halfway, and ask him to stay.
 - @post: Offer a post worth staying for.
-- @expel: Expel him first, with a statement.
-- @release: Let him go with dignity.
-
-@plead
-subtitle: Concessions to the [+ lw_cm_fname +]. The comrade may stay; the Zentrale's own current will mind.
-on-arrival: {!
-var c = RG.comrade(Q.lw_cm);
-RG.lw.lean(c.faction, 1, 8);
-Q[Q.leading_faction + '_satisfaction'] -= 4;
-if (Math.random() < 0.6) {
-    Q.lw_out = 1;
-    Q.unity += 1;
-} else {
-    Q.lw_out = 2;
-    RG.expel(Q.lw_cm, {news: Q.lw_cm_name + ' leaves the party for ' + Q.lw_where, priority: 2});
-    RG.ledger(Q.lw_cm_name + ' left the party for ' + Q.lw_where + '.', 'lw_def_' + Q.lw_cm);
-    Q.unity -= 3;
-}
-!}
-
-[? if lw_out = 1 : Two members of the Zentrale spend an evening with [+ lw_cm_name +], and the Zentrale's next resolution has a paragraph in it that the [+ lw_cm_fname +] wrote. The letter is withdrawn. ?][? if lw_out = 2 : The evening goes badly. The next morning, the letter is on the front page of the bourgeois papers, and [+ lw_cm_name +] is gone. ?]
+- @expel: Expel [+ lw_cm_name +] before the letter is printed.
+- @release: Let [+ lw_cm_name +] go with dignity.
 
 @post
-subtitle: A seat at the table often settles a matter of principle. Not always.
+subtitle: A seat at the table often settles a matter of principle. Our own current will call it a bribe.
 on-arrival: {!
-if (Math.random() < 0.7) {
+if (Math.random() < 0.65) {
     Q.lw_out = 1;
     RG.setRole(Q.lw_cm, RG.pick(['Editor of Die Internationale', 'Member of the Zentrale', 'Head of the trade union department']));
     var c = RG.comrade(Q.lw_cm);
-    RG.lw.lean(c.faction, 0, 4);
-    Q[Q.leading_faction + '_satisfaction'] -= 3;
+    RG.lw.lean(c.faction, 0, 6);
+    Q[Q.leading_faction + '_satisfaction'] -= 4;
 } else {
     Q.lw_out = 2;
     RG.expel(Q.lw_cm, {news: Q.lw_cm_name + ' refuses a post and leaves the party', priority: 2});
@@ -66,30 +44,28 @@ if (Math.random() < 0.7) {
 }
 !}
 
-[? if lw_out = 1 : [+ lw_cm_name +] accepts, after a decent interval, and the letter goes into a drawer. Some in the party call it a bribe. ?][? if lw_out = 2 : [+ lw_cm_name +] sends the offer back with one line: "I did not write for a job." ?]
+[? if lw_out = 1 : [+ lw_cm_name +] accepts after a decent interval, and the letter goes into a drawer. ?][? if lw_out = 2 : [+ lw_cm_name +] sends the offer back with one line: "I did not write for a job." ?]
 
 @expel
-subtitle: Discipline first. Moscow approves; the [+ lw_cm_fname +] will not forget it.
+subtitle: Zinoviev approves. The [+ lw_cm_fname +] will not forget it.
 on-arrival: {!
 var c = RG.comrade(Q.lw_cm);
 RG.expel(Q.lw_cm, {news: 'Zentrale expels ' + Q.lw_cm_name, priority: 2});
 RG.ledger('The Zentrale expelled ' + Q.lw_cm_name + '.', 'lw_def_' + Q.lw_cm);
 RG.lw.lean(c.faction, -1, -10);
-Q[Q.leading_faction + '_satisfaction'] += 3;
-Q.unity -= 2;
 RG.ecci('zinoviev', 5);
 !}
 
-Before the letter can be printed, the Zentrale's statement is: [+ lw_cm_name +] has been expelled for factional activity and contacts with the class enemy. The letter, when it appears, reads like the complaint of a man who was thrown out.
+The letter, when it appears, reads like the complaint of a man who was thrown out.
 
 @release
-subtitle: No hard words. The comrade leaves, and the door stays open.
+subtitle: No hard words. The door stays open, and so does the wound.
 on-arrival: {!
 var c = RG.comrade(Q.lw_cm);
 RG.expel(Q.lw_cm, {news: Q.lw_cm_name + ' leaves the party for ' + Q.lw_where, priority: 2});
 RG.ledger(Q.lw_cm_name + ' left the party for ' + Q.lw_where + '.', 'lw_def_' + Q.lw_cm);
-RG.lw.lean(c.faction, 0, -4);
-Q.unity -= 2;
+RG.lw.lean(c.faction, 0, -3);
+Q.unity += 1;
 !}
 
-The Zentrale thanks [+ lw_cm_name +] for years of service and regrets the decision. In the districts, members who think the same way keep their cards, for now.
+The Zentrale thanks [+ lw_cm_name +] for years of service and regrets the decision. In the districts, members who think the same way keep their cards.

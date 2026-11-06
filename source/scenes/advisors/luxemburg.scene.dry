@@ -6,7 +6,7 @@ new-page: true
 
 = Rosa Luxemburg
 
-The party's leading theorist and the author of its programme. She believes the revolution must be the conscious work of the majority of the working class, not of a putsch, and she distrusts the Bolsheviks' methods even as she defends their revolution.
+The party's leading theorist and the author of its programme. She holds that the revolution must be the work of the majority of the working class, and she has doubts about the Bolsheviks' methods even while she defends their revolution.
 
 [? if year = 1919 and month <= 2 : She lost the vote on the election boycott at the founding congress, and has not stopped arguing since. ?]
 
@@ -16,26 +16,33 @@ The party's leading theorist and the author of its programme. She believes the r
 
 @persuade
 title: Win the Argument
-subtitle: Every district moves closer to the Zentrale.
+subtitle: Districts held by other currents move towards the Zentrale.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
 choose-if: advisor_action_timer <= 0
 on-arrival: {!
 Q.advisor_action_timer = 4;
 Q.last_advisor_action = 1;
 for (var d of Q.districts) {
-    Q['district_' + d + '_loyalty'] += 8;
+    if (Q['district_' + d + '_faction'] != Q.leading_faction) {
+        Q['district_' + d + '_loyalty'] += 10;
+    }
 }
 Q.lean_luxemburgist += 2;
-Q.luxemburgist_satisfaction += 4;
 !}
 
-Luxemburg speaks and writes without rest. Even her opponents in the districts read her, and some of them change their minds.
+Luxemburg writes every day and speaks most evenings. Her opponents in the districts read her, and some of them change their minds.
 
 @against_putsch
 title: Against Putschism
-subtitle: Cools the streets and the police. The Left Radicals are offended.
+subtitle: Calms the most restless district. The Left Radicals are offended.
 unavailable-subtitle: [? if advisor_action_timer = 1 : Next advisor action in 1 month. ?][? if advisor_action_timer > 1 : Next advisor action in [+ advisor_action_timer +] months. ?]
 choose-if: advisor_action_timer <= 0
-on-arrival: advisor_action_timer = 4; last_advisor_action = 1; militancy -= 10; repression -= 5; ultraleft_satisfaction -= 8; offensive_satisfaction -= 4; luxemburgist_satisfaction += 5; lean_luxemburgist += 1
+on-arrival: {!
+Q.advisor_action_timer = 4;
+Q.last_advisor_action = 1;
+var d = RG.target('militancy');
+RG.district(d, {militancy: -15, repression: -5});
+Q.ultraleft_satisfaction -= 6;
+!}
 
-A revolution cannot be ordered from above, Luxemburg writes in Die Rote Fahne. It must grow out of the masses, or it will be drowned in blood.
+Luxemburg goes to [+ sys_target_name +] herself. A revolution cannot be ordered from above, she tells the district meeting, and an uprising nobody else joins will be drowned in blood. The hall is quiet when she sits down.

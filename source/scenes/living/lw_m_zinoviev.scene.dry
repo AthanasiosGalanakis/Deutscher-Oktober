@@ -18,62 +18,41 @@ Q.lw_n = Q.strike_count >= 1 ? 1 : (Q.militancy >= 55 ? 2 : 3);
 
 = A Telegram from Petrograd
 
-The telegram is signed **Zinoviev**, President of the Executive, and it is long, which costs Moscow money it does not have. [? if lw_n = 1 : It has read in the bourgeois press that the workers of [+ lw_d_name +] are on strike, and asks why the strike is not yet general, why it has no political slogans, and why the Zentrale is not at its head. ?][? if lw_n = 2 : It has read that the workers of [+ lw_d_name +] are boiling, and asks why the Zentrale is sitting on the lid. ?][? if lw_n = 3 : It notes that Germany is quiet, and asks whether the Zentrale has confused quiet with peace. ?]
-
-It ends: "The Executive expects the German section to be equal to the hour. Reply by return." Zinoviev's telegrams often end like that. [? if ecci_zinoviev < 35 : This one has an edge to it: in Moscow, Zinoviev has been heard calling the German Zentrale "the Social Democrats' left wing". ?]
+The telegram is signed **Zinoviev**, President of the Executive. [? if lw_n = 1 : He has read in the bourgeois press that the workers of [+ lw_d_name +] are on strike, and asks why the strike is not yet general and why the Zentrale is not at its head. ?][? if lw_n = 2 : He has read that the workers of [+ lw_d_name +] are boiling, and asks why the Zentrale is sitting on the lid. ?][? if lw_n = 3 : He notes that Germany is quiet, and asks whether the Zentrale has confused quiet with peace. ?] It ends: "Reply by return."
 
 - @act: Answer with action in [+ lw_d_name +].
-- @polite: Send a polite report on the situation.
-- @publish: Publish the telegram in the party press.
+- @polite: Send a report with tables.
 - @sharp: Reply that the German revolution is made in Germany.
 
 @act
-subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] The district is called out. Zinoviev is delighted; the police will be busy.
+subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] The district is called out. Zinoviev is delighted, and the police will be busy.
 choose-if: lock_moscow_orders < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids taking orders from Moscow.
 on-arrival: {!
 RG.lw.against('moscow_orders');
 if (Q.lw_d_strike) { RG.spreadStrike(Q.lw_d); } else { RG.startStrike(Q.lw_d); }
-RG.district(Q.lw_d, {repression: 5, militancy: 3});
-RG.ecci('zinoviev', 9);
-RG.ecci('bukharin', 4);
-Q.independence -= 3;
+RG.district(Q.lw_d, {repression: 6});
+RG.ecci('zinoviev', 10);
 RG.lw.lean('offensive', 2, 5);
-RG.lw.lean('unionist', -1, -3);
 !}
 
-The Zentrale replies in one line: the instruction is being carried out. Within a week, [+ lw_d_name +] is in the streets, and Zinoviev reads the reports aloud at the Executive.
+The Zentrale replies in one line: the instruction is being carried out. Zinoviev reads the reports aloud at the Executive.
 
 @polite
-subtitle: Facts and figures. Zinoviev wanted fire, and gets a statistical report.
+subtitle: Zinoviev wanted fire. Lenin likes tables.
 on-arrival: {!
 RG.ecci('zinoviev', -3);
-RG.ecci('lenin', 1);
+RG.ecci('lenin', 3);
 !}
 
-The reply is twelve pages long, with tables: membership by district, the state of the unions, the arms of the Reichswehr. Somebody in Petrograd files it.
-
-@publish
-subtitle: Moscow's authority behind those who want action. The Left cheers, the Right is outraged, the party argues.
-view-if: offensive_gone = 0
-on-arrival: {!
-RG.ecci('zinoviev', 4);
-Q.militancy += 2;
-Q.unity -= 3;
-RG.lw.lean('offensive', 1, 5);
-RG.lw.lean('unionist', 0, -5);
-RG.news('Zinoviev to the German workers: be equal to the hour', 2);
-!}
-
-Die Rote Fahne prints the telegram on its front page, under a banner. The Left in the districts reads it out at meetings. The Right asks, in a letter to the Zentrale, who exactly is leading this party.
+The reply is twelve pages long: membership by district, the state of the unions, the arms of the Reichswehr. Somebody in Petrograd files it.
 
 @sharp
-subtitle: Our independence grows. Zinoviev will remember this telegram longer than his own.
+subtitle: Zinoviev will remember this telegram longer than his own.
 on-arrival: {!
-Q.independence += 6;
-RG.ecci('zinoviev', -9);
+Q.independence += 7;
+RG.ecci('zinoviev', -10);
 RG.lw.lean('luxemburgist', 1, 5);
-RG.lw.lean('offensive', 0, -3);
 !}
 
-The answer is polite and short. The Zentrale thanks the President for his interest, and reminds him that the German working class has its own history, its own organisations and its own party, which it intends to lead.
+The Zentrale thanks the President for his interest, and reminds him that the German working class has its own organisations and its own party, which it intends to lead.

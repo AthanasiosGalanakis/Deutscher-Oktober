@@ -18,17 +18,14 @@ Q.lw_dead = 0;
 
 = Marked for Death
 
-A young sailor who drinks in the wrong bars has come to the party office white in the face. In a back room in Munich, or perhaps Berlin, he heard men of [+ lw_name +] talk about **[+ lw_cm_name +]**: the address, the times of the trams, the café where [+ lw_cm_name +] reads the papers on Thursdays. They have a car and two pistols. [? if time >= 32 : They mentioned Erzberger, and laughed. ?]
-
-The police have been told about such plans before. The killers of Kurt Eisner and Hugo Haase were treated gently by the courts. [? if time >= 32 : The men who shot Erzberger escaped to Hungary. ?]
+A young sailor who drinks in the wrong bars has come to the party office white in the face. He heard men of [+ lw_name +] talk about **[+ lw_cm_name +]**: the address, the times of the trams, the café where [+ lw_cm_name +] reads the papers on Thursdays. They have a car and two pistols. [? if time >= 32 : They mentioned Erzberger, and laughed. ?]
 
 - @guard: Give [+ lw_cm_name +] a bodyguard from the red guard.
 - @police: Report the plot to the police.
-- @public: Publish the plot, with the names we know.
-- @strike: Strike first at the killers' nest.
+- @public: Print the plot, with the names we know.
 
 @guard
-subtitle: Costs 1 fund. Armed workers at every step. Safe, and the red guard is proud of it.
+subtitle: Costs 1 fund. Almost certainly safe.
 choose-if: resources >= 1
 unavailable-subtitle: We have no funds.
 on-arrival: {!
@@ -37,49 +34,29 @@ Q.red_guards_loyalty += 4;
 if (Math.random() < 0.04) { Q.lw_dead = 1; }
 !}
 
-Four men from the red guard move into the flat next door. From now on, [+ lw_cm_name +] never walks alone, never sits facing away from the door and never takes the same tram twice.
+Four men from the red guard move into the flat next door.
 
 - @after: Continue...
 
 @police
-subtitle: Let the Republic protect its citizens. It may.
+subtitle: The Republic may protect its citizens. The killers of Eisner were treated gently.
 on-arrival: {!
-if (Math.random() < 0.22) { Q.lw_dead = 1; }
+if (Math.random() < 0.25) { Q.lw_dead = 1; }
 Q.stability += 1;
-RG.lw.lean('unionist', 1, 1);
 !}
 
-A detective inspector takes down the sailor's statement, thanks him, and promises to look into it. A constable is posted at the corner for a week.
+A detective inspector takes down the sailor's statement and posts a constable at the corner for a week.
 
 - @after: Continue...
 
 @public
-subtitle: The killers lose the surprise. Worker support grows; the risk does not vanish.
+subtitle: The killers lose the surprise, though perhaps not the will.
 on-arrival: {!
 Q.worker_support += 2;
 if (Math.random() < 0.12) { Q.lw_dead = 1; }
-RG.lw.lean('luxemburgist', 1, 2);
 !}
 
-Die Rote Fahne prints everything we know under the headline "Murder planned", with the descriptions of three of the men and the number of the car. The nationalist press calls it a fantasy.
-
-- @after: Continue...
-
-@strike
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Our squad goes to their meeting place first. Repression follows.
-choose-if: lock_uprising < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed action.
-on-arrival: {!
-RG.lw.against('uprising');
-Q.repression += 5;
-Q.red_guards_loyalty += 5;
-Q.militancy += 2;
-if (Math.random() < 0.06) { Q.lw_dead = 1; }
-RG.lw.lean('offensive', 2, 5);
-RG.lw.lean('unionist', -1, -3);
-!}
-
-Our squad finds the back room above a riding school. There is a fight, a few broken bones and no shots, and a box of papers that ends up with our lawyers. The police arrest more of ours than of theirs.
+Die Rote Fahne prints everything we know under the headline "Murder planned", with the number of the car.
 
 - @after: Continue...
 
@@ -90,11 +67,10 @@ if (Q.lw_dead == 1) {
     RG.ledger(Q.lw_cm_name + ' was murdered by ' + Q.lw_name + '.', 'lw_murder_' + Q.lw_cm);
     Q.militancy += 6;
     Q.worker_support += 4;
-    Q.stability -= 3;
     Q.unity += 4;
 } else {
     RG.news('Plot to murder ' + Q.lw_cm_name + ' foiled', 2);
 }
 !}
 
-[? if lw_dead = 1 : It happens anyway, on a Thursday, outside the café. Two shots from a passing car. **[+ lw_cm_name +]** dies on the pavement before the ambulance comes. The next day a million workers stop work, and the murderers are never found. ?][? if lw_dead = 0 : The Thursday comes and goes. [+ lw_cm_name +] reads the papers somewhere else, and the car is seen once more, outside the wrong café, and then not again. ?]
+[? if lw_dead = 1 : It happens anyway, on a Thursday, outside the café. Two shots from a passing car. [+ lw_cm_name +] dies on the pavement before the ambulance comes. The murderers are never found. ?][? if lw_dead = 0 : The Thursday comes and goes. The car is seen once more, outside the wrong café, and then not again. ?]

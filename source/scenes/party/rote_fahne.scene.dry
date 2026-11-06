@@ -1,75 +1,74 @@
 title: Die Rote Fahne
 new-page: true
-view-if: crisis = 0 and rote_fahne_timer <= 0
-on-arrival: rote_fahne_timer = 3; month_actions += 1
+view-if: crisis = 0 and congress = 0 and rote_fahne_timer <= 0
+on-arrival: {!
+Q.rote_fahne_timer = 3;
+Q.month_actions += 1;
+Q.c_paper_banned = 0;
+!}
 frequency: 300
 is-card: true
 tags: party_affairs
 
 = Die Rote Fahne
 
-The party paper reaches tens of thousands of readers[? if repression >= 60 : , when the police let it appear at all. Half its editors have been arrested at one time or another ?]. The Zentrale must decide what it will say this month.
+The editors want one subject on the front page every day for a month, with leaflets and meetings to follow it into the districts. [? if repression >= 50 : The Prussian ministry has banned the paper before, and it is looking for a reason to do it again. ?]
 
-[? if year >= 1921 : Beside Die Rote Fahne, the party now has dailies in most big cities, and every one of them has opinions. ?]
-
-- @line: Argue for the Zentrale's line.
-- @debate: Open the paper to debate.
-- @attack: Attack the SPD leaders who sent the Freikorps.
-- @regional: Fund new local editions.
+- @murders: Print the names of the murdered.
+- @frontline: Appeal to the social democratic workers.
+- @noske: Print Noske's orders of January 1919.
+- @debate: Open the paper to every current.
 - @easy_discard
 
-@line
-subtitle: Districts move towards the Zentrale; other currents resent it.
+@murders
+subtitle: Every worker shot "while trying to escape", and the judge who freed the killer.
 on-arrival: {!
-for (var d of Q.districts) {
-    Q['district_' + d + '_loyalty'] += 5;
-}
-for (var f of Q.factions) {
-    if (f != Q.leading_faction) {
-        Q[f + '_satisfaction'] -= 3;
-    }
-}
-Q['lean_' + Q.leading_faction] += 1;
-!}
-
-The paper explains the Zentrale's line, patiently and at length. Some districts are persuaded.
-
-@debate
-subtitle: Every current feels heard.
-on-arrival: {!
-for (var f of Q.factions) {
-    Q[f + '_satisfaction'] += 4;
-}
+Q.worker_support += 4;
 Q.lean_luxemburgist += 1;
 !}
 
-Letters and articles from every wing of the party fill the pages. Rosa Luxemburg would approve: freedom is always the freedom of those who think differently.
+By the end of the month the list has three hundred names. A deputy reads it out in the Reichstag.
 
-@attack
-subtitle: Pleases the radicals; burns bridges with the SPD.
+@frontline
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Relations with the SPD improve. The Left will call it begging.
+choose-if: lock_united_front < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids appeals to the social democrats.
 on-arrival: {!
-Q.spd_relation -= 10;
-Q.militancy += 5;
-Q.worker_support += 2;
-Q.offensive_satisfaction += 5;
+if (Q.lock_united_front == 1) {
+    Q.unity -= 10;
+    Q[Q.leading_faction + '_satisfaction'] -= 10;
+}
+Q.spd_relation += 7;
+Q.lean_unionist += 2;
+!}
+
+For a month the paper prints letters from union branches and works councils that want joint action, and asks their leaders every day why not.
+
+@noske
+subtitle: Militancy rises and the SPD is furious. [? if repression >= 50 : The editors think it is even odds the paper is banned. ?]
+on-arrival: {!
+Q.spd_relation -= 8;
+Q.militancy += 4;
 Q.lean_offensive += 1;
-if (!Q.ultraleft_gone) {
-    Q.ultraleft_satisfaction += 5;
+if (Q.repression >= 50 && Math.random() < 0.5) {
+    Q.c_paper_banned = 1;
+    Q.rote_fahne_timer = 7;
+    Q.worker_support -= 2;
+    RG.news('Die Rote Fahne banned', 2);
 }
 !}
 
-Noske the bloodhound, Ebert the traitor. The words sell papers.
+The paper reprints the orders, with the photographs of the dead in Lichtenberg beside them. [? if c_paper_banned = 1 : On the fourth day the police seal the presses. The paper will not appear for months. ?]
 
-@regional
-subtitle: Costs 1 fund. More workers read us; the districts feel closer to the party.
-choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
+@debate
+subtitle: Every current is pleased to be heard. The Zentrale's line looks less certain.
 on-arrival: {!
-Q.resources -= 1;
-Q.worker_support += 3;
+for (var f of Q.factions) {
+    Q[f + '_satisfaction'] += 5;
+}
 for (var d of Q.districts) {
-    Q['district_' + d + '_loyalty'] += 2;
+    Q['district_' + d + '_loyalty'] -= 3;
 }
 !}
 
-New local editions appear in the Ruhr and in Saxony, with the factory news on the front page and Berlin's articles inside.
+Articles from every wing of the party fill the pages, and the letters page runs to four.

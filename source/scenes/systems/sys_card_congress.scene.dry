@@ -17,7 +17,7 @@ tags: party_affairs
 
 = The Districts Want a Congress
 
-Letters from the districts pile up on the secretary's desk. The statutes allow an extraordinary congress when enough districts demand one, and enough of them are demanding it. [? if sys_has_rival = 1 : The [+ sys_rival_name +] say the party has lost its way under the [+ leading_faction_name +]. ?][? if sys_has_rival = 0 : Nobody seriously challenges the Zentrale, but the members want to be asked. ?]
+Letters from the districts pile up on the secretary's desk. The statutes allow an extraordinary congress when enough districts demand one, and enough of them do. [? if sys_has_rival = 1 : The [+ sys_rival_name +] say the party has lost its way under the [+ leading_faction_name +]. ?][? if sys_has_rival = 0 : Nobody seriously challenges the Zentrale, but the members want to be asked. ?]
 
 A congress is a month of nothing else, and a vote nobody can be sure of.
 
@@ -41,7 +41,7 @@ RG.congressStart({
 });
 !}
 
-The Zentrale calls the congress for the end of the month. The districts elect their delegates in a hurry, and the [+ sys_rival_name +] start counting at once.
+The congress is called for the end of the month. The districts elect their delegates in a hurry.
 
 @rival
 subtitle: The [+ sys_rival_name +] would lead the party, if the congress agrees. The [+ leading_faction_name +] will fight it.
@@ -61,14 +61,14 @@ RG.congressStart({
 });
 !}
 
-The congress is called, and this time the Zentrale's own whips are working for the other side. The [+ leading_faction_name +] call it a betrayal.
+The congress is called, and the Zentrale's own whips are working for the other side.
 
 @quiet
-subtitle: Raises Unity: the members were asked, and they were heard.
+subtitle: The members were asked. The party is calmer for it.
 view-if: sys_has_rival = 0
 on-arrival: {!
 Q.unity += 4;
 Q.congress_last_time = Q.time;
 !}
 
-The Zentrale holds a conference of district secretaries instead, which talks for two days and changes nothing. Everyone feels better for it.
+The conference of district secretaries talks for two days in the Zentrale's meeting room and changes nothing.

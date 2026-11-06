@@ -1,6 +1,6 @@
 title: An Opposition Platform
 new-page: true
-view-if: crisis = 0 and c_opposition_timer <= 0 and time >= 3
+view-if: crisis = 0 and congress = 0 and c_opposition_timer <= 0 and time >= 3
 on-arrival: {!
 Q.c_opposition_timer = 6;
 Q.month_actions += 1;
@@ -11,12 +11,21 @@ for (var f of Q.factions) {
         opp = f;
     }
 }
+Q.c_opp_is_rival = opp ? 1 : 0;
 if (opp === null) {
     opp = Q.leading_faction;
 }
 Q.c_opp_faction = opp;
 Q.c_opp_faction_name = Q.faction_names[opp];
-Q.c_opp_is_rival = (opp != Q.leading_faction) ? 1 : 0;
+Q.c_opp_junior = (Q.junior_faction == opp) ? 1 : 0;
+// the signatory the Zentrale could expel: a free comrade of that current whose
+// fate the period events do not decide
+var keep = ['luxemburg', 'liebknecht', 'jogiches', 'levi', 'levine', 'radek', 'hoelz', 'thalmann', 'brandler', 'fischer'];
+var cs = (Q.comrades || []).filter(function (c) {
+    return c.status == 'free' && c.faction == opp && keep.indexOf(c.id) < 0;
+});
+Q.c_opp_leader = cs.length ? RG.pick(cs).id : 0;
+Q.c_opp_leader_name = Q.c_opp_leader ? RG.comradeName(Q.c_opp_leader) : 0;
 !}
 frequency: 200
 is-card: true
@@ -24,53 +33,49 @@ tags: party_affairs
 
 = An Opposition Platform
 
-Forty functionaries of the **[+ c_opp_faction_name +]** have signed a platform against the Zentrale's line and sent it to every district. It accuses the Zentrale of betraying the decisions of the last congress, of hiding the accounts and of listening to the wrong people.
-
-Half of it is unfair. The other half is being read aloud at district meetings.
+Forty functionaries of the **[+ c_opp_faction_name +]** have signed a platform against the Zentrale and sent it to every district. [? if c_opp_leader_name : The first signature is [+ c_opp_leader_name +]'s. ?] It accuses the Zentrale of ignoring the last congress and of hiding the accounts. Half of it is unfair. The other half is being read aloud at district meetings.
 
 - @debate: Open a party discussion.
-- @concede: Bring two of their leaders into the Zentrale.
-- @expel: Expel the ringleaders.
+- @concede: Give the opposition seats in the Zentrale.
+- @expel: Expel [+ c_opp_leader_name +].
 - @easy_discard
 
 @debate
-subtitle: The opposition has its say in the press and at meetings. The Zentrale looks less sure of itself.
+subtitle: The [+ c_opp_faction_name +] have their say. The quarrel goes on.
 on-arrival: {!
 Q[Q.c_opp_faction + '_satisfaction'] += 8;
-Q[Q.leading_faction + '_satisfaction'] -= 3;
-Q.unity += 3;
-Q.lean_luxemburgist += 1;
+Q.unity -= 2;
 !}
 
-For a month the party argues with itself in public. It is noisy and bitter, and when it is over most of the signatories are still in the party.
+For a month the party argues with itself in public. At the end most of the signatories are still in the party, and still signatories.
 
 @concede
-subtitle: The opposition is pleased and the party draws together. Our own current feels betrayed.
-choose-if: c_opp_is_rival = 1
-unavailable-subtitle: There is no rival current left to bring in.
+subtitle: They join the Zentrale as the junior partner, and their red lines become ours to respect.
+view-if: c_opp_is_rival = 1
+choose-if: c_opp_junior = 0
+unavailable-subtitle: The [+ c_opp_faction_name +] already sit in the Zentrale.
 on-arrival: {!
-Q[Q.c_opp_faction + '_satisfaction'] += 12;
-Q[Q.leading_faction + '_satisfaction'] -= 6;
-Q.unity += 5;
-Q['lean_' + Q.c_opp_faction] += 1;
+Q.junior_faction = Q.c_opp_faction;
+Q[Q.c_opp_faction + '_satisfaction'] += 15;
+Q[Q.leading_faction + '_satisfaction'] -= 8;
+Q.unity += 6;
 !}
 
-Two of the signatories get seats in the Zentrale, and a desk each. They will be harder to silence now, but also harder to blame us for.
+Two of the signatories get seats in the Zentrale and a desk each. They will be harder to silence now, and harder to blame us for.
 
 @expel
-subtitle: The line is clear and the Zentrale is obeyed. Their districts bleed members, and their current will not forget.
+subtitle: The Zentrale is obeyed. The [+ c_opp_faction_name +] lose a leader and will not forget it.
+view-if: c_opp_leader_name and c_opp_is_rival = 1
 on-arrival: {!
 var f = Q.c_opp_faction;
+RG.expel(Q.c_opp_leader, {news: Q.c_opp_leader_name + ' expelled from the party', priority: 2});
 Q[f + '_satisfaction'] -= 15;
-Q[Q.leading_faction + '_satisfaction'] += 6;
 Q.unity -= 5;
 for (var d of Q.districts) {
     if (Q['district_' + d + '_faction'] == f) {
-        Q['district_' + d + '_members'] *= 0.92;
-        Q['district_' + d + '_loyalty'] += 6;
+        Q['district_' + d + '_members'] *= 0.94;
     }
 }
-Q['lean_' + Q.leading_faction] += 1;
 !}
 
-The Central Committee expels the ringleaders for breach of discipline. Their friends hold a protest meeting, and then, mostly, they go home.
+The Central Committee expels [+ c_opp_leader_name +] for breach of discipline. A protest meeting is held, and then most of those who came to it go home.
