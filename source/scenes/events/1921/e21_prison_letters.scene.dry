@@ -1,5 +1,5 @@
 title: Letters from Prison
-subtitle: A comrade writes from his cell, and the party must decide what to do with the letters.
+subtitle: A comrade writes from his cell.
 new-page: true
 tags: event
 view-if: year = 1921 and month >= 9 and month <= 11 and crisis = 0 and congress = 0 and e21_prison_done = 0 and (comrade_brandler = 2 or comrade_hoelz = 2)
@@ -11,100 +11,64 @@ Q.e21_prison_outcome = 0;
 Q.e21_prison_id = (Q.comrade_brandler == 2) ? 'brandler' : 'hoelz';
 Q.e21_prison_brandler = (Q.e21_prison_id == 'brandler') ? 1 : 0;
 Q.e21_prison_name = RG.comradeName(Q.e21_prison_id);
+// the Hoelz campaign has made friends among the warders
+Q.e21_escape_p = (Q.e21_prison_brandler == 1) ? 0.7 : (Q.e21_hoelz_campaign == 1 ? 0.4 : 0.2);
+Q.e21_escape_odds = (Q.e21_escape_p >= 0.6) ? 3 : ((Q.e21_escape_p >= 0.35) ? 2 : 1);
 !}
 
 = Letters from Prison
 
-[? if e21_prison_brandler = 1 : Heinrich Brandler writes from the fortress where the special court sent him for signing the call to arms in March. The letters come out folded in the hems of laundry. They are dry and practical, like the man: what the party should say to the metalworkers about wages, what it should stop saying about the offensive, and who in the Zentrale he no longer trusts. ?][? if e21_prison_brandler = 0 : Max Hoelz writes from the penitentiary at Münster, where he is serving penal servitude for life. He is allowed one letter a month, and he writes ten. They are angry, funny and impossible to edit: about the warders, about the judges, about the comrades who called him a bandit and the comrades who called him a hero. ?]
-
-The letters reach the Zentrale through Red Aid. Some of them are addressed to the Zentrale. Most are addressed to the workers.
+[? if e21_prison_brandler = 1 : Heinrich Brandler writes from the fortress where the special court sent him for signing the call to arms in March. The letters come out folded into the hems of his laundry. They are dry and practical, like the man: what the party should say to the metalworkers about wages, and what it should stop saying about the offensive. ?][? if e21_prison_brandler = 0 : Max Hoelz writes from the penitentiary at Münster. He is allowed one letter a month, and he writes ten. They are angry and funny and impossible to edit: about the warders, the judges, and the comrades who called him a bandit. ?]
 
 - @publish: Print them in the Rote Fahne.
-- @amnesty: Make them the centre of an amnesty campaign.
 - @escape: Get him out.
 - @file: Keep them in the Zentrale's files.
 
 @publish
-subtitle: [? if e21_prison_brandler = 1 : The Right's voice from the cell. Its readers will like him better than they like the Zentrale. ?][? if e21_prison_brandler = 0 : The Left's hero, unedited. The workers will read every word; the courts will too. ?]
+subtitle: [? if e21_prison_brandler = 1 : The union men will read him more closely than they read the Zentrale. ?][? if e21_prison_brandler = 0 : The workers will read every word. So will the prison governor. ?]
 on-arrival: {!
 Q.e21_prison_outcome = 1;
 Q.worker_support += 2;
 if (Q.e21_prison_brandler == 1) {
-    Q.unionist_satisfaction += 5;
     Q.lean_unionist += 1;
 } else {
-    Q.militancy += 2;
-    Q.offensive_satisfaction += 5;
-    Q.luxemburgist_satisfaction -= 2;
+    RG.district('saxony', {militancy: 4});
     Q.lean_offensive += 1;
-    RG.district('saxony', {militancy: 3});
-}
-RG.news('Rote Fahne prints letters from ' + Q.e21_prison_name + '\'s cell', 2);
-!}
-
-The letters run in the Rote Fahne for a week, under the heading "From behind bars". [? if e21_prison_brandler = 0 : The Vogtland reads them aloud in the pubs. ?][? if e21_prison_brandler = 1 : The union men read them more closely than they read the leading articles. ?]
-
-@amnesty
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's way: an amnesty for all the March prisoners, with the SPD and USPD if they will come. Slow, and it might work.
-choose-if: lock_united_front < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids a joint campaign with the social democrats.
-on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.spd_relation += 3;
-Q.uspd_relation += 4;
-Q.worker_support += 2;
-Q.lean_unionist += 1;
-RG.comply(10);
-RG.ecci('radek', 2);
-if (Q.e21_prison_brandler == 1 && Math.random() < 0.45) {
-    Q.e21_prison_outcome = 2;
-    RG.free('brandler', {news: 'Brandler released under the amnesty', priority: 2});
-} else {
-    Q.e21_prison_outcome = 3;
 }
 !}
 
-Red Aid, the Independents and a few brave Social Democrats collect signatures for an amnesty for the prisoners of March. [? if e21_prison_outcome = 2 : In November the Prussian government, which wants the Independents' votes, lets the fortress prisoners go. Brandler is among them. ?][? if e21_prison_outcome = 3 : A million signatures go to the Reichstag. The prison doors stay shut, but the campaign has made friends in places the party never reached. ?]
+The letters run in the Rote Fahne for a week under the heading "From behind bars". [? if e21_prison_brandler = 0 : In the Vogtland they are read aloud in the pubs. ?]
 
 @escape
-subtitle: Costs 1 fund. [? if e21_prison_brandler = 1 : The apparatus can get a man out of a fortress and over the border to Moscow. He will be lost to Germany for a while. ?][? if e21_prison_brandler = 0 : A penitentiary is not a fortress. It may fail, and the police will come looking. ?]
+subtitle: Costs 1 fund. [? if e21_escape_odds = 3 : A fortress is not a prison, and the apparatus thinks it can be done. ?][? if e21_escape_odds = 2 : Some of the Münster warders have been signing the petitions. It might work. ?][? if e21_escape_odds = 1 : Münster is a penitentiary. The apparatus gives it little chance. ?]
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds for false papers and a car.
+unavailable-subtitle: We have no money for false papers and a car.
 on-arrival: {!
 Q.resources -= 1;
-Q.lean_offensive += 1;
-var p = (Q.e21_prison_brandler == 1) ? 0.7 : 0.2;
-if (Math.random() < p) {
+if (Math.random() < Q.e21_escape_p) {
     Q.e21_prison_outcome = 4;
     if (Q.e21_prison_brandler == 1) {
         RG.exile('brandler', {news: 'Brandler escapes to Moscow', priority: 2});
         Q.e21_brandler_escaped = 1;
-        RG.ecci('radek', 3);
         RG.ledger('Heinrich Brandler escaped from prison to Moscow.', 'e21_brandler_escape');
     } else {
         RG.exile('hoelz', {news: 'Max Hoelz escapes from Münster', priority: 3});
         RG.ledger('Max Hoelz escaped from the penitentiary at Münster.', 'e21_hoelz_escape');
     }
-    Q.repression += 2;
 } else {
     Q.e21_prison_outcome = 5;
     Q.repression += 4;
-    RG.news('Escape plot foiled at the prison of ' + Q.e21_prison_name, 2);
+    RG.news('Escape plot foiled: ' + Q.e21_prison_name + ' moved to a stricter prison', 2);
 }
 !}
 
-[? if e21_prison_outcome = 4 and e21_prison_brandler = 1 : A warder is paid, a car waits on a country road, and a week later Brandler is in Stettin with a Latvian passport. By Christmas he is in Moscow, where the Executive gives him a desk. ?][? if e21_prison_outcome = 4 and e21_prison_brandler = 0 : Hoelz goes over the wall on a rope made of sheets. The whole of Germany laughs, except the prison governor. He is hidden in Saxony, and then abroad. ?][? if e21_prison_outcome = 5 : The plan is betrayed by a prisoner who wanted a shorter sentence. The warders find the rope, and the police find the car. ?]
+[? if e21_prison_outcome = 4 and e21_prison_brandler = 1 : A warder is paid, a car waits on a country road, and a week later Brandler is in Stettin with a Latvian passport. By Christmas he is in Moscow, where the Executive gives him a desk. ?][? if e21_prison_outcome = 4 and e21_prison_brandler = 0 : Hoelz goes over the wall on a rope of sheets. He is hidden in Saxony, and then smuggled abroad. ?][? if e21_prison_outcome = 5 : The plan is betrayed by a prisoner who wanted a shorter sentence. The warders find the rope and the police find the car. ?]
 
 @file
-subtitle: The Spartacist caution: the courts read the Rote Fahne too. The prisoner will think we have forgotten him.
+subtitle: The courts read the Rote Fahne too. He will think we have forgotten him.
 on-arrival: {!
 Q.e21_prison_outcome = 6;
-Q.luxemburgist_satisfaction += 2;
-if (Q.e21_prison_brandler == 1) { Q.unionist_satisfaction -= 5; } else { Q.offensive_satisfaction -= 6; }
-Q.unity -= 1;
+if (Q.e21_prison_brandler == 1) { Q.unionist_satisfaction -= 6; } else { Q.offensive_satisfaction -= 6; }
 !}
 
-The letters go into a drawer in the Zentrale's office. Red Aid sends parcels. [+ e21_prison_name +] stops writing to the Zentrale and writes only to his friends.
+The letters go into a drawer, and Red Aid sends parcels. [+ e21_prison_name +] stops writing to the Zentrale and writes only to his friends.

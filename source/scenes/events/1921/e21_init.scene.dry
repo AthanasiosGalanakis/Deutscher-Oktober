@@ -13,32 +13,44 @@ var start = {
     central_germany_soviet: 0, friesland_outcome: 0, erzberger_murdered: 0,
     london_ultimatum: 0, upper_silesia_outcome: 0, civil_guards_dissolved: 0,
     hoelz_imprisoned: 0, open_letter: 0,
-    // 1921 internal state
+    // the Crisis tab
+    crisis_line_1: 0, crisis_line_2: 0, crisis_line_3: 0, crisis_momentum_label: 0,
+    // January and February
     e21_started: 0, e21_party: 'VKPD', e21_levi_leads: 0, e21_lux_leads: 0,
-    e21_open_letter_done: 0, e21_livorno: 0, e21_cc_done: 0, e21_levi_resigned: 0,
-    e21_prussia_done: 0, e21_kun_done: 0, e21_offensive_plan: 0,
-    e21_can_avoid: 0, e21_march_started: 0, e21_march_mode: 0, crisis_march: 0,
-    e21_ma_calloff: 0, e21_ma_hoelz: 0, e21_ma_eberlein: 0, e21_arms_saved: 0,
-    e21_final_momentum: 0, e21_soviet_viable: 0, e21_central_done: 0,
-    e21_levi_fate: 0, e21_levi_plea: 0, e21_levi_verdict: 0, e21_after_done: 0,
-    e21_third_done: 0, e21_jena_done: 0, e21_jena_case: 0, e21_left_split_pending: 0,
-    e21_left_leads: 0, e21_levi_readmitted: 0, e21_kag_done: 0, e21_maslow_moscow: 0,
-    e21_cc_win_chance: 0, e21_cc_won: 0, e21_jena_readmit_ok: 0,
-    e21_cc_odds: 'uncertain', e21_members_jan: 0, e21_members_now: 0, e21_strike_gain: 0,
-    e21_leuna: 0, e21_prussia_seats: 0, e21_new_cabinet: 0, e21_levi_score: 0,
-    e21_left_ahead: 0, e21_left_strong: 0, e21_can_readmit: 0, e21_left_lost: 0,
-    // v2: the systems in 1921
-    e21_cc_mode: 0, e21_cc_closed: 0, e21_cc_tilt: 0, e21_kun_stance: 0,
-    e21_refuse_done: 0, e21_refuse_district: 0, e21_refuse_name: 0, e21_refuse_faction_name: 0, e21_refuse_outcome: 0,
-    e21_quarrel_done: 0, e21_moscow_friend: 0, e21_lenin_mood: 0,
-    e21_prison_done: 0, e21_prison_id: 0, e21_prison_name: 0, e21_prison_outcome: 0,
-    e21_kagd_done: 0, e21_kag_target: 0, e21_kag_target_name: 0, e21_kag_outcome: 0,
-    e21_jena_backing: 0, e21_jena_closed: 0, e21_jena_levi_motion: 0, e21_jena_tilt: 0,
-    e21_brandler_escaped: 0, e21_ma_strikes: 0, e21_masses_stance: 0, e21_prussia_share: '0.0',
-    e21_prussia_merseburg: 0, e21_cg_rakosi_out: 0, e21_cg_lenin_out: 0, e21_cg_halle_out: 0, e21_cg_levi_out: 0,
-    e21_prussia_bonus: 0, e21_prussia_uspd: 0, e21_prussia_spd: 0, e21_prussia_better: 0, e21_cc_for: 0, e21_cc_against: 0, e21_spread_to: 0, e21_brandler_jailed: 0, e21_card_struck: 0, e21_gates_name: 0, e21_refuse_trade: 0, e21_refuse_saxony: 0, e21_refuse_mil: 0, e21_unionist_here: 1, e21_jena_motions: 0,
-    e21_jena_walkout_lost: 0, e21_jena_winner: 0, e21_jena_margin: 0, e21_jena_won: 0, e21_jena_share_u: 0, e21_jena_share_o: 0, e21_jena_share_l: 0,
-    e21_lenin_letter_mood: 0, e21_cg_halle_name: 0, e21_backing_right: 0, e21_backing_levi: 0, e21_cg_halle_ours: 0, e21_prison_brandler: 0, e21_kag_target_faction_name: 0, e21_kag_target_members: 0
+    e21_open_letter_done: 0, e21_livorno: 0, e21_prussia_done: 0, e21_prussia_bonus: 0,
+    e21_prussia_seats: 0, e21_prussia_share: '0.0', e21_prussia_spd: 0, e21_prussia_better: 0,
+    e21_cc_done: 0, e21_cc_mode: 0, e21_cc_closed: 0, e21_cc_tilt: 0, e21_cc_win_chance: 0,
+    e21_cc_odds: 2, e21_cc_won: 0, e21_cc_for: 0, e21_cc_against: 0, e21_levi_resigned: 0,
+    e21_cg_rakosi_out: 0,
+    // the March Action
+    e21_kun_done: 0, e21_offensive_plan: 0, e21_can_avoid: 0, e21_march_started: 0,
+    e21_march_mode: 0, crisis_march: 0, e21_ma_out: 0, e21_ma_need: 330, e21_ma_rift: 0,
+    e21_ma_called: 0, e21_ma_gain: 0, e21_ma_strikes: 0, e21_ma_struck_names: 0, e21_ma_state: 0,
+    e21_ma_calloff: 0, e21_ma_hoelz: 0, e21_ma_eberlein: 0, e21_eberlein_result: 0,
+    e21_arms_saved: 0, e21_leuna: 0, e21_leuna_p: 0, e21_leuna_odds: 2, e21_spread_to: 0,
+    e21_gates_vote: 0, e21_gates_name: 0, e21_card_district: 0, e21_card_men: 0,
+    e21_refuse_done: 0, e21_refuse_district: 0, e21_refuse_name: 0, e21_refuse_trade: 0,
+    e21_refuse_saxony: 0, e21_refuse_men: 0, e21_refuse_outcome: 0,
+    e21_final_momentum: 0, e21_soviet_viable: 0, e21_central_done: 0, e21_brandler_jailed: 0,
+    // after March
+    e21_after_done: 0, e21_levi_fate: 0, e21_quarrel_done: 0, e21_moscow_friend: 0,
+    e21_new_cabinet: 0, e21_real_values: 0, e21_dumps: 0, e21_hoelz_campaign: 0,
+    e21_third_done: 0, e21_lenin_mood: 0, e21_masses_stance: 0, e21_levi_open: 0,
+    e21_levi_plea: 0, e21_plea_p: 0, e21_plea_odds: 2, e21_levi_verdict: 0,
+    // Jena
+    e21_jena_done: 0, e21_jena_case: 0, e21_levi_score: 0, e21_left_ahead: 0, e21_left_strong: 0,
+    e21_can_readmit: 0, e21_jena_levi_motion: 0, e21_unionist_here: 1, e21_jena_motions: 0,
+    e21_jena_backing: 0, e21_jena_closed: 0, e21_jena_walkout_lost: 0, e21_jena_winner: 0,
+    e21_jena_margin: 0, e21_jena_won: 0, e21_jena_share_u: 0, e21_jena_share_o: 0, e21_jena_share_l: 0,
+    e21_jena_readmit_ok: 0, e21_levi_readmitted: 0, e21_left_split_pending: 0, e21_left_leads: 0,
+    e21_cg_lenin_out: 0, e21_lenin_letter_mood: 0, e21_backing_right: 0,
+    e21_cg_levi_out: 0, e21_backing_levi: 0, e21_cg_halle_out: 0, e21_cg_halle_ours: 0,
+    // the autumn
+    e21_kag_done: 0, e21_kagd_done: 0, e21_kag_target: 0, e21_kag_target_name: 0,
+    e21_kag_target_faction_name: 0, e21_kag_outcome: 0, e21_maslow_moscow: 0,
+    e21_prison_done: 0, e21_prison_id: 0, e21_prison_name: 0, e21_prison_brandler: 0,
+    e21_prison_outcome: 0, e21_escape_p: 0, e21_escape_odds: 2, e21_brandler_escaped: 0,
+    e21_docs_bad: 0
 };
 for (var k in start) {
     if (Q[k] === undefined) {

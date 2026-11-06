@@ -18,18 +18,15 @@ Q.e21_can_readmit = (Q.e21_jena_case == 1 && Q.luxemburgist_gone != 1 && (Q.e21_
 Q.e21_jena_levi_motion = (Q.luxemburgist_gone != 1 && (Q.e21_jena_case == 2 || Q.e21_can_readmit == 1)) ? 1 : 0;
 Q.e21_unionist_here = (Q.unionist_gone != 1) ? 1 : 0;
 Q.e21_jena_motions = (Q.e21_unionist_here ? 1 : 0) + (Q.offensive_gone != 1 ? 1 : 0) + Q.e21_jena_levi_motion;
-RG.news('Party congress opens in the Volkshaus at Jena', 3);
 !}
 
 = The Jena Congress
 
-From 22 to 26 August the party holds its congress in the Volkshaus at Jena. The delegates vote to drop the word "United" from the party's name: from now on it is the Communist Party of Germany, section of the Communist International, the **KPD**. Nobody pretends that the name is the real business.
+From 22 to 26 August the party meets in the Volkshaus at Jena. The delegates vote to drop the word "United" from the name: from now on it is the Communist Party of Germany, the **KPD**. Nobody pretends that the name is the real business.
 
-[? if e21_jena_case = 1 and march_action = 1 : The party that began the year with [+ e21_members_jan +] thousand members has [+ members_display +] thousand left. The rest were lost to the prisons, to despair and to Levi. Those who remain want to know who is to blame, and who will lead. ?][? if e21_jena_case = 1 and march_action != 1 : Levi is gone. His friends are still in the hall, and the Left wants them gone too. ?][? if e21_jena_case = 2 and march_action = 0 : Levi is in the hall, and the party is whole. But Ruth Fischer's Berlin delegates have come to Jena to settle accounts with the leadership that refused to fight in March. ?][? if e21_jena_case = 2 and march_action != 0 : Levi is still a member, and the question of what he is to be divides the congress. ?]
+[? if e21_jena_case = 1 and march_action = 1 : The party has lost a great part of its members since March, to the prisons, to despair and to Levi, and those who are left want to know who is to blame. ?][? if e21_jena_case = 1 and march_action != 1 : Levi is gone. His friends are still in the hall, and the Left wants them gone too. ?][? if e21_jena_case = 2 and march_action = 0 : Levi is in the hall and the party is whole, but Ruth Fischer's Berlin delegates have come to settle accounts with the leaders who would not fight in March. ?][? if e21_jena_case = 2 and march_action != 0 : Levi is still a member, and the question of what to do with him divides the congress. ?]
 
-The motions on the leadership go to the vote at the end of the week. [? if e21_unionist_here = 1 : Brandler, Thalheimer and Ernst Meyer ask for a Zentrale that will apply the theses of the world congress: the united front, patiently. ?][? if offensive_gone = 0 : Ruth Fischer and Arkadi Maslow ask for one that will not apologise for March. ?][? if e21_jena_levi_motion = 1 and e21_jena_case = 2 : Levi's friends ask for his line, and for him. ?][? if e21_jena_levi_motion = 1 and e21_jena_case = 1 : Levi's friends move that he and those who left with him be readmitted. ?]
-
-[? if comrade_brandler = 2 : Brandler himself is in a fortress cell, and his motion is moved by Thalheimer. ?][? if comrade_maslow = 3 : Maslow is still in Moscow, explaining himself. ?][? if comintern_rep : [+ comintern_rep +] sits in the gallery, and takes notes. ?]
+[? if e21_unionist_here = 1 : Brandler, Thalheimer and Ernst Meyer ask for a Zentrale that will apply the world congress's theses. ?][? if offensive_gone = 0 : Ruth Fischer and Arkadi Maslow ask for one that will not apologise for March. ?][? if e21_jena_levi_motion = 1 and e21_jena_case = 2 : Levi's friends ask for his line, and for him. ?][? if e21_jena_levi_motion = 1 and e21_jena_case = 1 : Levi's friends move that he and those who left with him be readmitted. ?] [? if comrade_brandler = 2 : Brandler is in a fortress cell, and Thalheimer moves his motion for him. ?]
 
 The Zentrale must decide whose motion it will fight for.
 
@@ -40,37 +37,37 @@ The Zentrale must decide whose motion it will fight for.
 
 @right
 view-if: e21_unionist_here = 1
-subtitle: What history did, and Moscow's preference after the world congress. The Left will fight it district by district.
+subtitle: What happened, and what Moscow wants after the world congress. The Left will fight it district by district.
 on-arrival: {!
 Q.e21_jena_backing = 3;
 Q.lean_unionist += 2;
 !}
 
-The Zentrale's speakers are told: Brandler's motion, and the theses of the world congress, without amendments.
+The Zentrale's speakers are told: Brandler's motion and the world congress's theses, without amendments.
 
 - @open: The delegates take their seats.
 
 @left
 view-if: offensive_gone = 0
-subtitle: The Left's hour: the defenders of the offensive ask for the party. Lenin will not be pleased.
+subtitle: The defenders of the offensive ask for the party. Lenin will not be pleased.
 on-arrival: {!
 Q.e21_jena_backing = 2;
 Q.lean_offensive += 2;
 !}
 
-The Zentrale throws its weight behind Ruth Fischer's motion. The Berlin delegates cannot believe their luck, and do not quite trust it.
+The Zentrale comes out for Ruth Fischer's motion. The Berlin delegates cannot believe their luck.
 
 - @open: The delegates take their seats.
 
 @levi
 view-if: e21_jena_levi_motion = 1
-subtitle: The Spartacist line. [? if e21_jena_case = 1 : Lenin left the door ajar. The congress may slam it. ?][? if e21_jena_case = 2 : Levi and Zetkin lead, if the congress lets them. The Left may not stay. ?]
+subtitle: [? if e21_jena_case = 1 : Lenin left the door ajar, and the congress may close it. ?][? if e21_jena_case = 2 : Levi and Zetkin lead, if the congress lets them. The Left may not stay. ?]
 on-arrival: {!
 Q.e21_jena_backing = 1;
 Q.lean_luxemburgist += 2;
 !}
 
-The Zentrale stands with Levi's friends. Zetkin will move the motion. In the corridors, the Left starts counting who will walk out with them if it passes.
+The Zentrale stands with Levi's friends, and Zetkin will move the motion. In the corridors, the Left starts counting who will walk out if it passes.
 
 - @open: The delegates take their seats.
 
@@ -115,4 +112,4 @@ if (Q.e21_levi_fate == 3 && Q.e21_jena_levi_motion == 1) { RG.congress.swayTo('l
 RG.congress.bitter(2);
 !}
 
-The Volkshaus is a hall built by Carl Zeiss's foundation for the workers of Jena, with a stage, a gallery and bad acoustics. [+ congress_delegates_total +] delegates have mandates. The first count of heads in the corridors gives our side [+ congress_votes_for +] per cent of them.
+The Volkshaus was built by the Carl Zeiss foundation for the workers of Jena. It has a stage, a gallery and bad acoustics. The first count in the corridors gives our side [+ congress_votes_for +] per cent of the delegates.

@@ -1,13 +1,11 @@
 title: Livorno
-subtitle: The Italian Socialist Party splits, and the quarrel comes home.
+subtitle: The Italian socialists split, and Moscow keeps only a third.
 new-page: true
 tags: event
 view-if: year = 1921 and month = 1 and e21_open_letter_done = 1 and e21_livorno = 0
 max-visits: 1
 priority: 9
 on-arrival: {!
-// Moscow wants the German party to approve the split; the February
-// Central Committee will decide whether it does.
 if (Q.comintern_member == 1) {
     RG.directive({
         id: 'livorno',
@@ -21,54 +19,41 @@ if (Q.comintern_member == 1) {
         announce: false
     });
 }
-RG.news('Livorno: the Italian socialists split, and Moscow keeps only a third', 3);
 !}
 
 = Livorno
 
-From 15 to 21 January the Italian Socialist Party holds its congress in the Teatro Goldoni at Livorno. The Comintern has sent two envoys, the Hungarian Mátyás Rákosi and the Bulgarian Christo Kabakchiev. Their task is to make the party expel Turati's reformists. Serrati, who leads the majority, accepts the Twenty-One Conditions but refuses to break with Turati on Moscow's timetable.
+In the Teatro Goldoni at Livorno, Moscow's envoys, the Hungarian Mátyás Rákosi and the Bulgarian Christo Kabakchiev, demand that the Italian Socialist Party expel Turati's reformists. Serrati, who leads the majority, will not do it on Moscow's timetable. So the envoys split the party instead. Bordiga walks out with a third of the delegates to found the Communist Party of Italy, and the mass of the Italian socialist workers stays with Serrati, outside the International.
 
-The envoys break instead. Bordiga's minority walks out singing the Internationale and founds the Communist Party of Italy with a third of the delegates. The great mass of the Italian socialist workers stays with Serrati, outside the International.
-
-[? if levi_in_party = 1 : Paul Levi was in the hall. He comes back convinced that Rákosi has thrown away a mass party to keep a pure sect, and he says so. Rákosi, for his part, has been heard to say that the German party might need a split of its own. ?][? if levi_in_party = 0 : Our delegates come back divided. Some say Rákosi has thrown away a mass party to keep a pure sect. ?]
+[? if levi_in_party = 1 : Paul Levi was in the hall. He comes home convinced that Rákosi has thrown away a mass party to keep a pure sect. Rákosi has been heard to say that the German party may need a Livorno of its own. ?][? if levi_in_party = 0 : Our delegates come home divided. ?]
 
 - @defend: Defend Serrati's majority in the Rote Fahne.
 - @inside: Keep the dispute inside the Zentrale.
-- @endorse: Endorse the Comintern's split.
+- @endorse: Endorse the split.
 
 @defend
-subtitle: The Spartacist line: a party of the masses, and our own judgement. Moscow will hear of it.
+subtitle: [? if levi_in_party = 1 : Levi will write it under his own name, and the Central Committee will judge him by it. ?] Zinoviev will be furious.
 on-arrival: {!
 Q.e21_livorno = 1;
 Q.independence += 8;
-Q.luxemburgist_satisfaction += 8;
-Q.unionist_satisfaction += 2;
-Q.offensive_satisfaction -= 6;
 Q.lean_luxemburgist += 2;
-Q.lean_offensive -= 1;
 RG.ecci('zinoviev', -8);
-RG.ecci('bukharin', -4);
-RG.ecci('radek', -4);
-RG.ecci('lenin', -2);
 !}
 
-Levi's articles say what many think: that you cannot build a communist party by expelling the workers. In the Hotel Lux, the articles are translated and underlined. [? if directive_livorno = 1 : Zinoviev's telegram demanding that the German party approve the split is still unanswered. The Central Committee will have to answer it in February. ?]
+[? if levi_in_party = 1 : Levi's articles ?][? if levi_in_party = 0 : Our articles ?] say what many think: you cannot build a communist party by expelling the workers. In the Hotel Lux in Moscow, the articles are translated and underlined.
 
 @inside
-subtitle: No public quarrel with Moscow. The question will come back at the Central Committee.
+subtitle: No public quarrel. Moscow's telegram stays on the table until February.
 on-arrival: {!
 Q.e21_livorno = 2;
 Q.unity += 3;
-Q.unionist_satisfaction += 3;
-Q.lean_unionist += 1;
 RG.comply(10);
-RG.ecci('zinoviev', -2);
 !}
 
-The Zentrale debates Livorno behind closed doors, and the Rote Fahne prints only the facts. Rákosi takes the silence for weakness. [? if directive_livorno = 1 : The Executive's telegram demanding our approval stays on the table until the Central Committee meets. ?]
+The Zentrale argues about Livorno behind closed doors, and the Rote Fahne prints only the facts. Rákosi takes the silence for weakness.
 
 @endorse
-subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] The Left's line: the International decides, and it was right to purge.
+subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] Moscow gets what it asked for. Levi will be fighting on ground he has already lost.
 choose-if: lock_moscow_orders < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids taking orders from Moscow.
 on-arrival: {!
@@ -77,14 +62,9 @@ if (Q.lock_moscow_orders == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.e21_livorno = 3;
-Q.independence -= 6;
-Q.offensive_satisfaction += 8;
-Q.luxemburgist_satisfaction -= 8;
 Q.lean_offensive += 2;
-Q.lean_luxemburgist -= 1;
 RG.ecci('zinoviev', 6);
-RG.ecci('bukharin', 4);
 RG.comply(100);
 !}
 
-The Rote Fahne salutes the new Communist Party of Italy and condemns Serrati. [? if levi_in_party = 1 : Levi does not sign the article. Everybody notices. ?]
+The Rote Fahne salutes the new Communist Party of Italy and condemns Serrati. [? if levi_in_party = 1 : Levi does not sign the article, and everybody notices. ?]

@@ -1,5 +1,5 @@
 title: The Mark Falls
-subtitle: Prices are running away, and wages are not.
+subtitle: The dollar passes two hundred and fifty marks.
 new-page: true
 tags: event
 view-if: year = 1921 and month = 11 and crisis = 0 and congress = 0
@@ -7,22 +7,40 @@ max-visits: 1
 priority: 6
 on-arrival: {!
 Q.inflation += 4;
-Q.worker_support += 1;
 RG.news('The dollar passes 250 marks: hunger riots in Berlin', 3);
 !}
 
 = The Mark Falls
 
-In January a dollar cost sixty-five marks. In November it costs more than two hundred and fifty. Bread, potatoes and coal are rising week by week, and the wage agreements signed in spring are worth less every Friday. Industrialists like Hugo Stinnes, who borrowed in marks to buy factories, mines and newspapers, are growing richer by the day.
+In January a dollar cost sixty-five marks. In November it costs more than two hundred and fifty. Bread, potatoes and coal rise week by week, and the wage agreements signed in the spring are worth less every Friday. Hugo Stinnes, who borrowed in marks to buy mines and newspapers, grows richer by the day. In Berlin shops are plundered.
 
-In Berlin there are hunger demonstrations and shops are plundered. Housewives ask the union offices what they are for.
+[? if e21_real_values = 1 : The union branches in Saxony and Thuringia have dug out our demand of May for the seizure of real values. They want to know if the party still means it. ?]
 
+- @real_values: Take the seizure of real values to the unions.
 - @committees: Form price control committees in the factories.
-- @real_values: Campaign for the seizure of real values.
-- @hunger: Lead the hunger demonstrations.
+- @hunger: Lead the hunger marches in Berlin.
+
+@real_values
+view-if: e21_real_values = 1
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] The demand we made in May, now that the workers can see the point of it.
+choose-if: lock_union_work < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids work inside the reformist unions.
+on-arrival: {!
+if (Q.lock_union_work == 1) {
+    Q.unity -= 10;
+    Q[Q.leading_faction + '_satisfaction'] -= 10;
+}
+Q.worker_support += 5;
+Q.spd_relation += 4;
+Q.lean_unionist += 2;
+RG.comply(15);
+RG.ledger('The party\'s demand for the seizure of real values was taken up by the unions in the inflation of 1921.', 'e21_real_values');
+!}
+
+Brandler's people carry the demand into the ADGB branches of Saxony and Thuringia, where it passes at meeting after meeting. The ADGB leaders say it is worth discussing, which is more than they have ever said about any demand of ours.
 
 @committees
-subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The councils' method: workers check the prices themselves.
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Workers and housewives check the prices themselves.
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids council action.
 on-arrival: {!
@@ -31,35 +49,17 @@ if (Q.lock_councils == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.worker_support += 3;
-Q.militancy += 2;
-Q.luxemburgist_satisfaction += 4;
 Q.lean_luxemburgist += 1;
 !}
 
-Control committees of workers and housewives visit the markets and the warehouses. They find hoarded potatoes, and post the names of the hoarders on factory notice boards.
-
-@real_values
-subtitle: The Right's line: a demand for the unions and the Reichstag.
-on-arrival: {!
-Q.worker_support += 2;
-Q.uspd_relation += 3;
-Q.spd_relation += 2;
-Q.unionist_satisfaction += 5;
-Q.lean_unionist += 2;
-RG.comply(10);
-!}
-
-The party's demand, that the state take a share of every factory and estate instead of printing money, is taken up by union branches in Saxony and Thuringia. The ADGB's leaders say it is worth discussing, which is more than they have ever said about any demand of ours.
+Control committees of workers and housewives visit the markets and warehouses. They find hoarded potatoes and post the hoarders' names on the factory notice boards.
 
 @hunger
-view-if: offensive_gone = 0
-subtitle: The Left's line. The unemployed are with us; the police are waiting.
+subtitle: The unemployed will march behind our banners. The Berlin police are waiting for them.
 on-arrival: {!
-Q.worker_support += 1;
-Q.offensive_satisfaction += 5;
-Q.lean_offensive += 2;
 RG.district('berlin', {militancy: 8, repression: 8, loyalty: 5});
 RG.startStrike('berlin');
+Q.lean_offensive += 2;
 !}
 
 Columns of the unemployed march on the Berlin city hall behind our banners. Windows are broken, and so are heads.

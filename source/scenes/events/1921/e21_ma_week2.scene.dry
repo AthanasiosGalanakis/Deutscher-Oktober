@@ -1,71 +1,60 @@
 title: Leuna
-subtitle: The great chemical works are in the workers' hands, and the guns are coming.
+subtitle: The police bring up artillery against the chemical works.
 new-page: true
 tags: event
 view-if: crisis_march = 1 and crisis_time = 2
 max-visits: 1
 priority: 10
 on-arrival: {!
-// which district will refuse to come out (read by e21_ma_refusal)
+// what the works guard has to fight with
+var arms = Q.red_guards_arms + 3 * (Q.district_halle_guards || 0) + (Q.e21_ma_hoelz == 1 ? 10 : 0);
+var p = 0.1 + arms / 120 + (Q.e21_ma_out >= 200 ? 0.1 : 0) - 0.04 * Q.e21_ma_rift;
+Q.e21_leuna_p = Math.max(0.1, Math.min(0.75, p));
+Q.e21_leuna_odds = (Q.e21_leuna_p < 0.3) ? 1 : ((Q.e21_leuna_p < 0.5) ? 2 : 3);
+// the district that will refuse to come out, if the Zentrale called the Reich out
 var c = Q.districts.filter(function (d) {
     return d != 'halle' && !Q['district_' + d + '_strike'] && Q['district_' + d + '_members'] >= 3;
 });
 c.sort(function (a, b) { return Q['district_' + a + '_militancy'] - Q['district_' + b + '_militancy']; });
 Q.e21_refuse_district = c.length ? c[0] : 0;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
 = Leuna
 
-The Leuna works near Merseburg, the biggest chemical plant in Europe, have been occupied since the first days of the strike. Thousands of workers live inside the walls. They have rifles, a few machine guns and an armoured train they built themselves in the works' shops.
+The Leuna works near Merseburg, the biggest chemical plant in Europe, have been in the workers' hands since the strike began. Thousands live inside the walls. They have rifles, a few machine guns and an armoured train they built in the works' own shops.
 
-[? if crisis_momentum >= 65 : Around Leuna the police are hesitant. Their officers have asked Berlin for the Reichswehr, and Berlin has not yet said yes. ?][? if crisis_momentum < 65 : The Security Police have brought up artillery. Their commander has given the occupiers until dawn. ?]
+The Security Police have brought up artillery and given the occupiers until dawn. [? if e21_leuna_odds = 1 : The man who commands the works guard, a sergeant in the war, does not think they can hold for a day. ?][? if e21_leuna_odds = 2 : The commander of the works guard thinks it could go either way. ?][? if e21_leuna_odds = 3 : The commander of the works guard thinks they can hold, if the walls do. ?]
 
-- @hold: Hold the works to the last.
-- @withdraw: Negotiate a withdrawal with honour.
-- @relieve: Send fighters from Halle to break the ring.
+- @hold: Hold the works.
+- @relieve: Send the Halle fighting groups to break the ring.
+- @withdraw: Negotiate a way out.
 
 @hold
-subtitle: The Left's line. If Leuna holds, the action holds. If it falls, it falls hard.
+subtitle: If Leuna holds, the strike holds. If it falls, it falls hard.
 on-arrival: {!
-var arms = Q.red_guards_arms + (Q.e21_ma_hoelz ? 10 : 0);
-var hg = Q.district_halle_guards || 0;
-if (arms >= 30 || Q.crisis_momentum >= 65 || (hg >= 5 && arms >= 22)) {
-    Q.crisis_momentum += 8;
+if (Math.random() < Q.e21_leuna_p) {
     Q.e21_leuna = 1;
-    RG.district('halle', {guards: 1, militancy: 5, repression: 4});
-    RG.news('Leuna holds: the police fall back on the Merseburg road', 3);
+    Q.e21_ma_out += 50;
     RG.ledger('The workers of Leuna held their works against the Security Police.', 'e21_leuna_held');
 } else {
-    Q.crisis_momentum -= 8;
     Q.e21_leuna = 2;
-    RG.district('halle', {members: -0.08, guards: -2, repression: 12, militancy: -4});
+    Q.e21_ma_out = Math.max(20, Q.e21_ma_out - 60);
+    RG.district('halle', {members: -0.08, guards: -2, repression: 12});
     RG.news('Leuna stormed: more than a thousand prisoners marched away', 3);
-    RG.ledger('The Leuna works were shelled and stormed on 29 March 1921.', 'e21_leuna_fell');
 }
-Q.offensive_satisfaction += 5;
 Q.lean_offensive += 2;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-[? if e21_leuna = 1 : The guns open up at dawn and the works do not fall. By evening the police have pulled back to the Merseburg road. Leuna becomes a word that is spoken in every factory in Germany. ?][? if e21_leuna = 2 : On 29 March the police shell the works and storm them. Those who surrender are beaten in the yard; some are shot. More than a thousand men are marched away as prisoners. ?]
-
-@withdraw
-subtitle: The Right's line, and the Spartacists'. We lose the works, not the men.
-on-arrival: {!
-Q.e21_leuna = 3;
-Q.crisis_momentum -= 4;
-Q.unionist_satisfaction += 4;
-Q.luxemburgist_satisfaction += 4;
-Q.offensive_satisfaction -= 6;
-Q.lean_unionist += 1;
-Q.lean_luxemburgist += 1;
-RG.district('halle', {repression: 3, loyalty: -3});
-RG.news('Leuna: the occupiers march out of the works with their heads high', 2);
-!}
-
-Through a works council member with a brother in the police, the occupiers agree to march out with their heads high and their rifles hidden. The police take an empty factory. The Left calls it capitulation.
+[? if e21_leuna = 1 : The guns open up at dawn and the works do not fall. By evening the police have pulled back to the Merseburg road. ?][? if e21_leuna = 2 : On 29 March the police shell the works and storm them. Those who surrender are beaten in the yard, and some are shot. More than a thousand men are marched away. ?]
 
 @relieve
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Strike at the police from behind. Needs arms and men we may not have.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Better odds if Halle has fighting groups to send. If the column is caught, we lose both.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed action.
 on-arrival: {!
@@ -73,21 +62,37 @@ if (Q.lock_uprising == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-if (Q.red_guards_strength >= 12 || Q.ruhr_red_army == 2 || (Q.district_halle_guards || 0) >= 6) {
-    Q.crisis_momentum += 10;
+var p = Q.e21_leuna_p + ((Q.district_halle_guards || 0) >= 5 ? 0.15 : -0.1);
+if (Math.random() < p) {
     Q.e21_leuna = 1;
-    RG.district('halle', {repression: 4, militancy: 6});
-    RG.news('Armed workers from Halle break the ring around Leuna', 3);
+    Q.e21_ma_out += 70;
+    RG.district('halle', {militancy: 6});
     RG.ledger('Armed workers from Halle broke the police ring around Leuna.', 'e21_leuna_held');
 } else {
-    Q.crisis_momentum -= 5;
     Q.e21_leuna = 2;
-    RG.district('halle', {guards: -3, repression: 10, members: -0.04});
+    Q.e21_ma_out = Math.max(20, Q.e21_ma_out - 70);
+    RG.district('halle', {guards: -3, repression: 12, members: -0.06});
     RG.news('Relief column cut down on the Merseburg road; Leuna falls', 3);
-    RG.ledger('The Leuna works were stormed on 29 March 1921, after the relief column was cut down.', 'e21_leuna_fell');
 }
-Q.militancy += 2;
 Q.lean_offensive += 2;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-[? if e21_leuna = 1 : Columns of armed workers from Halle and Ammendorf fall on the police lines from the rear. The ring breaks. ?][? if e21_leuna = 2 : The relief column is caught on the open road by machine guns. The survivors scatter, and the works fall on 29 March. ?]
+[? if e21_leuna = 1 : Columns of armed workers from Halle and Ammendorf fall on the police lines from behind, and the ring breaks. ?][? if e21_leuna = 2 : The relief column is caught on the open road by machine guns. The survivors scatter, and the works fall on 29 March. ?]
+
+@withdraw
+subtitle: We lose the works and keep the men. The strike will feel it.
+on-arrival: {!
+Q.e21_leuna = 3;
+Q.e21_ma_out = Math.max(20, Q.e21_ma_out - 10);
+RG.district('halle', {loyalty: -3});
+Q.lean_unionist += 1;
+Q.lean_luxemburgist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
+
+Through a works council member with a brother in the police, the occupiers agree to march out in the night with their rifles hidden under their coats. In the morning the police take an empty factory.

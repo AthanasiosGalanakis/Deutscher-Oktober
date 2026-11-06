@@ -9,33 +9,15 @@ on-arrival: soviet_russia_status = 'Famine on the Volga; the New Economic Policy
 
 = Famine on the Volga
 
-After drought and seven years of war, famine has struck the Volga basin. Millions are starving; there are reports of cannibalism. Maxim Gorky has appealed to the world for help, and Lenin has accepted aid even from Herbert Hoover's American Relief Administration.
+After drought and seven years of war, famine has struck the Volga. Millions are starving. Lenin has accepted help even from Herbert Hoover's American Relief Administration.
 
-In Berlin, Willi Münzenberg has founded the Workers' International Relief, to collect money, food and tools from workers abroad for Soviet Russia. He wants the party behind it, but not in front of it: the relief should be for everyone who wants to help.
+In Berlin, Willi Münzenberg has founded the Workers' International Relief to collect money, food and tools for Soviet Russia. He wants the party behind it and not in front of it, so that anyone who wants to help can.
 
-- @all_in: Throw the whole party into the campaign.
-- @broad: Make it a campaign of the whole labour movement.
-- @party: Keep the collection in the party's hands.
-
-@all_in
-subtitle: Costs 1 fund. Workers respond to a cause they can see.
-choose-if: resources >= 1
-unavailable-subtitle: We have no funds.
-on-arrival: {!
-Q.resources -= 1;
-Q.worker_support += 3;
-Q.world_revolution += 2;
-Q.independence -= 2;
-Q.offensive_satisfaction += 2;
-Q.luxemburgist_satisfaction += 2;
-RG.ecci('lenin', 5);
-RG.ecci('all', 2);
-!}
-
-Every party cell collects. Lorries leave Berlin for Petrograd with flour, medicine and tractors. The Russian comrades write to thank us.
+- @broad: Collect with the unions and the SPD.
+- @party: Run the collection through the party's own offices.
 
 @broad
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's way: invite the unions and the SPD to collect with us.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The relief gets the credit, not the party. Lenin will like it.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids joint campaigns with the social democrats.
 on-arrival: {!
@@ -45,23 +27,17 @@ if (Q.lock_united_front == 1) {
 }
 Q.worker_support += 3;
 Q.spd_relation += 3;
-Q.uspd_relation += 3;
-Q.unionist_satisfaction += 4;
-Q.lean_unionist += 1;
-RG.comply(10);
-RG.ecci('lenin', 3);
+RG.ecci('lenin', 4);
 !}
 
-Collection committees form in factories where communists and social democrats have not spoken for two years. The Vorwärts reports on the famine without a sneer.
+Collection committees form in factories where communists and social democrats have not spoken for two years. Lorries leave Berlin for Petrograd with flour, medicine and tractors.
 
 @party
-subtitle: Brings in 1 fund. Our relief, our credit, as Moscow would prefer.
+subtitle: Brings in 2 funds, for the organisation's costs. Münzenberg will protest.
 on-arrival: {!
-Q.independence -= 3;
-Q.resources += 1;
-Q.offensive_satisfaction += 3;
-Q.lean_offensive += 1;
+Q.resources += 2;
+Q.worker_support -= 2;
 RG.ecci('zinoviev', 3);
 !}
 
-The party runs the collection through its own offices and keeps some of the funds for the organisation's costs. Münzenberg protests, and is overruled.
+The party runs the collection through its own offices and keeps a share for the organisation's costs. Münzenberg protests and is overruled. The *Vorwärts* asks how much of the flour reached the Volga.

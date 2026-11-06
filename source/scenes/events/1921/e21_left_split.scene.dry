@@ -12,74 +12,59 @@ RG.news('Berlin opposition conference: the Left threatens to leave the party', 3
 
 = The Left Breaks Away
 
-Since Jena the Berlin district has refused to distribute the Rote Fahne's articles on the united front. In September Ruth Fischer and Arkadi Maslow call a conference of the opposition. Berlin comes, and parts of Hamburg, the Ruhr and the Palatinate. They say the party has become a second USPD under Levi, and that the revolutionaries must save the International's honour in Germany, alone if need be.
+Since Jena the Berlin district has refused to distribute the Rote Fahne's articles on the united front. In September Ruth Fischer and Arkadi Maslow call a conference of the opposition. Berlin comes, and parts of Hamburg, the Ruhr and the Palatinate. The party has become a second USPD under Levi, they say, and the revolutionaries must keep the International's flag flying in Germany, alone if need be.
 
-The KAPD has already offered them a home. Zinoviev has not yet decided whose side he is on.
+The KAPD has already offered them a home. Zinoviev has not decided whose side he is on.
 
 - @let_go: Let them go.
 - @leaders: Expel Fischer and Maslow, and keep their members.
-- @offer: Make a last offer: seats in the Zentrale.
+- @offer: Offer the Left seats in the Zentrale.
 
 @let_go
-subtitle: The party loses the Left, and its districts, but the line is clear.
+subtitle: The Left's districts leave with them, and what remains is of one mind.
 on-arrival: {!
 Q.left_split = 1;
 Q.offensive_gone = 1;
-Q.e21_left_lost = 0;
 var heir = (Q.leading_faction == 'offensive') ? 'unionist' : Q.leading_faction;
 for (var d of Q.districts) {
     if (Q['district_' + d + '_faction'] == 'offensive') {
-        var lost = Q['district_' + d + '_members'] * 0.5;
-        Q.e21_left_lost += lost;
-        Q['district_' + d + '_members'] -= lost;
+        Q['district_' + d + '_members'] *= 0.5;
         Q['district_' + d + '_faction'] = heir;
         Q['district_' + d + '_loyalty'] = 50;
     }
 }
-Q.e21_left_lost = Math.round(Q.e21_left_lost);
 Q.offensive_satisfaction = 0;
 if (Q.junior_faction == 'offensive') {
     Q.junior_faction = 0;
 }
 Q.kapd_exists = 1;
-Q.kapd_relation -= 10;
-RG.ecci('zinoviev', -8);
-RG.ecci('bukharin', -6);
-RG.ecci('lenin', 2);
 Q.unity += 12;
-Q.worker_support -= 3;
-Q.luxemburgist_satisfaction += 6;
+RG.ecci('zinoviev', -8);
 !}
 
-The opposition walks out and founds the Communist Left. Within weeks it is talking about fusion with the KAPD. About [+ e21_left_lost +] thousand members follow it. The party that remains is smaller, calmer and, for the first time, of one mind.
+The opposition walks out and founds a Communist Left, and within weeks it is talking about fusion with the KAPD. Half the members in the Left's districts go with it.
 
 @leaders
-subtitle: The Right's way: cut off the head. A smaller split, and a bitter one.
+subtitle: A smaller split, and a bitter one. Most of the Left's members stay, and they do not forget.
 on-arrival: {!
 Q.left_split = 1;
 RG.district('berlin', {members: -0.2, loyalty: -10});
 if (Q.comrade_fischer == 1 || Q.comrade_fischer == 2) { RG.expel('fischer', {news: 'Ruth Fischer expelled from the party', priority: 2}); }
 if (Q.comrade_maslow == 1 || Q.comrade_maslow == 2 || Q.comrade_maslow == 3) { RG.expel('maslow', {quiet: true}); }
+Q.offensive_satisfaction -= 20;
 RG.ecci('zinoviev', -6);
 RG.ledger('Ruth Fischer and Arkadi Maslow were expelled, and part of Berlin went with them.', 'e21_fischer_expelled');
-Q.offensive_satisfaction -= 20;
-Q.unionist_satisfaction += 4;
-Q.unity -= 2;
-Q.lean_unionist += 1;
 !}
 
-The Zentrale expels Fischer, Maslow and a dozen of their lieutenants. Part of Berlin goes with them. Most of the Left's members stay in the party, and they do not forget.
+The Zentrale expels Fischer, Maslow and a dozen of their lieutenants. Part of Berlin goes with them.
 
 @offer
-subtitle: No split. The Left joins the Zentrale, and Levi's line is watered down.
+subtitle: No split. The Left joins the Zentrale, and the united front will be applied "from below".
 on-arrival: {!
 Q.junior_faction = 'offensive';
 RG.setRole('fischer', 'Zentrale; leader of the Left');
-RG.ecci('zinoviev', 3);
 Q.offensive_satisfaction += 20;
 Q.luxemburgist_satisfaction -= 8;
-Q.unity += 4;
-Q.lean_offensive += 1;
 !}
 
-At the last moment the Zentrale offers the opposition three seats and a promise that the united front will be applied "from below". Fischer accepts, and tells her friends that it is only a truce.
+At the last moment the Zentrale offers the opposition three seats. Fischer accepts, and tells her friends that it is a truce.

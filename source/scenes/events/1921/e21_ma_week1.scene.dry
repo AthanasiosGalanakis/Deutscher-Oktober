@@ -1,5 +1,5 @@
-title: The General Strike Call
-subtitle: Central Germany is fighting. Will the rest of the country follow?
+title: The Strike Call
+subtitle: Central Germany is out. The rest of the country is at work.
 new-page: true
 tags: event
 view-if: crisis_march = 1 and crisis_time = 1
@@ -7,57 +7,65 @@ max-visits: 1
 priority: 10
 on-arrival: {!
 // 23 March: the unemployed occupy the Hamburg yards and are shot out of them
-RG.district('hamburg', {militancy: 10, repression: 10, loyalty: 3});
-RG.news('Hamburg: police clear the occupied shipyards with rifle fire', 2);
+RG.district('hamburg', {militancy: 10, repression: 10});
+Q.e21_ma_called = 0;
+Q.e21_ma_gain = 0;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-= The General Strike Call
+= The Strike Call
 
-The Mansfeld pits are idle and the Security Police are in Eisleben and Hettstedt. [? if e21_march_mode = 2 : Max Hoelz has arrived from the Vogtland with his armed bands. They hold villages for a day, rob banks to pay the fighters, and blow up rail lines and a courthouse. The press calls them bandits, and some of them are. ?][? if e21_march_mode = 1 : The strike is solid in the copper district and spreading to the chemical works. Max Hoelz has arrived from the Vogtland with his armed bands, against our wishes, and the press is full of his robberies. ?]
+On 23 March the unemployed of Hamburg occupy the Vulcan and Blohm und Voss yards, and the police clear them with rifle fire. Everywhere else outside Central Germany the factories are working.
 
-In Hamburg on 23 March the unemployed have occupied the Vulcan and Blohm und Voss shipyards, and the police have cleared them with rifle fire. Elsewhere, the factories are working. The Zentrale must decide how far to widen the fight.
+[? if e21_march_mode = 2 : Max Hoelz has come from the Vogtland with his bands. They hold villages for a day, rob banks to pay the fighters and blow up rail lines. ?][? if e21_march_mode = 1 : The strike is solid in the copper district and in the chemical works. ?] The Zentrale must decide how far to widen it.
 
-- @national: Call a general strike across Germany.
+- @national: Call a general strike across the Reich.
 - @regional: Keep the strike to Central Germany.
-- @appeal: Ask the SPD and USPD workers to strike with us.
+- @appeal: Ask the SPD and USPD workers to come out with us.
 
 @national
-subtitle: The Left's line, and what the Zentrale did on 24 March. Everything depends on whether the workers come out.
+subtitle: Everything depends on whether the workers answer. Where they do not, our men will try to make them.
 on-arrival: {!
-var gain = (Q.worker_support >= 30) ? 10 : ((Q.worker_support >= 20) ? 5 : 1);
-Q.crisis_momentum += gain;
-Q.e21_strike_gain = gain;
-Q.militancy += 3;
-// the call reaches every district: where the mood is hot enough, they come out
-var need = (gain >= 10) ? 45 : ((gain >= 5) ? 55 : 68);
-Q.e21_ma_strikes = 0;
+var gain = (Q.worker_support >= 30) ? 120 : ((Q.worker_support >= 20) ? 80 : 50);
+Q.e21_ma_called = 1;
+Q.e21_ma_gain = gain;
+if (Q.worker_support < 25) { Q.e21_ma_rift += 2; }
+var need = (gain >= 120) ? 45 : ((gain >= 80) ? 55 : 68);
+var names = [];
 for (var d of ['berlin', 'ruhr', 'hamburg', 'saxony', 'thuringia', 'bremen']) {
     if (Q['district_' + d + '_militancy'] >= need) {
-        if (RG.startStrike(d, true)) { Q.e21_ma_strikes += 1; }
-        RG.district(d, {repression: 6});
+        if (RG.startStrike(d, true)) { gain += 15; names.push(RG.dname(d)); }
     }
 }
-RG.news('General strike called across the Reich: ' + (Q.e21_ma_strikes >= 3 ? 'the districts come out' : 'most of the country stays at work'), 3);
-Q.offensive_satisfaction += 6;
+Q.e21_ma_strikes = names.length;
+Q.e21_ma_struck_names = names.join(', ');
+Q.e21_ma_out += gain;
 Q.lean_offensive += 2;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-The call goes out on 24 March: a general strike throughout the Reich. [? if e21_strike_gain >= 10 : Hundreds of thousands answer it. For two days it looks as though the country might follow. ?][? if e21_strike_gain < 10 : In the Ruhr and in Berlin a minority comes out. Most workers read the call in the papers and go to work. ?] [? if e21_ma_strikes > 0 : Strike committees take over in [+ strike_districts +]. ?]
+The call goes out on 24 March. [? if e21_ma_gain >= 120 : Hundreds of thousands answer it, and for two days it looks as if the country might follow. ?][? if e21_ma_gain < 120 : In the Ruhr and in Berlin a minority comes out. Most workers read the call in the papers and go to work. ?] [? if e21_ma_strikes > 0 : Strike committees take over in [+ e21_ma_struck_names +]. ?][? if e21_ma_rift >= 2 : At several works our pickets try to keep the morning shift out with clubs, and the shift fights back. ?]
 
 @regional
-subtitle: The Right's caution: fight where we are strong, and nowhere else.
+subtitle: Fight where we are strong and nowhere else. The Left says we are leaving Mansfeld to die alone.
 on-arrival: {!
-Q.crisis_momentum += 3;
-Q.unionist_satisfaction += 4;
-Q.offensive_satisfaction -= 4;
-Q.lean_unionist += 1;
+Q.e21_ma_out += 30;
 Q.e21_spread_to = RG.spreadStrike('halle') ? 1 : 0;
+if (Q.e21_spread_to) { Q.e21_ma_out += 25; }
+Q.lean_unionist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-The Zentrale keeps the strike to the province of Saxony and its neighbours. The Left says we are leaving Mansfeld to die alone. But no district is ordered into a fight it cannot win. [? if e21_spread_to = 1 : The strike crosses into the neighbouring district by itself, which is how a strike ought to spread. ?]
+The Zentrale keeps the strike to the province of Saxony and its neighbours. No district is ordered into a fight it cannot win. [? if e21_spread_to = 1 : The strike crosses into the next district by itself. ?]
 
 @appeal
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Open Letter's method, in the middle of the fight.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Works best if they believe we meant the Open Letter.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids any appeal to the social democrats.
 on-arrival: {!
@@ -65,14 +73,15 @@ if (Q.lock_united_front == 1) {
     Q.unity -= 10;
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
-var gain = (Q.spd_relation >= 20 || Q.open_letter == 1) ? 8 : 3;
-Q.crisis_momentum += gain;
+var gain = (Q.open_letter == 1) ? 90 : 40;
+Q.e21_ma_gain = Math.round(gain * Math.max(0.3, 1 - 0.15 * Q.e21_ma_rift));
+Q.e21_ma_out += Q.e21_ma_gain;
 Q.spd_relation += 3;
-Q.uspd_relation += 4;
 Q.lean_unionist += 1;
 Q.lean_luxemburgist += 1;
-RG.district('halle', {loyalty: 4, militancy: 3});
-RG.ecci('radek', 2);
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-Our appeal goes to every SPD and USPD branch in Central Germany: defend the district together against Hörsing's police. Here and there, local branches join the strike committees against their own leaders' orders.
+Our appeal goes to every SPD and USPD branch in Central Germany: defend the district together against Hörsing's police. [? if e21_ma_gain >= 60 : Many local branches join the strike committees against their own leaders' orders. ?][? if e21_ma_gain < 60 : Here and there a branch comes over. Most wait to hear from their own leaders, who say no. ?]

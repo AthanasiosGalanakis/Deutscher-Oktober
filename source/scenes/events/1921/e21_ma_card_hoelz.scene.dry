@@ -1,6 +1,7 @@
 title: Max Hoelz
-subtitle: A Robin Hood with dynamite, and nobody's soldier.
-view-if: crisis_march = 1 and e21_ma_hoelz = 0 and comrade_hoelz != 2 and comrade_hoelz != 4
+subtitle: The red general of the Vogtland is in Mansfeld, and answers to nobody.
+view-if: crisis_march = 1 and e21_ma_hoelz = 0 and comrade_hoelz != 2 and comrade_hoelz != 3 and comrade_hoelz != 4
+max-visits: 1
 on-arrival: month_actions += 1
 frequency: 100
 is-card: true
@@ -9,14 +10,15 @@ tags: crisis
 
 = Max Hoelz
 
-Max Hoelz, the Vogtland rebel of the Kapp days, has come to Mansfeld with a few hundred armed men. [? if kapd_exists = 1 : We expelled him last year; he is closer to the KAPD now than to us. ?] He blows up railway lines, robs banks and post offices to pay his fighters, and burns the villas of the mine directors. The workers love him. The press calls him the red general, and the bandit.
+Max Hoelz has come to Mansfeld with a few hundred armed men. [? if kapd_exists = 1 : We expelled him last year, and he is closer to the KAPD now than to us. ?] He blows up railway lines, robs banks and post offices to pay his fighters and burns the villas of the mine directors. The miners love him. The papers call him a bandit, and the police want him more than any man in Germany.
 
-- @arms: Send him arms and a liaison officer.
-- @discipline: Bring his men under the strike committees.
-- @disown: Disown his robberies and bombs.
+- @arms: Send him rifles and money.
+- @discipline: Put his men under the strike committees.
+- @border: Get him over the Czech border before they catch him.
+- @disown: Disown him in the Rote Fahne.
 
 @arms
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's line: every rifle counts. The Spartacists are appalled.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] His bands will hold the roads. Every bank he robs is in the next day's paper.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed action.
 on-arrival: {!
@@ -25,24 +27,55 @@ if (Q.lock_uprising == 1) {
     Q[Q.leading_faction + '_satisfaction'] -= 10;
 }
 Q.e21_ma_hoelz = 1;
-Q.crisis_momentum += 8;
-RG.district('halle', {guards: 1, repression: 7});
-RG.district('saxony', {militancy: 4, repression: 2});
-Q.luxemburgist_satisfaction -= 8;
-Q.offensive_satisfaction += 5;
+Q.e21_ma_out += 30;
+Q.e21_ma_rift += 1;
+RG.district('halle', {guards: 1, repression: 6});
 Q.lean_offensive += 2;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
 !}
 
-A Zentrale courier reaches Hoelz near Hettstedt with money and a cart of rifles. For a few days his bands and the miners' fighting groups act together, and they hold the roads.
+A courier reaches Hoelz near Hettstedt with money and a cart of rifles. For a few days his bands and the miners' fighting groups act together, and they hold the roads.
 
 @discipline
-subtitle: The Right's way. Slower, but the fighters will answer to someone.
-on-arrival: e21_ma_hoelz = 2; crisis_momentum += 3; red_guards_loyalty += 5; unionist_satisfaction += 3; lean_unionist += 1
+subtitle: Slower. The fighters will answer to someone, and their rifles go to the common stock.
+on-arrival: {!
+Q.e21_ma_hoelz = 2;
+Q.e21_ma_out += 15;
+Q.red_guards_arms += 5;
+Q.lean_unionist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 
-Hoelz agrees to coordinate with the strike committees, more or less. He keeps his dynamite.
+Hoelz agrees to work with the strike committees, more or less. He keeps his dynamite.
+
+@border
+subtitle: His men will go home. He will not stand trial, and he will not be back for a long time.
+on-arrival: {!
+Q.e21_ma_hoelz = 3;
+Q.e21_ma_out = Math.max(20, Q.e21_ma_out - 10);
+RG.exile('hoelz', {news: 'Max Hoelz escapes across the Czech border', priority: 2});
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
+
+Two comrades from Plauen take Hoelz over the Erzgebirge on foot, by paths the smugglers use. He is furious, and he goes. By the end of the week he is in Prague, and then on the way to Moscow.
 
 @disown
-subtitle: The Spartacist line. The strike stays clean; it may also stay weaker.
-on-arrival: e21_ma_hoelz = 3; crisis_momentum -= 3; spd_relation += 3; luxemburgist_satisfaction += 5; offensive_satisfaction -= 4; lean_luxemburgist += 1
+subtitle: The strike stays clean, and a little smaller. The social democrats will notice.
+on-arrival: {!
+Q.e21_ma_hoelz = 4;
+Q.e21_ma_out = Math.max(20, Q.e21_ma_out - 10);
+Q.e21_ma_rift = Math.max(0, Q.e21_ma_rift - 1);
+Q.spd_relation += 4;
+Q.lean_luxemburgist += 1;
+Q.crisis_line_1 = 'Out on strike: about ' + Math.round(Q.e21_ma_out / 10) * 10 + ',000 of the ' + Q.e21_ma_need + ',000 it takes';
+Q.crisis_line_2 = ['Leuna: occupied by its workers', 'Leuna: held against the police', 'Leuna: stormed on 29 March', 'Leuna: given up without a fight'][Q.e21_leuna];
+Q.crisis_line_3 = (Q.e21_ma_rift >= 5) ? 'At the gates: the other workers have turned on us' : ((Q.e21_ma_rift >= 3) ? 'At the gates: worker against worker' : (Q.e21_ma_rift ? 'At the gates: some fights with the men at work' : 'At the gates: no fights yet'));
+!}
 
-The Rote Fahne declares that bank robbery is not a communist tactic. Hoelz reads it, laughs, and carries on.
+The Rote Fahne declares that bank robbery is not a communist method. Hoelz reads it, laughs, and carries on.
