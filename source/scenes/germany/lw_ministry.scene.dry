@@ -1,0 +1,87 @@
+title: The Interior Ministry
+new-page: true
+view-if: crisis = 0 and congress = 0 and lw_ministry_timer <= 0 and repression >= 25 and time >= 5
+on-arrival: {!
+Q.lw_ministry_timer = 6;
+Q.month_actions += 1;
+Q.lw_ministry_played = (Q.lw_ministry_played || 0) + 1;
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.card();
+RG.lw.setD(RG.lw.best(function (d) { return true; }, function (d) { return RG.lw.dv(d, 'repression') + Math.random() * 8; }));
+// who runs the police of the Land: the social democrats almost everywhere, the right in Bavaria
+Q.lw_n = Q.lw_d_bavaria ? 0 : 1;
+!}
+frequency: 150
+is-card: true
+tags: germany
+
+= The Interior Ministry
+
+The police in **[+ lw_d_name +]** answer to the Interior Ministry of [+ lw_land +]. [? if lw_n = 1 : The minister is a social democrat, as most of them are, and his officials send the security police into the workers' districts with the same instructions they had under the Kaiser. ?][? if lw_n = 0 : In Bavaria, the ministry and the police president of Munich work hand in glove with the citizens' militias and the nationalist leagues. ?]
+
+This month, the ministry has banned all open-air meetings in [+ lw_town +] and the surrounding district, and the police are enforcing it with their truncheons.
+
+- @appeal: Appeal through the social democratic deputies.
+- @expose: Publish the ministry's secret instructions.
+- @defy: Defy the ban with a mass meeting.
+- @truce: Negotiate a quiet truce with the police president.
+- @easy_discard
+
+@appeal
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A word from their own party may move the minister. It works better outside Bavaria. The Right's way.
+choose-if: lock_united_front < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids asking the social democrats for anything.
+on-arrival: {!
+RG.lw.against('united_front');
+if (Q.lw_n == 1 ? Math.random() < 0.7 : Math.random() < 0.25) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {repression: -10});
+    RG.news('Ban on meetings lifted in ' + Q.lw_town);
+} else {
+    Q.lw_out = 2;
+}
+Q.spd_relation += 3;
+RG.lw.lean('unionist', 1, 4);
+!}
+
+[? if lw_out = 1 : Social democratic deputies, embarrassed by letters from their own members, question the minister in the Landtag. The ban is lifted "in view of the calmer situation". ?][? if lw_out = 2 : The deputies promise to raise it. The minister promises to look into it. The ban stays. ?]
+
+@expose
+subtitle: Costs 1 fund. A leak from the ministry, on the front page. The police are embarrassed into caution. The Spartacist way.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds.
+on-arrival: {!
+Q.resources -= 1;
+Q.worker_support += 2;
+RG.district(Q.lw_d, {repression: -6});
+Q.stability -= 1;
+RG.news('Communists publish secret police orders for ' + Q.lw_land, 2);
+RG.lw.lean('luxemburgist', 1, 4);
+!}
+
+A clerk in the ministry, for a price, has copied the instructions to the police: lists of communists to be watched, the names of informers' handlers, and a paragraph on cooperation with the nationalist leagues. The paper prints the lot.
+
+@defy
+subtitle: Thousands in the square, banned or not. The district is fired up, and the police will answer.
+on-arrival: {!
+if (Q.lw_d_mil >= 50 || Math.random() < 0.35) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {militancy: 6, repression: -2, members: 0.03});
+} else {
+    Q.lw_out = 2;
+    RG.district(Q.lw_d, {militancy: 3, repression: 7, members: -0.02});
+}
+RG.lw.lean('offensive', 2, 4);
+!}
+
+[? if lw_out = 1 : Twenty thousand come to the square. The police look at the crowd, and then at each other, and stay in their lorries. ?][? if lw_out = 2 : Two thousand come. The police charge. By nightfall, the cells of [+ lw_town +] are full. ?]
+
+@truce
+subtitle: Calm streets, and room to organise. The Left calls it a deal with the class enemy.
+on-arrival: {!
+RG.district(Q.lw_d, {repression: -7, militancy: -4});
+RG.lw.lean('unionist', 1, 2);
+RG.lw.lean('offensive', -1, -4);
+!}
+
+The district secretary and the police president meet in a café, as private persons. Indoor meetings will not be disturbed; the party will not march past the police headquarters. Neither of them writes anything down.

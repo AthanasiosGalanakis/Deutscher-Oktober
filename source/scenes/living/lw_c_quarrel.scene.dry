@@ -1,0 +1,74 @@
+title: Words in the Zentrale
+subtitle: Two leaders fall out in public.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('c_quarrel'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+var ab = RG.lw.fire('c_quarrel');
+RG.lw.setC('cm', ab[0]);
+RG.lw.setC('cm2', ab[1]);
+Q.lw_name = RG.pick(['the money for the district papers', 'who wrote the last resolution', 'a speech that went too far', 'the line towards the social democrats', 'the minutes of the last Central Committee', 'a report sent to Moscow behind the other\'s back']);
+Q.lw_where = RG.pick(['Vienna', 'Moscow', 'Paris']);
+RG.news('Open quarrel in the communist leadership', 1);
+!}
+
+= Words in the Zentrale
+
+It started over [+ lw_name +], and by now nobody remembers how. **[+ lw_cm_name +]** of the [+ lw_cm_fname +] and **[+ lw_cm2_name +]** of the [+ lw_cm2_fname +] are no longer speaking to each other, except through open letters in the party press.
+
+The latest letter accuses the other of "intrigue, slander and a petty-bourgeois temperament". The bourgeois papers reprint both letters in full, with relish. In the districts, members are taking sides.
+
+- @backa: Back [+ lw_cm_name +].
+- @backb: Back [+ lw_cm2_name +].
+- @reconcile: Lock them in a room until they sign a joint statement.
+- @send: Send [+ lw_cm2_name +] abroad for a while.
+
+@backa
+subtitle: The [+ lw_cm_fname +] are pleased; the [+ lw_cm2_fname +] are not. The quarrel ends, and the wound stays.
+on-arrival: {!
+var a = RG.comrade(Q.lw_cm), b = RG.comrade(Q.lw_cm2);
+RG.lw.lean(a.faction, 1, 6);
+RG.lw.lean(b.faction, 0, -6);
+Q.unity -= 2;
+!}
+
+The Zentrale's statement finds that [+ lw_cm_name +] acted in the interests of the party. [+ lw_cm2_name +] reads it at breakfast, and starts a reply that will not be published.
+
+@backb
+subtitle: The [+ lw_cm2_fname +] are pleased; the [+ lw_cm_fname +] are not. The quarrel ends, and the wound stays.
+on-arrival: {!
+var a = RG.comrade(Q.lw_cm), b = RG.comrade(Q.lw_cm2);
+RG.lw.lean(b.faction, 1, 6);
+RG.lw.lean(a.faction, 0, -6);
+Q.unity -= 2;
+!}
+
+The Zentrale's statement finds that [+ lw_cm2_name +] acted in the interests of the party. [+ lw_cm_name +] calls it a factional verdict, which it is.
+
+@reconcile
+subtitle: Peace for now. Neither side gets what it wanted, and both grumble.
+on-arrival: {!
+var a = RG.comrade(Q.lw_cm), b = RG.comrade(Q.lw_cm2);
+Q.unity += 3;
+RG.lw.lean(a.faction, 0, -2);
+RG.lw.lean(b.faction, 0, -2);
+!}
+
+The meeting lasts nine hours and four pots of coffee. The joint statement is two paragraphs long and says nothing at all, which is the point. The open letters stop.
+
+@send
+subtitle: Distance cools tempers. The [+ lw_cm2_fname +] feel their leader was sent into exile.
+on-arrival: {!
+var b = RG.comrade(Q.lw_cm2);
+RG.lw.sendAbroad(Q.lw_cm2, RG.lw.rnd(3, 5), Q.lw_where);
+Q.unity += 2;
+RG.lw.lean(b.faction, 0, -5);
+!}
+
+[+ lw_cm2_name +] is given a mission in [+ lw_where +], an important one, the Zentrale insists. The farewell at the station is cordial, and [+ lw_cm_name +] does not come to it.

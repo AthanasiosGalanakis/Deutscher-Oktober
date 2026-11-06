@@ -1,0 +1,82 @@
+title: A Safe House
+new-page: true
+view-if: crisis = 0 and congress = 0 and lw_safehouse_timer <= 0 and repression >= 35 and comrades_free >= 3 and time >= 4
+on-arrival: {!
+Q.lw_safehouse_timer = 8;
+Q.month_actions += 1;
+Q.lw_safehouse_played = (Q.lw_safehouse_played || 0) + 1;
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.card();
+// the comrade the police are closest to: the most policed home district
+var cs = RG.lw.list('free');
+cs.sort(function (a, b) {
+    var ra = a.district ? RG.lw.dv(a.district, 'repression') : Q.repression;
+    var rb = b.district ? RG.lw.dv(b.district, 'repression') : Q.repression;
+    return rb - ra + (Math.random() - 0.5) * 10;
+});
+RG.lw.setC('cm', cs.length ? cs[0] : null);
+Q.lw_where = RG.pick(['Vienna', 'Prague', 'Moscow']);
+!}
+frequency: 100
+is-card: true
+tags: movement
+
+= A Safe House
+
+[? if lw_cm_has = 1 : A friend in the police records office has sent word: the political police have opened a file on **[+ lw_cm_name +]** ([+ lw_cm_role +]) and put two men on the address in [+ lw_cm_dname +]. A warrant can be had any day. ?][? if lw_cm_has = 0 : A friend in the police records office has sent word: the political police are drawing up a list of the party's leaders, and they want names and addresses. ?]
+
+The party has a network of flats for days like this: a tram driver's back bedroom in Neukölln, a schoolteacher's attic in Leipzig, the study of a Thuringian pastor who asks no questions. Every one used is one the police may find.
+
+- @hide: Move [+ lw_cm_name +] into a safe house.
+- @abroad: Send [+ lw_cm_name +] abroad until it blows over.
+- @open: Carry on in the open, and dare them.
+- @files: Tell the districts to clear their offices.
+- @easy_discard
+
+@hide
+subtitle: Costs 1 fund. Out of sight, still at work. The district's police lose the trail for a while.
+view-if: lw_cm_has = 1
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds.
+on-arrival: {!
+Q.resources -= 1;
+var c = RG.comrade(Q.lw_cm);
+if (c && c.district) { RG.district(c.district, {repression: -8}); }
+RG.lw.lean('luxemburgist', 1, 2);
+!}
+
+[+ lw_cm_name +] leaves home with a shopping bag and does not come back. For the next months the leaflets and the articles keep coming, signed with a new name, from an address nobody writes down.
+
+@abroad
+subtitle: Safe beyond the border for a few months, and out of the party's work.
+view-if: lw_cm_has = 1
+on-arrival: {!
+RG.lw.sendAbroad(Q.lw_cm, RG.lw.rnd(2, 4), Q.lw_where);
+!}
+
+A forged passport, a third-class ticket, a guide over the mountains. [+ lw_cm_name +] writes from [+ lw_where +] a week later, on paper that smells of other people's tobacco.
+
+@open
+subtitle: Defiance wins respect, and may end in a cell. The Left's way.
+view-if: lw_cm_has = 1
+on-arrival: {!
+Q.worker_support += 2;
+if (Math.random() < 0.4) {
+    Q.lw_out = 1;
+    RG.arrest(Q.lw_cm, RG.lw.rnd(3, 6), {news: Q.lw_cm_name + ' arrested at a public meeting', priority: 2});
+}
+RG.lw.lean('offensive', 1, 3);
+!}
+
+[+ lw_cm_name +] speaks at a public meeting the next Sunday, with the address of the hall in the paper. [? if lw_out = 1 : The police wait until the applause has finished, and then come up onto the platform. ?][? if lw_out = 0 : The two plain-clothes men in the back row write everything down and leave before the end. Nobody stops the speaker. ?]
+
+@files
+subtitle: The police find empty offices. A little of the party's work is lost with the papers.
+view-if: lw_cm_has = 0
+on-arrival: {!
+Q.repression -= 3;
+Q.unity += 1;
+RG.lw.lean('luxemburgist', 1, 2);
+!}
+
+The circular goes out by courier: no lists, no addresses, no minutes in the offices. When the police come, they find leaflets and a portrait of Marx.

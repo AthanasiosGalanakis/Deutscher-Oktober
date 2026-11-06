@@ -1,0 +1,85 @@
+title: The Strike Fund
+subtitle: Strikers ask the Zentrale for money.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('strike_fund'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('strike_fund');
+!}
+
+= The Strike Fund
+
+The strike in **[+ lw_d_name +]** is holding, but the strike pay [? if lw_d_strike_months >= 1 : ran out weeks ago. ?][? if lw_d_strike_months = 0 : ran out on Friday. ?] Two delegates of the strike committee, a fitter and a woman from the canteen, have come to the Zentrale by the night train from [+ lw_town +]. Their shoes are worn through.
+
+They say [+ lw_d_trade +] will hold out as long as their children eat. The employers say the same thing, and the employers have the banks.
+
+[? if lw_d_ours = 0 : The committee follows the [+ lw_d_fname +], and they have not forgotten what the Zentrale said about them last month. ?]
+
+- @send: Give them money from the party's funds.
+- @collect: Take a collection in every district.
+- @extend: Bring [+ lw_nb_name +] out in sympathy.
+- @settle: Advise them to settle through the union.
+
+@send
+subtitle: Costs 1 fund. The strikers hold out longer, and the district will remember who paid.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds.
+on-arrival: {!
+Q.resources -= 1;
+RG.district(Q.lw_d, {loyalty: 7, members: 0.04, militancy: 2});
+if (Math.random() < 0.55) {
+    Q.lw_out = 1;
+    RG.endStrike(Q.lw_d, 'won');
+}
+RG.news('Party funds for the strikers of ' + Q.lw_town);
+RG.lw.lean('luxemburgist', 1, 3);
+RG.lw.lean('offensive', 0, 2);
+!}
+
+The money goes back with the delegates in a cardboard suitcase. [? if lw_out = 1 : A week later the employers give way: the wage rise, and no victimisations. In [+ lw_town +], they say the communists paid for the bread. ?][? if lw_out = 0 : It buys the strike another fortnight, and the committee a little more patience with the Zentrale. ?]
+
+@collect
+subtitle: The whole party shows solidarity. Worker support grows, and the district takes heart.
+on-arrival: {!
+Q.worker_support += 2;
+Q.unity += 2;
+RG.district(Q.lw_d, {militancy: 3, loyalty: 3});
+RG.news('Collections in every works for the strikers of ' + Q.lw_d_name);
+RG.lw.lean('luxemburgist', 1, 2);
+!}
+
+Collection tins go round the canteens of every district, from Hamburg to Munich. The sums are small and the pfennigs are many, and the strikers read the lists of donors aloud at their meetings.
+
+@extend
+subtitle: The strike spreads, and the police follow it. The Left's line.
+view-if: lw_nb_name and offensive_gone = 0
+on-arrival: {!
+var n = RG.spreadStrike(Q.lw_d);
+RG.district(Q.lw_d, {repression: 4});
+if (n) { RG.district(n, {repression: 5}); }
+RG.lw.lean('offensive', 2, 5);
+RG.lw.lean('unionist', -1, -3);
+!}
+
+Flying pickets leave [+ lw_town +] in lorries before dawn. By the evening, [+ lw_nb_name +] is out too, and the employers' association is telephoning the Interior Ministry.
+
+@settle
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] The strike ends with something to show. The Right is pleased; the Left calls it a sell-out.
+choose-if: lock_union_work < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids working through the reformist unions.
+on-arrival: {!
+RG.lw.against('union_work');
+RG.endStrike(Q.lw_d);
+Q.worker_support += 1;
+if (Q.lw_d_fcode == 2 || Q.lw_d_fcode == 4) { RG.district(Q.lw_d, {loyalty: -5}); }
+RG.lw.lean('unionist', 2, 5);
+RG.lw.lean('offensive', 0, -4);
+!}
+
+Our people on the committee take the union's offer to a mass meeting: half the wage claim, and arbitration for the rest. The vote is close. The strikers go back on Monday, in good order.

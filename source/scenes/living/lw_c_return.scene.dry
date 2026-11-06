@@ -1,0 +1,78 @@
+title: Home Again
+subtitle: A comrade returns from abroad.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('c_return'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+var c = RG.lw.fire('c_return');
+RG.lw.setC('cm', c);
+var ab = (Q.lw_abroad && Q.lw_abroad[c.id]) || {where: 'abroad'};
+Q.lw_where = ab.where;
+Q.lw_ret_moscow = ab.where == 'Moscow' ? 1 : 0;
+Q.lw_ret_gone = Q[c.faction + '_gone'] ? 1 : 0;
+Q.lw_ret_turned = 0;
+delete Q.lw_abroad[c.id];
+if (Q.lw_ret_gone) {
+    RG.expel(c.id, {news: c.name + ' returns, and joins the ' + RG.fname(c.faction)});
+} else {
+    RG.free(c.id, {news: c.name + ' returns from ' + Q.lw_where});
+    // Moscow changes people: some come back with the Executive's line
+    if (Q.lw_ret_moscow && Q.moscow_backs && Q.moscow_backs != c.faction && !Q[Q.moscow_backs + '_gone'] && Math.random() < 0.3) {
+        RG.setFaction(c.id, Q.moscow_backs);
+        Q.lw_ret_turned = 1;
+        Q.lw_ret_new = RG.fname(Q.moscow_backs);
+    }
+}
+RG.lw.abroadCount();
+RG.lw.setC('cm', RG.comrade(c.id));
+!}
+
+= Home Again
+
+**[+ lw_cm_name +]** is back from [+ lw_where +], thinner, with a cheap suitcase full of pamphlets in languages nobody at the Zentrale reads, and a great deal to say.
+
+[? if lw_ret_gone = 1 : But the party [+ lw_cm_name +] left is not the party [+ lw_cm_name +] has come back to. The [+ lw_cm_fname +] have gone their own way, and after a week of meetings, so does [+ lw_cm_name +]. ?][? if lw_ret_gone = 0 and lw_ret_moscow = 1 : Moscow has left its mark: the talks with the men of the Executive, the long nights in the Hotel Lux, the parades on Red Square. ?][? if lw_ret_turned = 1 : The comrades notice at once that [+ lw_cm_name +] now speaks like the [+ lw_ret_new +]. ?][? if lw_ret_gone = 0 and lw_ret_moscow = 0 : The comrades abroad have their own quarrels and their own lessons, and [+ lw_cm_name +] has learnt both. ?]
+
+- @post: Give [+ lw_cm_name +] a seat in the Zentrale.
+- @district: Send [+ lw_cm_name +] to work in [+ lw_cm_dname +].
+- @report: Ask for a report for the party press.
+
+@post
+subtitle: The comrade's current is pleased. A traveller back at the table brings friends abroad with it.
+view-if: lw_ret_gone = 0
+on-arrival: {!
+var c = RG.comrade(Q.lw_cm);
+RG.lw.lean(c.faction, 1, 5);
+RG.setRole(Q.lw_cm, 'Member of the Zentrale');
+if (Q.lw_ret_moscow) { RG.ecci('all', 3); Q.independence -= 2; } else { Q.world_revolution += 2; }
+!}
+
+[+ lw_cm_name +] takes a seat at the long table, and at the first meeting reads out a letter of greeting from [+ lw_where +] that takes twenty minutes.
+
+@district
+subtitle: Back to the grass roots. The district gains an organiser and grows closer to the Zentrale.
+view-if: lw_ret_gone = 0
+on-arrival: {!
+var c = RG.comrade(Q.lw_cm);
+if (c && c.district) { RG.district(c.district, {loyalty: 8, members: 0.03}); }
+Q.unity += 1;
+!}
+
+[+ lw_cm_name +] goes back to [+ lw_cm_dname +], to the meetings in back rooms and the leaflets at the gates, and is better at it for having been away.
+
+@report
+subtitle: The party learns from abroad. Worker support and the hopes of the international movement rise a little.
+on-arrival: {!
+Q.worker_support += 1;
+Q.world_revolution += 2;
+if (Q.lw_ret_moscow) { RG.ecci('all', 2); }
+RG.news(Q.lw_cm_name + ' reports from ' + Q.lw_where);
+!}
+
+The report runs over four issues of the party press: what the workers of [+ lw_where +] eat, how their party works, and what they think of the Germans. It is read more widely than anything the Zentrale has written this year.

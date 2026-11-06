@@ -1,0 +1,96 @@
+title: Works Council Elections
+subtitle: The vote at one of the great works.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('council_election'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('council_election');
+// our chance in a free vote: the district's mood and the party's standing
+Q.lw_n = RG.clamp(0.15 + RG.num(Q['district_' + Q.lw_d + '_militancy']) / 200 + RG.num(Q.worker_support) / 150, 0.15, 0.85);
+!}
+
+= Works Council Elections
+
+The works councils are elected every spring under the law of 1920. At **[+ lw_works +]**, in [+ lw_d_name +], the ballot boxes stand in the canteen for three days, guarded by a social democratic shop steward and one of ours, who do not speak to each other.
+
+The council cannot run the works. It can see the books, defend a sacked man and speak for the workforce, and the workforce listens to whoever wins it. [? if lw_d_ours = 0 : Our people at the works follow the [+ lw_d_fname +]. ?]
+
+- @red: Stand a red list of our own.
+- @joint: Stand a joint list with the USPD and the social democratic left.
+- @boycott: Boycott the legal councils and build the revolutionary factory organisation.
+- @union: Vote for the union's list, and fight inside it.
+
+@red
+subtitle: All or nothing. A win makes the works ours.
+on-arrival: {!
+if (Math.random() < Q.lw_n) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {members: 0.06, loyalty: 4, militancy: 2});
+    Q.worker_support += 2;
+    RG.news('Red list wins the works council at ' + Q.lw_works.replace(/^the /, ''), 2);
+    RG.ledger('Communists won the works council at ' + Q.lw_works + '.', 'lw_council_first');
+} else {
+    Q.lw_out = 2;
+    Q.worker_support -= 1;
+    RG.news('Social democrats hold the works council at ' + Q.lw_works.replace(/^the /, ''));
+}
+RG.lw.lean('offensive', 1, 2);
+RG.lw.lean('luxemburgist', 1, 2);
+!}
+
+[? if lw_out = 1 : The red list takes the majority of the council. On Monday, the new chairman walks into the director's office with the shop stewards behind him and asks to see the order books. ?][? if lw_out = 2 : The red list wins a third of the seats. The social democrats keep the chair, and the director keeps his order books to himself. ?]
+
+@joint
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A likely win, shared with others. The Right's line.
+choose-if: lock_united_front < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids joint lists with the social democrats.
+on-arrival: {!
+RG.lw.against('united_front');
+if (Math.random() < Q.lw_n + 0.25) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {members: 0.03, loyalty: 2});
+    Q.worker_support += 2;
+    RG.news('Left unity list sweeps the works council at ' + Q.lw_works.replace(/^the /, ''));
+} else {
+    Q.lw_out = 2;
+}
+Q.spd_relation += 3;
+Q.uspd_relation += 3;
+RG.lw.lean('unionist', 2, 5);
+RG.lw.lean('offensive', 0, -3);
+!}
+
+[? if lw_out = 1 : The joint list wins easily. The chair goes to an Independent, the deputy chair to one of ours, and the council begins with a demand for the eight-hour day to be kept. ?][? if lw_out = 2 : Even together, the left loses: the Christian union and the foremen's list have the majority. The joint list holds its first meeting anyway. ?]
+
+@boycott
+subtitle: The legal councils are a trap, say the Left Radicals. The works will be angrier, and the party smaller in it.
+view-if: ultraleft_gone = 0
+on-arrival: {!
+RG.district(Q.lw_d, {militancy: 4, loyalty: (Q.lw_d_fcode == 4 ? 4 : -2)});
+Q.worker_support -= 1;
+RG.lw.lean('ultraleft', 2, 6);
+RG.lw.lean('unionist', -1, -4);
+!}
+
+Our people stand outside the canteen with leaflets against the "councils of class collaboration", and sign up members for the revolutionary works organisation instead. Two hundred join. Three thousand vote.
+
+@union
+subtitle: [? if lock_union_work = 1 : Against the party line: costs Unity. ?] No fight with the union. Our people win positions inside it, slowly.
+choose-if: lock_union_work < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids working inside the reformist unions.
+on-arrival: {!
+RG.lw.against('union_work');
+Q.worker_support += 1;
+Q.spd_relation += 1;
+RG.district(Q.lw_d, {loyalty: 2});
+RG.lw.lean('unionist', 1, 3);
+RG.lw.lean('offensive', -1, -2);
+!}
+
+Three of our comrades are on the union's list, at the bottom. All three are elected. In two years, someone says at the district meeting, they will be at the top.

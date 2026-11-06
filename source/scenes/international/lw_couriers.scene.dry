@@ -1,0 +1,80 @@
+title: The Harbour Couriers
+new-page: true
+view-if: crisis = 0 and congress = 0 and lw_couriers_timer <= 0 and comintern_member = 1 and time >= 5
+on-arrival: {!
+Q.lw_couriers_timer = 7;
+Q.month_actions += 1;
+Q.lw_couriers_played = (Q.lw_couriers_played || 0) + 1;
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.card();
+RG.lw.setD(RG.lw.best(function (d) { return d == 'hamburg' || d == 'bremen'; }, function (d) { return RG.lw.dv(d, 'members') + Math.random(); }));
+Q.lw_town = Q.lw_d == 'hamburg' ? 'Hamburg' : 'Bremerhaven';
+Q.lw_n = Q.time <= 22 ? 1 : 0;
+!}
+frequency: 150
+is-card: true
+tags: international
+
+= The Harbour Couriers
+
+In the port of **[+ lw_town +]**, the party has friends on every quay: dockers, stokers, seamen of the Baltic and North Sea lines, a harbour pilot and the cook of a Swedish freighter. Through them pass the letters, the money and the people that travel between Moscow and the German party, and the police of [+ lw_d_name +] would give a great deal to know how.
+
+The port comrades want to know what the Zentrale wants from them now.
+
+- @courier: Build them into a courier line for the International.
+- @arms: Use the ships to bring in arms.
+- @boycott: Refuse to load the ships that carry arms against Soviet Russia.
+- @seamen: Organise the seamen of every flag.
+- @easy_discard
+
+@courier
+subtitle: A reliable line to Moscow. The Executive is grateful, and its voice in Berlin grows louder.
+on-arrival: {!
+RG.ecci('all', 3);
+Q.independence -= 3;
+Q.resources += 1;
+RG.lw.lean('offensive', 1, 2);
+!}
+
+A seamen's club by the harbour becomes a post office for the International. Letters reach Moscow in ten days instead of a month, and money comes back the same way.
+
+@arms
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Rifles off Dutch and Scandinavian ships, for the red guards. The harbour police will start searching holds.
+choose-if: lock_uprising < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids smuggling arms.
+on-arrival: {!
+RG.lw.against('uprising');
+Q.red_guards_arms += 5;
+RG.district(Q.lw_d, {guards: 0.5, repression: 5});
+RG.lw.lean('offensive', 2, 4);
+RG.lw.lean('unionist', -1, -2);
+!}
+
+Crates marked "agricultural machinery" leave the harbour on a lighter at night and go up the river to a boathouse. By spring, the red guard of [+ lw_d_name +] is the best armed in the north.
+
+@boycott
+subtitle: Solidarity with the Russian revolution, at the quayside. The world movement takes heart, and Moscow is moved.
+view-if: lw_n = 1
+on-arrival: {!
+Q.world_revolution += 4;
+Q.worker_support += 2;
+RG.district(Q.lw_d, {militancy: 4});
+RG.ecci('lenin', 4);
+RG.ecci('all', 2);
+RG.news('Dockers of ' + Q.lw_town + ' refuse to load arms for the enemies of Soviet Russia', 2);
+RG.lw.lean('luxemburgist', 1, 3);
+!}
+
+When a freighter loads crates for Danzig, the dockers of [+ lw_town +] find out what is in them and put down their hooks. The ship sails a week late, half empty, with the story in every port of the Baltic.
+
+@seamen
+subtitle: An international union of the sea, from Hamburg to Petrograd. Slow work; the movement abroad grows.
+view-if: lw_n = 0
+on-arrival: {!
+Q.world_revolution += 3;
+RG.district(Q.lw_d, {members: 0.04, loyalty: 3});
+RG.ecci('zinoviev', 3);
+RG.lw.lean('luxemburgist', 1, 2);
+!}
+
+A seamen's club with a reading room, cheap beds and a red flag opens near the harbour. Sailors of a dozen nations drink there, argue there, and take leaflets in their own languages to the next port.

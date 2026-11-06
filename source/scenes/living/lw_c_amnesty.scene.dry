@@ -1,0 +1,79 @@
+title: An Amnesty Bill
+subtitle: Parliament debates an amnesty for political prisoners.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('c_amnesty'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+var cs = RG.lw.fire('c_amnesty') || [];
+Q.lw_n = cs.length;
+Q.lw_name = cs.map(function (c) { return c.name; }).join(', ').replace(/, ([^,]*)$/, ' and $1');
+Q.lw_amnesty_ids = cs.map(function (c) { return c.id; });
+RG.news('Amnesty bill before parliament', 1);
+!}
+
+= An Amnesty Bill
+
+The government has put an amnesty bill before parliament, "to close the wounds of the revolutionary years". It covers political offences committed before the end of last year, with exceptions for murder. Among those it would free are [+ lw_name +], and hundreds of rank-and-file comrades held since the fighting.
+
+It would also free the officers and Freikorps men convicted, or nearly convicted, for their part in the putsches and the murders that were never called murder. The nationalist parties will vote for it with both hands. [? if kpd_seats > 0 : Our deputies' votes could decide it. ?][? if kpd_seats = 0 : We have no deputies to vote on it, but the social democrats count the workers' mood. ?]
+
+- @for: Support the amnesty as it stands.
+- @amend: Demand that it exclude the putschists, or nothing.
+- @street: Campaign in the street for our prisoners alone.
+
+@for
+subtitle: Our comrades come home. So do the officers who shot workers. The Right's choice.
+on-arrival: {!
+var ids = Q.lw_amnesty_ids || [];
+for (var i = 0; i < ids.length; i++) { RG.free(ids[i], {quiet: true}); }
+RG.news('Amnesty law passes: ' + Q.lw_name + ' released', 3);
+RG.ledger('An amnesty freed ' + Q.lw_name + ', and the putschists with them.', 'lw_amnesty');
+Q.stability -= 1;
+Q.freikorps_loyalty -= 3;
+Q.offensive_satisfaction -= 3;
+RG.lw.lean('unionist', 2, 4);
+!}
+
+The bill passes. At the prison gates, our comrades come out to bands and flowers. A few days later, at another gate, a former captain of the Freikorps comes out to a car and a bunch of flowers of his own.
+
+@amend
+subtitle: A principled stand. The bill may be changed, or it may fall with our comrades still inside. The Spartacist line.
+on-arrival: {!
+Q.worker_support += 2;
+if (Math.random() < 0.35) {
+    Q.lw_out = 1;
+    var ids = Q.lw_amnesty_ids || [];
+    for (var i = 0; i < ids.length; i++) { RG.free(ids[i], {quiet: true}); }
+    RG.news('Amnesty for workers, not for putschists: ' + Q.lw_name + ' free', 3);
+    RG.ledger('An amnesty freed ' + Q.lw_name + ', and the putschists stayed in prison.', 'lw_amnesty');
+} else {
+    Q.lw_out = 2;
+    RG.news('Amnesty bill falls');
+}
+RG.lw.lean('luxemburgist', 2, 5);
+!}
+
+[? if lw_out = 1 : The social democrats, embarrassed in front of their own workers, vote for our amendment. The putschists stay inside, and our comrades come out. ?][? if lw_out = 2 : The amendment fails, and the bill fails with it. Our comrades stay inside, and the party has its principles. ?]
+
+@street
+subtitle: Mass meetings for the prisoners of the working class. Some may be freed. The Left's way.
+view-if: offensive_gone = 0
+on-arrival: {!
+Q.militancy += 3;
+Q.worker_support += 2;
+var ids = (Q.lw_amnesty_ids || []).slice();
+Q.lw_out = 0;
+for (var i = 0; i < ids.length; i++) {
+    if (Math.random() < 0.35) { RG.free(ids[i]); Q.lw_out = 1; }
+}
+RG.news('Mass meetings for the political prisoners', 2);
+RG.lw.lean('offensive', 2, 5);
+!}
+
+Thirty thousand at the Lustgarten, ten thousand in Hamburg, five in Chemnitz: "Freedom for the prisoners of the proletariat". [? if lw_out = 1 : The government quietly pardons some of them, to take the heat out of the streets. ?][? if lw_out = 0 : The government quietly passes its amnesty with the votes of the right, and our comrades are left out of it. ?]

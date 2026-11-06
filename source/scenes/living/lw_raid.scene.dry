@@ -1,0 +1,93 @@
+title: The Police at Dawn
+subtitle: A district office is searched.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('raid'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('raid');
+// the district's own leader may be taken in the raid
+Q.lw_n = 0;
+if (Q.lw_dc_has && Math.random() < 0.5) {
+    Q.lw_n = 1;
+    RG.arrest(Q.lw_dc, RG.lw.rnd(3, 5), {news: Q.lw_dc_name + ' arrested in a raid in ' + Q.lw_town, priority: 2});
+} else {
+    RG.news('Police raid the communist office in ' + Q.lw_town, 2);
+}
+RG.district(Q.lw_d, {repression: 3, loyalty: -2});
+!}
+
+= The Police at Dawn
+
+At five in the morning, the political police break down the door of the party office in **[+ lw_town +]**, in [+ lw_d_name +]. They take the card index of the members, two typewriters, the duplicating machine and a box of leaflets that had not yet been distributed. [? if lw_n = 1 : They also take **[+ lw_dc_name +]**, who had slept on the sofa in the back room. ?]
+
+By eight, a crowd has gathered outside. The officer in charge tells the reporters that he has found evidence of a plot. The reporters print it.
+
+The card index holds [+ lw_d_members +] thousand names, and every one of them now has a file.
+
+- @warn: Warn every comrade in the card index.
+- @stoppage: Call a protest stoppage in the works.
+- @lawyers: Sue for the files and the machines.
+- @deputies: Raise it in parliament.
+
+@warn
+subtitle: Members at risk are protected; some of them quietly leave. The Spartacist way: the organisation first.
+on-arrival: {!
+RG.district(Q.lw_d, {members: -0.04, loyalty: 5, repression: -4});
+RG.lw.lean('luxemburgist', 1, 3);
+!}
+
+Couriers on bicycles reach every name within two days. Comrades who work for the railways or the post office take a holiday, and some never come back from it. The rest know where they stand.
+
+@stoppage
+subtitle: If the works stop, the police will think twice. If they do not, the police will know it.
+on-arrival: {!
+if (Q.lw_d_mil >= 50 || Math.random() < 0.3) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {repression: -7, militancy: 4});
+    Q.worker_support += 2;
+    RG.news('Works in ' + Q.lw_town + ' stop work against the police raid');
+} else {
+    Q.lw_out = 2;
+    RG.district(Q.lw_d, {repression: 5, members: -0.03});
+}
+RG.lw.lean('offensive', 1, 3);
+!}
+
+[? if lw_out = 1 : At ten the sirens go at [+ lw_works +], and the works empties into the street. By the afternoon, the police president is talking about a misunderstanding. ?][? if lw_out = 2 : A few hundred come out. The police photograph every one of them from the roof opposite. ?]
+
+@lawyers
+subtitle: Costs 1 fund. The courts slow the police down. The Right's way: use the Republic's own laws.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds.
+on-arrival: {!
+Q.resources -= 1;
+RG.district(Q.lw_d, {repression: -8});
+if (Q.lw_n == 1 && Math.random() < 0.5) {
+    Q.lw_out = 1;
+    RG.free(Q.lw_dc);
+}
+RG.lw.lean('unionist', 1, 3);
+!}
+
+The party's lawyers file a complaint for every door broken without a warrant. [? if lw_out = 1 : A judge in [+ lw_town +] finds the arrest of [+ lw_dc_name +] unlawful and orders a release. ?][? if lw_out = 0 : The typewriters come back after six weeks. The card index does not. ?]
+
+@deputies
+subtitle: The raid becomes a scandal. Worker support grows; the social democrats are embarrassed.
+view-if: kpd_seats > 0
+on-arrival: {!
+Q.worker_support += 2;
+Q.spd_relation -= 2;
+Q.stability -= 1;
+RG.district(Q.lw_d, {repression: -4});
+RG.news('Communist deputies demand an inquiry into the ' + Q.lw_town + ' raid', 2);
+RG.lw.lean('unionist', 1, 2);
+RG.lw.lean('luxemburgist', 1, 1);
+!}
+
+Our deputies read out the inventory of the search, item by item, to a half-empty chamber: two typewriters, one duplicating machine, three hundred leaflets about the price of bread. The plot is never mentioned again.

@@ -1,0 +1,87 @@
+title: The District Conference Says No
+subtitle: A district votes against the Zentrale.
+new-page: true
+tags: event
+priority: -1
+view-if: {!
+if (typeof RG === 'undefined') { return false; }
+if (!RG.lw && this.game.scenes.lw_lib) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+return !!(RG.lw && RG.lw.ready('defy_vote'));
+!}
+on-arrival: {!
+if (!RG.lw) { this._runActions(this.game.scenes.lw_lib.onArrival); }
+RG.lw.fire('defy_vote');
+var s = RG.speaker(Q.leading_faction);
+Q.lw_name = s.name;
+Q.lw_name_cap = s.name.charAt(0).toUpperCase() + s.name.slice(1);
+Q.lw_n = RG.lw.rnd(62, 91);
+RG.news('District conference in ' + Q.lw_d_name + ' votes against the Zentrale', 2);
+!}
+
+= The District Conference Says No
+
+The district conference of **[+ lw_d_name +]** met on Sunday in a dance hall in [+ lw_town +]. By [+ lw_n +] votes to a handful, it passed a motion of no confidence in the Zentrale and its line, and called on the members of the party everywhere to "return to the principles of the [+ lw_d_fname +]".
+
+The motion is printed in [+ lw_paper +] this morning. Other districts will read it too.
+
+- @speaker: Send [+ lw_name +] to the next conference.
+- @accept: Take the motion seriously, and change course a little.
+- @dissolve: Dissolve the district organisation and rebuild it.
+- @silence: Ignore it.
+
+@speaker
+subtitle: Costs 1 fund. The Zentrale's best voice against the district's mood. It may win the hall back.
+choose-if: resources >= 1
+unavailable-subtitle: We have no funds.
+on-arrival: {!
+Q.resources -= 1;
+var p = 0.35 + RG.num(Q.unity) / 200 + (RG.lw.STARS.indexOf(RG.speaker(Q.leading_faction).id) >= 0 ? 0.15 : 0);
+if (Math.random() < p) {
+    Q.lw_out = 1;
+    RG.district(Q.lw_d, {loyalty: 15});
+    Q.unity += 2;
+} else {
+    Q.lw_out = 2;
+    RG.district(Q.lw_d, {loyalty: 3});
+    Q.unity -= 1;
+}
+RG.lw.lean(Q.leading_faction, 1, 3);
+!}
+
+[+ lw_name_cap +] speaks for two hours in the dance hall. [? if lw_out = 1 : By the end, the hall is quiet, then it applauds. The conference passes a second motion, which takes back most of the first. ?][? if lw_out = 2 : The hall listens politely and votes the same way again, a little less loudly. ?]
+
+@accept
+subtitle: The district is reconciled, and its current gains ground in the party. The Zentrale's own people grumble.
+on-arrival: {!
+RG.district(Q.lw_d, {loyalty: 12});
+RG.lw.lean(Q.lw_d_faction, 2, 8);
+Q[Q.leading_faction + '_satisfaction'] -= 6;
+Q.unity -= 1;
+!}
+
+The Zentrale publishes an answer that concedes half the motion's points and promises a discussion of the rest. [+ lw_d_name +] calls it a victory, which it is.
+
+@dissolve
+subtitle: The district is purged. Many members will not come back.
+on-arrival: {!
+Q.unity -= 4;
+RG.lw.lean(Q.lw_d_faction, -1, -10);
+Q[Q.leading_faction + '_satisfaction'] += 4;
+Q['district_' + Q.lw_d + '_faction'] = Q.leading_faction;
+Q['district_' + Q.lw_d + '_loyalty'] = 55;
+RG.district(Q.lw_d, {members: -0.2, militancy: -4});
+RG.news('Zentrale dissolves the ' + Q.lw_d_name + ' organisation', 2);
+RG.ledger('The Zentrale dissolved the ' + Q.lw_d_name + ' district after it voted against the line.', 'lw_dissolve_' + Q.lw_d);
+!}
+
+Every member in [+ lw_d_name +] is asked to sign a declaration of loyalty to the Zentrale and its line to keep the party card. Four in five sign. The others form a club, and then another club.
+
+@silence
+subtitle: No answer. The district's current grows bolder, and the other districts notice.
+on-arrival: {!
+RG.district(Q.lw_d, {loyalty: -5});
+RG.lw.lean(Q.lw_d_faction, 1, 3);
+Q.unity -= 3;
+!}
+
+Die Rote Fahne does not print the motion. Every district secretary in the country reads it anyway.
