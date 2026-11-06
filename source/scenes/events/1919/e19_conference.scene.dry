@@ -1,0 +1,58 @@
+title: The Boycott Revisited
+subtitle: The districts argue over the founding congress's vote
+new-page: true
+tags: event
+view-if: year = 1919 and month = 7 and crisis = 0 and congress = 0 and ultraleft_gone = 0
+max-visits: 1
+priority: 2
+on-arrival: {!
+Q.e19_conf_seen = 1;
+!}
+
+= The Boycott Revisited
+
+At the founding congress, on the last day of 1918, the delegates voted by 62 to 23 to boycott the National Assembly, against Luxemburg, Liebknecht, Jogiches and Levi. Rosa Luxemburg told them that they had chosen a comfortable radicalism. [? if luxemburg_alive = 1 : Seven months later she still says so, from hiding. ?][? if luxemburg_alive = 0 : Seven months later she is dead, and both sides quote her. ?]
+
+The vote still binds the party. [? if election_boycott = 1 : The party stood no candidates in January. ?][? if election_boycott = 0 : The Zentrale broke it in January, and the districts have not forgotten. ?] In the factories, the union branches elect their officials without a single communist on the ballot, because communists have torn up their union cards. [+ party_chair +] wants the decision reversed before the party congress in the autumn. The Left Radical districts want it confirmed, and the union question settled their way too.
+
+The Zentrale could call a national conference of the districts, illegally, to put the question again. Conferences have a way of not voting as they are told.
+
+- @conference: Call a national conference on the boycott.
+- @zentrale: Declare the boycott void on the Zentrale's own authority.
+- @wait: Leave it to the party congress.
+
+@conference
+subtitle: A first trial of strength before the congress. Win it, and the theses start ahead; lose it, and the Left Radicals arrive at Heidelberg in triumph.
+on-arrival: {!
+RG.congressStart({id: 'conference19', name: 'The National Conference', stake: 'Whether the founding congress\'s boycott still binds the party',
+    sessions: 2, positions: ['luxemburgist', 'ultraleft'], backing: Q.leading_faction == 'ultraleft' ? 'ultraleft' : 'luxemburgist',
+    kind: 'motion', mandates: 'districts', delegates: 40, ownClose: true});
+Q.lean_luxemburgist += 1;
+!}
+
+The district secretaries are summoned by courier. Two delegates from each district, more for the big ones, will meet in a back room of a Berlin brewery, behind a sign for a choral society. Our side starts with [+ congress_votes_for +]% of the room.
+
+@zentrale
+subtitle: Quick and final. The Left Radicals will call it a coup against the congress, and Hamburg will take note.
+on-arrival: {!
+Q.e19_conf_outcome = 1;
+Q.unity -= 8;
+Q.ultraleft_satisfaction -= 12;
+Q.luxemburgist_satisfaction += 4;
+Q.lean_luxemburgist += 2;
+RG.district('hamburg', {loyalty: -8});
+RG.district('bremen', {loyalty: -6});
+RG.ecci('lenin', 3);
+RG.news('Communist Zentrale lifts the election boycott', 2);
+!}
+
+The Zentrale's circular is two paragraphs long: the decision of the founding congress was a mistake, and the Zentrale has corrected it. In Bremen, the district paper prints the circular under the headline "The Generals Have Spoken".
+
+@wait
+subtitle: Nothing is decided, and nothing is risked. The Right wanted the unions settled now.
+on-arrival: {!
+Q.unity += 2;
+Q.unionist_satisfaction -= 4;
+!}
+
+The question waits for the autumn. Meanwhile, the Left Radical districts treat the boycott as settled, and the union elections go ahead without us.

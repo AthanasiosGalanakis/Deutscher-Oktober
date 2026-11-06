@@ -21,6 +21,10 @@ Q.freikorps_strength += 40;
 Q.worker_support -= 4;
 Q.spd_relation += 10;
 Q.uspd_relation += 5;
+RG.news('The strike breaks: the generals hold Berlin', 3);
+for (var d of Q.districts) { if (d != 'ruhr') { RG.endStrike(d, 'crushed'); } }
+RG.districtSync();
+RG.district('berlin', {repression: 15});
 !}
 
 = The Generals Hold Berlin
@@ -99,8 +103,11 @@ Q.crisis_kapp = 0;
 Q.crisis_ruhr = 1;
 Q.crisis_name = 'The Ruhr Red Army';
 Q.crisis_goal = 'Hold the Ruhr against the generals. If it falls, everything falls.';
-Q.red_guards_strength += 45;
+Q.red_guards_strength += 12;
 Q.red_guards_arms += 15;
+RG.districtSync();
+RG.district('ruhr', {guards: 33});
+RG.news('The Ruhr fights on alone against the generals', 3);
 Q.crisis_momentum = 25 + Math.round(Q.red_guards_arms / 5) + (Q.kapp_armed ? 5 : 0) + Q.e20_junta_bonus;
 !}
 

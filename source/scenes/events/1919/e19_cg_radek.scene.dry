@@ -1,0 +1,58 @@
+title: A Letter from Moabit
+subtitle: Radek has written to the congress from his cell.
+view-if: congress = 1 and congress_heidelberg = 1 and congress_closing = 0 and heid_cg_radek = 0 and heid_radek >= 1
+on-arrival: {!
+Q.month_actions += 1;
+Q.heid_cg_radek = 1;
+RG.congress.tally();
+!}
+frequency: 400
+is-card: true
+new-page: true
+tags: congress
+
+= A Letter from Moabit
+
+The letter came out of Moabit in a laundry basket. It is twelve pages long, in Radek's quick, sarcastic German. [? if heid_radek = 1 : The first half says that the boycott of parliament and the unions is the mistake of a young party, and that the congress must say so plainly. The second half says that it must say so without expelling anyone. ?][? if heid_radek = 2 : It is all about unity: the Bolsheviks had their boycotters too, and they argued with them for years instead of throwing them out. ?]
+
+Every delegate knows the letter exists. Many of them will vote the way Moscow's man in Berlin tells them to.
+
+- @whole: Read the whole letter to the congress.
+- @half: Read the first half.
+- @drawer: Keep it in the drawer.
+
+@whole
+subtitle: Moscow's weight, honestly used. It helps the theses, and it argues against the expulsions.
+on-arrival: {!
+if (Q.heid_motion == 1) { RG.congress.sway(0.03); RG.congress.lose(0.03); }
+else { RG.congress.sway(Q.heid_radek == 1 ? 0.07 : 0.05); }
+RG.ecci('radek', 6);
+Q.independence -= 2;
+Q.lean_unionist += 1;
+!}
+
+The letter is read in full. [? if heid_motion = 1 : The Spartacists cheer the first half, and the Left Radicals cheer the second. ?][? if heid_motion != 1 : It fits the motion as if Radek had drafted it, and some say he did. ?] Our side has [+ congress_votes_for +]% of the hall.
+
+@half
+view-if: heid_radek = 1
+subtitle: A useful half. If Radek hears of it, he will not forget.
+on-arrival: {!
+RG.congress.sway(0.06);
+RG.congress.bitter(2);
+RG.ecci('radek', -8);
+Q.independence -= 2;
+Q.lean_luxemburgist += 1;
+!}
+
+The chairman reads six pages and folds the letter away. Our side now has [+ congress_votes_for +]% of the hall. A copy of the whole letter is in Hamburg by the end of the week.
+
+@drawer
+subtitle: The German party settles its own quarrels. Moscow's man in Berlin is offended.
+on-arrival: {!
+Q.independence += 3;
+RG.ecci('radek', -10);
+RG.ecci('zinoviev', -3);
+Q.luxemburgist_satisfaction += 2;
+!}
+
+The chairman announces that a letter has arrived and will be published in due course. The Left Radicals, who know what the second half says, demand it in vain.

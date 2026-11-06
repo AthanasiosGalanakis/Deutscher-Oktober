@@ -18,6 +18,10 @@ for (var d of Q.districts) {
 Q.army_name = 'Reichswehr';
 Q.army_strength = 380;
 Q.freikorps_strength += 50;
+RG.districtSync();
+RG.startStrike('halle', true);
+RG.district('halle', {militancy: 10, repression: 8});
+RG.news('Central Germany on general strike: Maercker marches into Halle', 3);
 !}
 
 = The General Strike in Central Germany
@@ -48,6 +52,9 @@ Q.district_halle_members += 0.8;
 Q.district_halle_loyalty += 4;
 Q.offensive_satisfaction += 8;
 Q.lean_offensive += 2;
+RG.districtSync();
+RG.district('halle', {guards: 1.5, repression: 10});
+RG.endStrike('halle', 'crushed');
 !}
 
 There is shooting in the streets of Halle for three days. The rising is put down, and the strike ends with it, but the Leuna workers do not forget who stood with them.
@@ -68,6 +75,7 @@ Q.district_halle_members += 1.0;
 Q.unionist_satisfaction += 8;
 Q.ultraleft_satisfaction -= 5;
 Q.lean_unionist += 2;
+RG.endStrike('halle', 'won');
 !}
 
 Our delegates sit with Koenen's men. On 8 March the strike ends with a promise from Weimar of works councils "anchored in the constitution". It is less than the strikers wanted. They know we did not desert them.
@@ -87,12 +95,23 @@ Q.repression += 5;
 Q.district_halle_members += 0.6;
 Q.ultraleft_satisfaction += 8;
 Q.lean_ultraleft += 2;
+RG.districtSync();
+RG.district('halle', {repression: 6});
+RG.endStrike('halle', 'crushed');
 !}
 
 Councils take the offices in the Mansfeld mines and at Leuna. Maercker's men take them back. The idea outlives the occupations.
 
 @recruit
 subtitle: The Spartacist way. Patient work in a district that already trusts us.
-on-arrival: halle_line = 4; worker_support += 3; district_halle_members += 1.4; district_halle_loyalty += 8; luxemburgist_satisfaction += 5; lean_luxemburgist += 2
+on-arrival: {!
+Q.halle_line = 4;
+Q.worker_support += 3;
+Q.district_halle_members += 1.4;
+Q.district_halle_loyalty += 8;
+Q.luxemburgist_satisfaction += 5;
+Q.lean_luxemburgist += 2;
+RG.endStrike('halle');
+!}
 
 Our speakers stay with the strikers to the end and explain why it was lost. Halle-Merseburg will be one of the strongest districts the party has.

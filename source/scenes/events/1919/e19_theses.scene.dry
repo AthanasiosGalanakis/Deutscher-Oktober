@@ -20,6 +20,7 @@ for (var d of Q.districts) {
     total += Q['district_' + d + '_members'];
 }
 Q.members_display = total.toFixed(1);
+RG.news('Levi\'s theses: elections, the unions and one discipline', 3);
 !}
 
 = The Theses

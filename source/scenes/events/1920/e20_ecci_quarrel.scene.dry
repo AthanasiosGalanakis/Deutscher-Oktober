@@ -1,0 +1,79 @@
+title: Zinoviev against Radek
+subtitle: A quarrel on the Executive reaches the German party
+new-page: true
+tags: event
+view-if: year = 1920 and month = 11 and crisis = 0 and congress = 0 and ending_id = 0 and comintern_member = 1 and e20_quarrel_line = 0
+max-visits: 1
+priority: 2
+on-arrival: {!
+Q.e20_quarrel_zin = Q.ecci_zinoviev;
+Q.e20_quarrel_rad = Q.ecci_radek;
+Q.e20_quarrel_zin_ahead = Q.ecci_zinoviev > Q.ecci_radek ? 1 : 0;
+RG.news('Pravda attacks the "opportunists" of the German Zentrale', 2);
+!}
+
+= Zinoviev against Radek
+
+Zinoviev came home from Halle a hero, and he means to use it. In *Pravda* and in the Executive, he says that the German party must now go on the offensive, with the Independents' masses behind it, and that its leaders are too fond of lawyers' caution. Radek, who knows the Germans better than anyone in Moscow, answers that a mass party needs a year to learn to walk, and that whoever sends it into battle before then will lose it.
+
+The quarrel does not stay in Moscow. Letters from both men are passed round the German districts. The Left quotes Zinoviev at every meeting; the Right quotes Radek. [? if e20_quarrel_zin_ahead = 1 : For now, Zinoviev's friends are winning the argument on the Executive. ?][? if e20_quarrel_zin_ahead = 0 : For now, Radek has the ear of Lenin, and of the Executive. ?]
+
+- @radek: Side with Radek: the party needs time.
+- @zinoviev: Side with Zinoviev: the party must be ready to fight.
+- @publish: Publish both letters, and say the German party decides for itself.
+- @quiet: Keep the quarrel out of the party press.
+
+@radek
+subtitle: The Right and the Spartacists agree with him. The Left will say we chose the cautious man.
+on-arrival: {!
+Q.e20_quarrel_line = 1;
+RG.ecci('radek', 10);
+RG.ecci('lenin', 3);
+RG.ecci('zinoviev', -10);
+RG.ecci('bukharin', -5);
+Q.unionist_satisfaction += 5;
+Q.luxemburgist_satisfaction += 3;
+Q.offensive_satisfaction -= 6;
+Q.lean_unionist += 2;
+!}
+
+The Zentrale writes to the Executive that it shares Comrade Radek's view of the German situation. Radek is grateful. Zinoviev has the letter copied for his files.
+
+@zinoviev
+subtitle: The Left's choice. Zinoviev is the President of the International, and he does not forget his friends.
+on-arrival: {!
+Q.e20_quarrel_line = 2;
+RG.ecci('zinoviev', 12);
+RG.ecci('bukharin', 6);
+RG.ecci('radek', -8);
+Q.independence -= 4;
+Q.offensive_satisfaction += 8;
+Q.luxemburgist_satisfaction -= 6;
+Q.lean_offensive += 2;
+!}
+
+Our paper prints Zinoviev's article on its front page, with a note from the Zentrale agreeing with every word. The Berlin Left are delighted. Levi's friends begin to fear the spring.
+
+@publish
+subtitle: Levi's instinct. Our independence grows, and the whole Executive is irritated.
+on-arrival: {!
+Q.e20_quarrel_line = 3;
+RG.ecci('all', -5);
+Q.independence += 6;
+Q.luxemburgist_satisfaction += 6;
+Q.offensive_satisfaction -= 4;
+Q.lean_luxemburgist += 2;
+!}
+
+Both letters appear in our paper, side by side, with a short editorial: the comrades in Moscow will forgive us if we draw our own conclusions. In Moscow they do not forgive it, though they agree on nothing else.
+
+@quiet
+subtitle: Nobody in the party is satisfied. Nobody in Moscow is offended.
+on-arrival: {!
+Q.e20_quarrel_line = 4;
+Q.unity += 2;
+Q.offensive_satisfaction -= 2;
+Q.unionist_satisfaction -= 2;
+!}
+
+The Zentrale tells the districts that the Executive's internal debates are not for the party press. The letters go on circulating anyway, in copies of copies.

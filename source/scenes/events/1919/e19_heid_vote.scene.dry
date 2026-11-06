@@ -1,0 +1,145 @@
+title: Heidelberg Votes
+subtitle: The congress decides on the theses
+new-page: true
+tags: event
+view-if: congress_heidelberg = 2
+max-visits: 1
+priority: 9
+on-arrival: {!
+RG.congressEnd();
+var total = Math.max(1, Q.congress_delegates_total);
+Q.heid_support = Q.congress_votes_for;
+Q.heid_for = Math.round(total * Q.congress_votes_for / 100);
+Q.heid_against = Math.max(0, Math.round(total * (100 - Q.congress_votes_for) / 100));
+Q.heid_ul_won = (Q.congress_result == 'ultraleft') ? 1 : 0;
+Q.heid_pass = 0;
+if (Q.heid_ul_won) {
+    Q.heidelberg_outcome = 3;
+} else if (Q.heid_motion == 1) {
+    Q.heid_pass = 1;
+} else {
+    Q.heidelberg_outcome = 2;
+    if (Q.congress_result == 'luxemburgist') { Q.election_boycott = 0; }
+}
+!}
+
+= Heidelberg Votes
+
+On the last evening the delegates vote by raising their mandate cards, district by district, while two tellers from each side count. [? if heid_motion = 1 : The motion is the Zentrale's theses, the last thesis included. ?][? if heid_motion = 2 : The motion is the Zentrale's theses, without the clause on expulsions. ?][? if heid_motion = 3 : The motion is to shelve the theses and adopt a programme of action. ?]
+
+[? if heid_ul_won = 0 : The **[+ congress_result_name +]** carry the vote. ?][? if heid_ul_won = 0 and congress_won = 1 : Our motion has [+ heid_for +] votes, about [+ congress_votes_for +]% of the hall. ?][? if heid_ul_won = 0 and congress_won = 0 : It is not our motion that wins, but the Left Radicals' has lost all the same. ?][? if heid_ul_won = 1 : The Left Radicals' counter-motion is carried. The Zentrale had [+ heid_for +] votes, about [+ congress_votes_for +]% of the hall, and it is not enough. ?] [? if congress_close_call = 1 : It came down to a handful of mandates, and both sides will say the other cheated. ?]
+
+[? if heid_pass = 1 : Laufenberg rises and declares that the minority will not accept the decision. The Left Radical delegates stand up together and walk towards the door. ?][? if heid_motion = 2 and heid_ul_won = 0 : There is no walkout. The Left Radicals have lost the argument and kept their seats, and they mean to use them. ?][? if heid_motion = 3 and heid_ul_won = 0 : Nobody is expelled, nobody is satisfied, and the party goes home to fight its next battle together. ?][? if heid_ul_won = 1 : The Spartacist members of the Zentrale look at each other. They have just been voted out of their own party's leadership. ?]
+
+- @walkout: The Left Radicals are leaving.
+- @to_result: Continue...
+
+@to_result
+view-if: heid_pass = 0
+go-to: result
+
+@walkout
+title: The Walkout
+new-page: true
+view-if: heid_pass = 1
+
+= The Walkout
+
+The theses are carried by [+ heid_for +] votes to [+ heid_against +]. The doors bang behind the Left Radicals. In Hamburg, Bremen and Berlin, their districts are waiting for them.
+
+Some delegates are already saying that half the party has just left. Others say that the party has only now become one.
+
+- @let_go: Let them go. The expulsions stand.
+- @fight: Let them go, and fight for every member in their districts.
+- @probation: Call them back: a last chance to submit by the next congress.
+
+@let_go
+subtitle: The Spartacist line to the end. Lenin will think it a mistake.
+on-arrival: {!
+Q.heidelberg_outcome = 1; Q.election_boycott = 0; Q.lean_luxemburgist += 1;
+RG.ecci('lenin', -4); RG.ecci('radek', -6);
+!}
+go-to: result
+
+@fight
+subtitle: The Left's answer: no mercy for the splitters, and no members left to them.
+on-arrival: {!
+Q.heidelberg_outcome = 1; Q.election_boycott = 0; Q.heid_fight = 1; Q.lean_offensive += 2; Q.offensive_satisfaction += 6;
+RG.ecci('radek', -6); RG.ecci('bukharin', 3);
+!}
+go-to: result
+
+@probation
+subtitle: The Right's hope, and Radek's. It works only if someone the Left Radicals trust will vouch for it.
+on-arrival: {!
+Q.lean_unionist += 2;
+Q.election_boycott = 0;
+Q.heidelberg_outcome = (Q.heid_radek >= 1 || Q.heid_left == 3 || Q.heid_mandates != 1) ? 2 : 1;
+RG.ecci('radek', 6);
+RG.ecci('lenin', 4);
+!}
+go-to: result
+
+@result
+title: After Heidelberg
+new-page: true
+on-arrival: {!
+if (Q.heidelberg_outcome == 1) {
+    Q.luxemburgist_satisfaction += 10;
+    Q.unionist_satisfaction += 4;
+    // kept above the generic split threshold: the split itself comes in November
+    Q.ultraleft_satisfaction = 12;
+    Q.unity -= 5;
+    Q.levi_chair = (Q.luxemburg_alive || Q.jogiches_alive) ? 0 : 1;
+    RG.news('Heidelberg congress expels the opposition', 3);
+    RG.ledger('Heidelberg expelled the Left Radicals: a smaller party, and of one mind.', 'e19_heid_1');
+    RG.ecci('zinoviev', -3);
+} else if (Q.heidelberg_outcome == 2) {
+    if (Q.leading_faction == 'luxemburgist') {
+        Q.junior_faction = 'ultraleft';
+    }
+    Q.ultraleft_satisfaction += 10;
+    Q.luxemburgist_satisfaction -= 5;
+    Q.unity += 5;
+    Q.levi_chair = (Q.luxemburg_alive || Q.jogiches_alive) ? 0 : 1;
+    RG.news('Heidelberg ends without a split', 3);
+    RG.ledger('Heidelberg kept the Left Radicals in the party.', 'e19_heid_2');
+    RG.ecci('radek', 4);
+    RG.ecci('lenin', 3);
+} else {
+    Q.leading_faction = 'ultraleft';
+    Q.junior_faction = 0;
+    Q.levi_chair = 0;
+    Q.election_boycott = 1;
+    Q.party_chair = (Q.natbol_line == 2) ? 'Heinrich Laufenberg' : 'Otto Rühle';
+    RG.setRole(Q.natbol_line == 2 ? 'laufenberg' : 'ruhle', 'Chair of the Zentrale');
+    Q.ultraleft_satisfaction += 20;
+    Q.luxemburgist_satisfaction = Math.min(Q.luxemburgist_satisfaction, 25);
+    Q.unionist_satisfaction -= 10;
+    Q.unity -= 8;
+    for (var d of Q.districts) {
+        if (Q['district_' + d + '_faction'] == 'ultraleft') {
+            Q['district_' + d + '_loyalty'] += 15;
+        } else {
+            Q['district_' + d + '_loyalty'] -= 15;
+        }
+    }
+    RG.news('Left Radicals take the Zentrale at Heidelberg', 3);
+    RG.ledger('The Left Radicals won Heidelberg and took the Zentrale.', 'e19_heid_3');
+    RG.ecci('lenin', -12);
+    RG.ecci('radek', -10);
+    RG.ecci('zinoviev', -6);
+}
+if (Q.levi_chair == 1) { RG.setRole('levi', 'Chair of the Zentrale'); }
+Q.kapd_split = 0;
+!}
+
+= After Heidelberg
+
+[? if heidelberg_outcome = 1 and heid_already = 1 : The congress adopts the theses without a dissenting vote and declares that the Left Radicals who left in the summer stand outside the party for good. ?][? if heidelberg_outcome = 1 and heid_already = 0 : The congress expels the opposition. The Left Radicals' districts are declared to stand outside the party, and the Zentrale sends its own people to rebuild them. The young party has chosen to be smaller, and to be one. Within weeks it will learn how much smaller. ?]
+
+[? if heidelberg_outcome = 2 and election_boycott = 0 : The congress ends without a split. The theses on elections and the unions are adopted, but nobody is expelled for rejecting them. ?][? if heidelberg_outcome = 2 and election_boycott = 1 : The congress ends without a split. The boycott stands, the theses are shelved, and nobody is expelled. ?][? if heidelberg_outcome = 2 : The Left Radicals stay, with seats in the leadership and their own papers. Every meeting of the Zentrale will now be a negotiation. ?]
+
+[? if heidelberg_outcome = 3 : The Spartacist members of the Zentrale resign, and a new one is elected from the Left Radical districts, with **[+ party_chair +]** at its head. The boycott of parliament and the unions is now the party's line, and the councils are its whole programme. ?][? if heidelberg_outcome = 3 and luxemburg_alive = 1 : Rosa Luxemburg and Paul Levi remain in the party, for now, at the head of a bitter minority. ?][? if heidelberg_outcome = 3 and luxemburg_alive = 0 : Paul Levi and his friends remain in the party, for now, as a bitter minority. ?]
+
+[? if heidelberg_outcome = 1 : In Moabit, Radek reads the report and writes to Moscow that the Germans have cut off their own left hand. ?][? if heidelberg_outcome = 3 : In Moscow, Lenin asks for the German minutes to be translated, and reads them twice. ?]

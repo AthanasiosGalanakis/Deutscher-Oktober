@@ -1,0 +1,77 @@
+title: Däumig's Price
+subtitle: The Independents' leaders want guarantees.
+view-if: congress = 1 and congress_unification = 1 and congress_closing = 0 and e20_cg_daumig_done = 0
+on-arrival: {!
+Q.month_actions += 1;
+Q.e20_cg_daumig_done = 1;
+RG.congress.tally();
+!}
+frequency: 400
+is-card: true
+new-page: true
+tags: congress
+
+= Däumig's Price
+
+Ernst Däumig asks for a word in private. He is a former Foreign Legion sergeant turned socialist editor, slow-spoken and proud, and he brought most of the delegates in this hall into the International. He does not want much, he says. He wants to be co-chair of the new party, so that the Independents' members know they have joined a union and not a conquest. Behind him, Adolph Hoffmann and the USPD's union officials want something else: a promise that nobody will be expelled for sitting on a union executive with social democrats.
+
+[? if congress_ahead = 1 : We are ahead, with [+ congress_votes_for +]% of the hall. ?][? if congress_ahead = 0 : The [+ congress_leader_name +] are ahead, with [+ congress_leader_votes +]% of the hall. ?]
+
+- @chair: Promise Däumig the co-chair.
+- @unions: Promise the union officials their posts.
+- @both: Promise both.
+- @no: Promise nothing: they joined the International, not a bargain.
+
+@chair
+subtitle: Many newcomers come over to our slate, and they will stay in the party. Our own current gives up a seat.
+on-arrival: {!
+Q.e20_daumig_deal = 1;
+RG.congress.sway(0.08);
+Q[Q.congress_backing + '_satisfaction'] -= 3;
+Q.uspd_relation += 3;
+Q.lean_luxemburgist += 1;
+!}
+
+Däumig nods, and goes back to his delegates. [? if congress_last_moved > 0 : [+ congress_last_moved +] of them vote with us from now on. ?] Our slate has [+ congress_votes_for +]% of the hall.
+
+@unions
+subtitle: The Right's promise. The union men come over; the Left will say the party has bought reformists.
+on-arrival: {!
+var n = RG.congress.convert('saxony', 0.25) + RG.congress.convert('berlin', 0.1) + RG.congress.convert('thuringia', 0.2);
+RG.congress.tally();
+Q.congress_last_moved = n;
+Q.unionist_satisfaction += 5;
+Q.offensive_satisfaction -= 5;
+Q.lean_unionist += 2;
+!}
+
+The union officials get it in writing. [? if congress_last_moved > 0 : [+ congress_last_moved +] delegates from Saxony, Thuringia and Berlin come over to our slate. ?] Our slate has [+ congress_votes_for +]% of the hall.
+
+@both
+subtitle: Costs 1 fund for the banquet. Wins the most, and binds our hands the most.
+choose-if: resources >= 1
+unavailable-subtitle: We cannot even pay for the banquet.
+on-arrival: {!
+Q.resources -= 1;
+Q.e20_daumig_deal = 1;
+RG.congress.sway(0.1);
+RG.congress.convert('saxony', 0.15);
+RG.congress.tally();
+Q[Q.congress_backing + '_satisfaction'] -= 5;
+Q.offensive_satisfaction -= 3;
+Q.unity -= 2;
+!}
+
+Over dinner at the Hotel Kaiserhof, everybody is promised something. Our slate has [+ congress_votes_for +]% of the hall, and a list of debts.
+
+@no
+subtitle: The Left's line. The newcomers will learn discipline, starting now. Some of them will not like the lesson.
+on-arrival: {!
+RG.congress.bitter(5);
+RG.congress.lose(0.03);
+Q.offensive_satisfaction += 5;
+Q.lean_offensive += 1;
+Q.uspd_relation -= 4;
+!}
+
+Däumig is told, politely, that posts are for the congress to decide. He goes back to his delegates without a word. Our slate has [+ congress_votes_for +]% of the hall.

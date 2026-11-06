@@ -45,6 +45,8 @@ Q.repression += 6;
 Q.worker_support -= 2;
 Q.offensive_satisfaction += 8;
 Q.lean_offensive += 2;
+RG.ecci('bukharin', 4);
+RG.ecci('zinoviev', 3);
 !}
 
 - @battle: Continue...
@@ -56,6 +58,7 @@ Q.worker_support += 2;
 Q.uspd_relation += 3;
 Q.unionist_satisfaction += 4;
 Q.lean_unionist += 1;
+RG.ecci('radek', 2);
 !}
 
 - @battle: Continue...
@@ -80,6 +83,8 @@ if (Q.warsaw_outcome == 2) {
     Q.offensive_satisfaction -= 5;
     Q.stability += 3;
 }
+if (Q.warsaw_outcome == 2) { RG.news('The Red Army enters Warsaw', 3); RG.ecci('all', 5); }
+else { RG.news('Miracle on the Vistula: the Red Army routed before Warsaw', 3); }
 !}
 
 = The Battle of Warsaw

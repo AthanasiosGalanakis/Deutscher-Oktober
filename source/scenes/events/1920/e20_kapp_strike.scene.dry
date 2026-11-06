@@ -5,6 +5,12 @@ tags: event
 view-if: crisis_kapp = 1 and crisis_time = 1
 max-visits: 1
 priority: 5
+on-arrival: {!
+RG.districtSync();
+RG.district('ruhr', {militancy: 4, guards: 4});
+RG.district('saxony', {guards: 1});
+RG.district('halle', {militancy: 2, guards: 1});
+!}
 
 = Twelve Million on Strike
 
@@ -49,6 +55,7 @@ Q.uspd_relation += 3;
 Q.uspd_score += 1;
 Q.luxemburgist_satisfaction += 8;
 Q.lean_luxemburgist += 2;
+RG.ecci('radek', 3);
 !}
 
 Our resolutions pass in strike meetings across Berlin: no return to work until the Freikorps are disarmed, the putschists punished, and a workers' militia formed. The USPD left votes with us.
@@ -71,6 +78,7 @@ Q.red_guards_arms += 8;
 Q.offensive_satisfaction += 10;
 Q.unionist_satisfaction -= 6;
 Q.lean_offensive += 2;
+RG.ecci('bukharin', 4);
 !}
 
 The Zentrale's couriers carry a single order to the districts: arm, and hold what you take. Rifles are handed out from the Einwohnerwehr depots in a dozen towns.

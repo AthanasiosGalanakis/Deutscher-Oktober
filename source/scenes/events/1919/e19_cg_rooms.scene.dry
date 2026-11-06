@@ -1,0 +1,57 @@
+title: Police in Heidelberg
+subtitle: Somebody has talked. The congress must move.
+view-if: congress = 1 and congress_heidelberg = 1 and congress_closing = 0 and heid_cg_rooms = 0 and congress_session >= 2
+on-arrival: {!
+Q.month_actions += 1;
+Q.heid_cg_rooms = 1;
+RG.congress.tally();
+!}
+frequency: 300
+is-card: true
+new-page: true
+tags: congress
+
+= Police in Heidelberg
+
+A comrade from the railway station brings word that plain-clothes men from Karlsruhe have been asking about a "conference of the gymnastics club". The congress has already moved twice. The next hall is in Mannheim, across the river, and it will take a day to get there.
+
+[? if congress_ahead = 1 : We are ahead, with [+ congress_votes_for +]% of the hall. ?][? if congress_ahead = 0 : The [+ congress_leader_name +] are ahead, with [+ congress_leader_votes +]% of the hall. ?]
+
+- @vote_now: Close the debate, and vote tonight.
+- @move: Move to Mannheim, and give the debate another day.
+- @guards: Post lookouts, and carry on here.
+
+@vote_now
+subtitle: Locks in the hall as it stands. The losers will say the debate was cut short.
+on-arrival: {!
+RG.congress.closeEarly();
+RG.congress.bitter(3);
+!}
+
+The chairman moves the closure. The vote will be taken tonight, with the lamps turned down.
+
+@move
+subtitle: Costs 1 fund. One more session, and the waverers have time to think.
+choose-if: resources >= 1
+unavailable-subtitle: We have no money for the train fares.
+on-arrival: {!
+Q.resources -= 1;
+RG.congress.extend(1);
+Q.unity += 1;
+!}
+
+The delegates leave in twos and threes on the evening trains. In Mannheim the debate starts again, angrier and better informed.
+
+@guards
+subtitle: Costs nothing, if nothing happens. If the police come, the delegates will scatter.
+on-arrival: {!
+if (Math.random() < 0.3) {
+    RG.congress.closeEarly();
+    Q.repression += 3;
+    Q.heid_raided = 1;
+} else {
+    Q.heid_raided = 0;
+}
+!}
+
+[? if heid_raided = 1 : The police arrive at dawn. Most delegates are out through the kitchen, but the congress must vote at once, wherever it can find a room. ?][? if heid_raided = 0 : Young comrades on bicycles watch the roads all day. Nobody comes. ?]

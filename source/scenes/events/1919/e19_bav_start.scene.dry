@@ -22,6 +22,7 @@ Q.week = 1;
 Q.crisis_name = 'The Bavarian Council Republic';
 Q.crisis_goal = 'Decide whether we take power in Munich, and whether a red Bavaria can survive.';
 Q.crisis_momentum = 35 + 5 * Q.bav_prep + (Q.levine_sent ? 5 : 0);
+RG.news('Council republic proclaimed in Munich', 3);
 !}
 
 = A Council Republic in Munich

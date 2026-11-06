@@ -22,6 +22,7 @@ Q.ddp_in_government = 0;
 Q.stability -= 3;
 Q.army_loyalty -= 5;
 Q.freikorps_loyalty -= 8;
+RG.news('Peace treaty signed in the Hall of Mirrors', 3);
 !}
 
 = The Treaty Is Signed

@@ -17,6 +17,7 @@ for (var d of Q.districts) {
 }
 Q.constitution_adopted = 1;
 Q.stability += 5;
+RG.news('Ebert signs the Weimar constitution', 3);
 !}
 
 = The Weimar Constitution
