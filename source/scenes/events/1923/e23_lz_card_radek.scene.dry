@@ -1,5 +1,5 @@
 title: Radek in the Lobby
-subtitle: Moscow's man has a proposal for every current.
+subtitle: Moscow's man has a proposal for every delegation.
 view-if: congress_leipzig = 1 and congress_closing = 0 and e23_lz_radek_used = 0 and comintern_member = 1
 on-arrival: {!
 Q.month_actions += 1;
@@ -17,35 +17,29 @@ tags: congress
 
 = Radek in the Lobby
 
-[+ e23_lz_radek_name +] has spent the congress in the lobby, with a cigarette and a different joke for every delegation. In the evening he sends for the Zentrale's whips. The Executive, he says, wants a strong Zentrale and an unbroken party, and it will not mind very much who leads it as long as both sides are inside.
+[+ e23_lz_radek_name +] has spent the congress in the lobby with a cigarette and a different joke for every delegation. In the evening he sends for our whips. The Executive wants a strong Zentrale and an unbroken party, he says, and does not much mind who leads it as long as both sides are inside. [? if e23_lz_with_moscow = 1 : He would be glad to say from the platform that Moscow is with our motion. ?][? if e23_lz_with_moscow = 0 : The Executive's sympathies, he admits, lie with the [+ moscow_backs_name +]. ?]
 
-[? if e23_lz_with_moscow = 1 : The Executive is with our motion, he adds, and he would be glad to say so from the platform. ?][? if e23_lz_with_moscow = 0 : The Executive's sympathies, he admits, lie with the [+ moscow_backs_name +]. ?] [? if e23_lz_has_rival = 1 : What he offers is a compromise with the [+ congress_rival_name +]. ?]
-
-- @compromise: Accept Radek's compromise: seats in the Zentrale for the [+ congress_rival_name +].
-- @speak: Ask Radek to speak for our motion.
+- @compromise: Take his compromise with the [+ congress_rival_name +].
+- @speak: Ask him to speak.
 - @decline: Tell him the German party will settle this itself.
 
 @compromise
-subtitle: Their delegates vote with us, and they will share the Zentrale if we win. Moscow is pleased.
+subtitle: Their delegates vote with us, and they share the Zentrale if we win.
 view-if: e23_lz_has_rival = 1
 on-arrival: {!
 Q.e23_lz_deal_name = Q.congress_rival_name;
 RG.congress.deal(Q.congress_rival);
 RG.ecci('radek', 8);
-RG.ecci('lenin', 3);
 Q.independence -= 3;
-Q.unity += 2;
 !}
 
-Two hours in a back room, a bottle of Saxon brandy and a list of names. The [+ e23_lz_deal_name +] withdraw their motion and will vote for ours.
+Two hours in a back room, a bottle of Saxon brandy and a list of names. The [+ e23_lz_deal_name +] withdraw their motion.
 
 @speak
-subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] If Moscow is with us, he can move the hall. If it is not, he will say so.
+subtitle: [? if lock_moscow_orders = 1 : Against the party line: costs Unity. ?] If Moscow is with us he can move the hall. If it is not, he will say so.
 on-arrival: {!
-if (Q.lock_moscow_orders == 1) {
-    Q.unity -= 5;
-    Q[Q.leading_faction + '_satisfaction'] -= 5;
-}
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('moscow_orders', 5);
 if (Q.e23_lz_with_moscow == 1) {
     RG.congress.sway(0.08);
     Q.sys_outcome = 1;
@@ -57,17 +51,15 @@ Q.independence -= 3;
 RG.ecci('radek', 4);
 !}
 
-[? if sys_outcome = 1 : Radek speaks for forty minutes, in a German better than most of the delegates', and [+ congress_last_moved +] of them come over to us. ?][? if sys_outcome = 2 : Radek speaks for the Executive, which is to say for the [+ moscow_backs_name +], and [+ congress_last_moved +] delegates go over to them. We asked for it. ?]
+[? if sys_outcome = 1 : Radek speaks for forty minutes in better German than most of the delegates, and [+ congress_last_moved +] of them come over to us. ?][? if sys_outcome = 2 : Radek speaks for the Executive, which means for the [+ moscow_backs_name +], and [+ congress_last_moved +] delegates go over to them. ?]
 
 @decline
-subtitle: Independence grows, and the Spartacists approve. Radek takes it personally.
+subtitle: The delegates who dislike being told what to do will like it. Radek will not.
 on-arrival: {!
 Q.independence += 4;
 RG.ecci('radek', -8);
-RG.ecci('zinoviev', -3);
 RG.congress.sway(0.02);
-Q.luxemburgist_satisfaction += 3;
 Q.lean_luxemburgist += 1;
 !}
 
-We thank the Executive's representative for his advice. A few delegates who dislike being told what to do by Moscow come over to us for that reason alone. Radek's report to Zinoviev that night is two pages long.
+We thank the Executive's representative for his advice. Radek's report to Zinoviev that night runs to two pages.

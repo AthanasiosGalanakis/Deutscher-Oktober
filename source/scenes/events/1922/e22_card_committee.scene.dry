@@ -1,0 +1,40 @@
+title: The Defence Committee
+subtitle: The joint committee formed after Rathenau's murder still meets.
+new-page: true
+view-if: crisis = 0 and congress = 0 and e22_rathenau_front = 1 and year = 1922 and month >= 7
+on-arrival: {!
+Q.month_actions += 1;
+RG.target('militancy');
+Q.e22_cm_d = Q.sys_target;
+Q.e22_cm_name = Q.sys_target_name;
+!}
+max-visits: 1
+frequency: 200
+is-card: true
+tags: movement
+
+= The Defence Committee
+
+In [+ e22_cm_name +] the committee formed in June still meets on Tuesday evenings in the back room of the trade union house: two Social Democrats, an Independent, the union secretary and our district man. The monarchist league in the town has stopped holding its parades. The committee wonders what it is for now.
+
+- @standing: Make it a standing body of the works councils.
+- @strike: Use it to call a strike against the leagues.
+
+@standing
+subtitle: The district trusts us more, and so does the SPD there.
+on-arrival: {!
+RG.district(Q.e22_cm_d, {loyalty: 8, members: 0.04});
+Q.spd_relation += 4;
+!}
+
+The committee is enlarged to the works councils of the town and meets every week. When a Social Democrat proposes our man as its chairman, nobody objects.
+
+@strike
+subtitle: A strike in [+ e22_cm_name +], with the Social Democrats beside us at first.
+on-arrival: {!
+RG.startStrike(Q.e22_cm_d);
+RG.district(Q.e22_cm_d, {militancy: 6});
+Q.spd_relation -= 2;
+!}
+
+The committee calls a one-day strike against the leagues. It lasts three days, and on the third the Social Democrats go back to work.

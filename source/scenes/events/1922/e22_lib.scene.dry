@@ -1,0 +1,253 @@
+title: 1922 and 1923 helpers
+on-arrival: {!
+// Never shown. The helpers of the 1922 and 1923 events, as RG.e22.
+// Every scene that needs them loads them first with
+//   if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+// RG is rebuilt after a reload or a load, and RG.e22 with it.
+var R = RG;
+var E = {};
+var Q = function () { return R.q(); };
+var clamp = R.clamp;
+
+// the leader's name and a number for the leading current, for text
+E.leader = function () {
+    var q = Q();
+    var L = {unionist: 'Heinrich Brandler', offensive: 'Ruth Fischer',
+        luxemburgist: (q.luxemburg_alive == 1 ? 'Rosa Luxemburg' : (q.levi_in_party == 1 ? 'Paul Levi' : 'Ernst Meyer')),
+        ultraleft: 'Karl Schröder'};
+    q.party_leader = L[q.leading_faction] || 'the Zentrale';
+    q.lead_code = R.CODE[q.leading_faction] || 3;
+};
+// the cost of acting against the party line (lock = 1)
+E.against = function (action, cost) {
+    var q = Q();
+    if (q['lock_' + action] == 1) {
+        cost = cost || 10;
+        q.unity -= cost;
+        q[q.leading_faction + '_satisfaction'] -= cost;
+    }
+};
+E.list = function (ds) {
+    var n = ds.map(function (d) { return R.dname(d); });
+    return n.length <= 1 ? n.join('') : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1];
+};
+E.striking = function () {
+    var q = Q();
+    return q.districts.filter(function (d) { return q['district_' + d + '_strike']; });
+};
+E.clearCrisis = function () {
+    var q = Q();
+    q.crisis = 0;
+    q.crisis_name = 0;
+    q.crisis_goal = 0;
+    q.crisis_line_1 = 0;
+    q.crisis_line_2 = 0;
+    q.crisis_line_3 = 0;
+    q.crisis_momentum_label = 0;
+    q.crisis_momentum = 50;
+};
+
+// ------------------------------------------------------------ the Cuno strike
+// Pressure on the government rises with every district out and every week the
+// money presses stand still. The strikers' strength falls every week, faster
+// while there is no money to pay anyone. Cuno falls at full pressure; the
+// strike breaks when the strikers can hold out no longer.
+E.cunoStart = function (bonus) {
+    var q = Q();
+    q.crisis = 1;
+    q.crisis_cuno = 1;
+    q.crisis_time = 0;
+    q.week = 1;
+    q.crisis_name = 'The Cuno Strike';
+    q.crisis_goal = 'Keep the strike going until Cuno falls.';
+    q.crisis_momentum = 50;
+    q.crisis_momentum_label = 0;
+    q.e23_cuno_pressure = clamp(20 + (bonus || 0) + (q.e23_inflation_line == 2 ? 10 : 0) + (q.e22_inflation_line == 1 ? 5 : 0), 10, 50);
+    q.e23_cuno_endurance = clamp(Math.round(35 + q.worker_support * 0.4 + q.unity * 0.1), 30, 75);
+    q.e23_cuno_presses = 1;
+    q.e23_cuno_ticked = 0;
+    ['berlin', 'hamburg', 'saxony'].forEach(function (d) { R.startStrike(d, true); });
+    if (q.e23_mulheim == 1 || q.e23_may == 3) { R.startStrike('ruhr', true); }
+    E.cunoLines();
+};
+E.cunoTick = function (upTo) {
+    var q = Q();
+    while (q.e23_cuno_ticked < upTo) {
+        q.e23_cuno_ticked += 1;
+        var out = E.striking().length;
+        q.e23_cuno_pressure += out * 3 + (q.e23_cuno_presses ? 8 : 0) + (q.crisis_momentum - 50) * 0.5;
+        q.e23_cuno_endurance -= 12 + (q.e23_cuno_presses ? 3 : 0) - Math.min(6, q.worker_support / 10);
+        q.crisis_momentum = 50;
+    }
+    E.cunoLines();
+};
+E.cunoLines = function () {
+    var q = Q();
+    q.e23_cuno_pressure = clamp(Math.round(q.e23_cuno_pressure), 0, 100);
+    q.e23_cuno_endurance = clamp(Math.round(q.e23_cuno_endurance), 0, 100);
+    var p = q.e23_cuno_pressure, e = q.e23_cuno_endurance;
+    q.crisis_line_1 = 'Cuno: ' + (p >= 100 ? 'he has to go' : p >= 75 ? 'he cannot last the week' : p >= 50 ? 'under heavy pressure' : p >= 30 ? 'shaken' : 'still sure of himself');
+    q.crisis_line_2 = 'The strikers: ' + (e >= 60 ? 'fresh and angry' : e >= 40 ? 'holding' : e >= 20 ? 'tired and hungry' : e > 0 ? 'at the end of their strength' : 'going back');
+    var s = E.striking();
+    q.crisis_line_3 = (s.length ? 'Out: ' + E.list(s) : 'Nobody is out') + (q.e23_cuno_presses ? '. The money presses are stopped.' : '. One press is printing strike pay.');
+};
+E.cunoClear = function () {
+    var q = Q();
+    q.crisis_cuno = 0;
+    E.clearCrisis();
+};
+
+// ------------------------------------------------------------ the German October
+// Preparation: the arms count (thousands of rifles), the Chemnitz hall (the
+// share of delegates who would vote for the general strike) and the couriers.
+// The rising: each week the Reichswehr attacks every district that has risen,
+// harder each week, and a district too weak to hold falls.
+E.octArms = function () {
+    var q = Q();
+    return Math.round(q.red_guards_arms / 3 + (q.e23_hundreds == 3 ? 4 : 0) + (q.e23_date_set ? 2 : 0));
+};
+E.octStart = function () {
+    var q = Q();
+    q.crisis = 1;
+    q.crisis_october = 1;
+    q.crisis_time = 0;
+    q.week = 1;
+    q.crisis_name = 'The German October';
+    q.crisis_goal = 'Arm the hundreds, and win the Chemnitz conference for the general strike.';
+    q.crisis_momentum = 50;
+    q.crisis_momentum_label = 0;
+    q.e23_rising_phase = 0;
+    q.e23_oct_arms = E.octArms();
+    q.e23_oct_hall = clamp(Math.round(22 + q.spd_relation * 0.4 + (q.e23_zeigner == 1 ? 4 : 0)
+        + (q.e23_hundreds == 2 ? 5 : 0) + (q.e23_council_congress ? 6 : 0) + (q.e23_cuno_result == 2 ? 4 : 0)), 15, 60);
+    q.e23_oct_couriers = 0;
+    q.e23_oct_ticked = 0;
+    E.octLines();
+};
+E.octRise = function (ds, name, goal, bonus) {
+    var q = Q();
+    if (!q.crisis_october) {
+        q.crisis = 1;
+        q.crisis_october = 1;
+        q.week = q.week || 1;
+        q.crisis_momentum = 50;
+        q.crisis_momentum_label = 0;
+        q.e23_oct_arms = E.octArms();
+        q.e23_oct_couriers = 0;
+    }
+    q.crisis_cuno = 0;
+    q.e23_rising_phase = 1;
+    q.crisis_name = name || 'The German Revolution';
+    q.crisis_goal = goal || 'Hold the districts that have risen until the Reichswehr breaks.';
+    var list = [];
+    ds.forEach(function (d) { if (list.indexOf(d) < 0 && q['district_' + d + '_members'] !== undefined) { list.push(d); } });
+    if (q.e23_oct_couriers == 2 && list.indexOf('hamburg') < 0) { list.push('hamburg'); }
+    list.forEach(function (d) { R.startStrike(d, true); });
+    q.e23_oct_rising = list;
+    q.e23_oct_alive = list.length;
+    q.e23_oct_fallen_names = 0;
+    q.e23_oct_has_fallen = 0;
+    q.e23_oct_fight = 0;
+    q.e23_oct_bonus = bonus || 0;
+    q.e23_oct_focus = 0;
+    q.e23_oct_ticked = q.crisis_time;
+    q.e23_oct_battle_time = q.crisis_time + 1;
+    q.e23_oct_end_time = q.crisis_time + 3;
+    E.octLines();
+};
+E.octStrength = function (d) {
+    var q = Q();
+    var p = 'district_' + d + '_';
+    var n = Math.max(1, (q.e23_oct_rising || []).length);
+    var focus = {1: ['saxony', 'thuringia'], 2: ['berlin'], 3: ['ruhr', 'hamburg', 'bremen']}[q.e23_oct_focus] || [];
+    return q[p + 'guards'] * 2 + q[p + 'militancy'] * 0.12 + q[p + 'loyalty'] * 0.06 - q[p + 'repression'] * 0.08
+        + (q[p + 'strike'] ? 3 : 0) + Math.min(8, q.e23_oct_arms / n) + (focus.indexOf(d) >= 0 ? 3 : 0) + q.e23_oct_bonus;
+};
+E.octWeakest = function () {
+    var q = Q();
+    var r = (q.e23_oct_rising || []).slice();
+    r.sort(function (a, b) { return E.octStrength(a) - E.octStrength(b); });
+    return r[0] || 0;
+};
+E.octTick = function (upTo) {
+    var q = Q();
+    if (q.e23_rising_phase == 1) {
+        var fell = [];
+        while (q.e23_oct_ticked < upTo) {
+            q.e23_oct_ticked += 1;
+            q.e23_oct_fight += 1;
+            q.e23_oct_bonus += (q.crisis_momentum - 50) * 0.3;
+            q.crisis_momentum = 50;
+            var force = 9 + 4 * q.e23_oct_fight + (q.army_loyalty - 50) * 0.15 + (q.spd_relation < 20 ? 2 : 0);
+            var keep = [];
+            (q.e23_oct_rising || []).forEach(function (d) {
+                if (E.octStrength(d) + Math.random() * 8 - 4 >= force) {
+                    keep.push(d);
+                } else {
+                    fell.push(d);
+                    R.endStrike(d, 'quiet');
+                    R.district(d, {repression: 12, guards: -q['district_' + d + '_guards'] * 0.5, militancy: -6});
+                }
+            });
+            q.e23_oct_rising = keep;
+            q.e23_oct_arms = Math.max(0, q.e23_oct_arms - 1);
+        }
+        q.e23_oct_alive = q.e23_oct_rising.length;
+        if (fell.length) {
+            q.e23_oct_has_fallen = 1;
+            q.e23_oct_fallen_names = E.list(fell);
+            R.news('Reichswehr retakes ' + E.list(fell), 3);
+        }
+    } else if (q.e23_rising_phase == 0) {
+        while (q.e23_oct_ticked < upTo) {
+            q.e23_oct_ticked += 1;
+            q.e23_oct_hall += (q.crisis_momentum - 50) * 0.3;
+            q.crisis_momentum = 50;
+            if (!q.e23_arms_hidden && q.e23_oct_ticked >= 2) { q.e23_oct_arms = Math.max(0, q.e23_oct_arms - 1); }
+        }
+        q.e23_oct_hall = clamp(Math.round(q.e23_oct_hall), 5, 90);
+    }
+    E.octLines();
+};
+E.octLines = function () {
+    var q = Q();
+    var a = q.e23_oct_arms || 0;
+    q.e23_oct_held_names = (q.e23_oct_rising || []).length ? E.list(q.e23_oct_rising) : 0;
+    q.e23_oct_arms_words = a >= 1 ? 'about ' + a + ' thousand rifles' : 'a few hundred rifles';
+    if (!q.crisis_october) { return; }
+    if (q.e23_rising_phase == 1) {
+        var r = q.e23_oct_rising || [];
+        q.crisis_line_1 = r.length ? 'Held: ' + E.list(r) : 'Nothing is held';
+        q.crisis_line_2 = 'Rifles: ' + (a >= 1 ? 'about ' + a + ' thousand' : 'a few hundred');
+        q.crisis_line_3 = 'The Reichswehr: ' + (q.e23_oct_fight == 0 ? 'concentrating' : q.e23_oct_fight == 1 ? 'attacking' : 'attacking with everything it has');
+    } else {
+        var h = q.e23_oct_hall || 0;
+        q.crisis_line_1 = 'Rifles: ' + (a >= 1 ? 'about ' + a + ' thousand' : 'a few hundred');
+        q.crisis_line_2 = 'Chemnitz: ' + (h >= 60 ? 'the hall is ours' : h >= 48 ? 'the hall leans to the strike' : h >= 35 ? 'the hall is divided' : 'the hall is against the strike');
+        q.crisis_line_3 = 'Couriers: ' + ['nothing arranged', 'a chain to every district', 'Hamburg will rise at the first word'][q.e23_oct_couriers || 0];
+    }
+};
+// the rising called off before it began, and the word reached everyone
+E.octCallOff = function () {
+    var q = Q();
+    if (q.directive_active && q.directive_id == 'october') { R.directiveResolve('fail'); q.directive_reckoning = 0; q.e23_oct_verdict = 1; }
+    R.ledger('The German October was called off at Chemnitz, everywhere and in time.', 'e23_stopped');
+    R.news('Reichswehr in Saxony: no rising', 2);
+    q.e23_rising_phase = 3;
+    q.german_october = 0;
+    q.e23_oct_result = 0;
+    q.militancy -= 8;
+    E.octClear();
+};
+E.octClear = function () {
+    var q = Q();
+    q.crisis_october = 0;
+    q.e23_october_done = 1;
+    E.clearCrisis();
+};
+// odds told in words
+E.odds = function (p) {
+    return p >= 0.8 ? 'almost certain' : p >= 0.6 ? 'better than even' : p >= 0.4 ? 'about even' : p >= 0.2 ? 'against us' : 'hopeless';
+};
+R.e22 = E;
+!}

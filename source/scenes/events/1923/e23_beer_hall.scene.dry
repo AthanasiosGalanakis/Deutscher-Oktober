@@ -6,71 +6,56 @@ view-if: year = 1923 and month = 11 and beer_hall_putsch = 0
 max-visits: 1
 priority: 3
 on-arrival: {!
-RG.news(Q.bavaria_soviet == 2 ? 'Hitler and Ludendorff invade Red Bavaria, and are beaten' : 'Hitler putsch fails at the Odeonsplatz', 3);
+RG.news(Q.bavaria_soviet == 2 ? 'Hitler and Ludendorff cross into Red Bavaria and are beaten' : 'Hitler putsch fails at the Odeonsplatz', 3);
 Q.beer_hall_putsch = 1;
 if (Q.spd_in_government && Q.dvp_in_government && Q.e22_workers_gov == 0) {
     Q.spd_in_government = 0;
     Q.government_name = Q.government_name.replace(', SPD', '');
 }
-if (Q.crisis_october == 1) {
-    Q.crisis_momentum += 3;
-}
 Q.e23_beer_in_crisis = Q.crisis_october ? 1 : 0;
+if (Q.crisis_october) { Q.e23_oct_bonus += 1.5; }
 !}
 
 = The Beer Hall Putsch
 
-[? if bavaria_soviet != 2 : On the evening of 8 November, Adolf Hitler bursts into the Bürgerbräukeller in Munich, where Kahr is addressing three thousand notables, fires a shot into the ceiling and proclaims the national revolution. General Ludendorff lends his name. Kahr, Lossow and Seisser are made to agree at pistol point, and change their minds as soon as they are released. ?][? if bavaria_soviet = 2 : On the night of 8 November, Adolf Hitler and General Ludendorff lead the nationalist leagues across the Franconian border into Red Bavaria, proclaiming a national revolution that will begin in Munich and end in Berlin. ?]
+[? if bavaria_soviet != 2 : On the evening of 8 November Adolf Hitler walks into the Bürgerbräukeller with a pistol while Kahr is speaking to three thousand guests. He fires into the ceiling and announces that the national revolution has begun. Ludendorff arrives an hour later in full uniform. The next morning two thousand men march on the War Ministry, and at the Odeonsplatz the Bavarian state police open fire. Hitler is arrested two days later at a villa by the Staffelsee. ?][? if bavaria_soviet = 2 : On the night of 8 November Hitler and Ludendorff lead the nationalist leagues over the Franconian border into Red Bavaria. The workers' guard is waiting at the Danube bridges. A squad of railwaymen takes Ludendorff prisoner, and Hitler gets back over the border in a borrowed car. ?]
 
-[? if bavaria_soviet != 2 : The next morning, two thousand men march through Munich towards the War Ministry. At the Odeonsplatz the Bavarian state police open fire. Fourteen putschists and four policemen are killed. Hitler flees with a dislocated shoulder and is arrested two days later. ?][? if bavaria_soviet = 2 : At the Danube crossings the Bavarian workers' guard is waiting. The columns are broken in a day of fighting. Ludendorff is taken prisoner by a squad of railwaymen, and Hitler escapes back across the border. ?]
+[? if e23_beer_in_crisis = 1 : Seeckt now has a putsch behind him as well as our hundreds in front, and he has to send two regiments south. ?][? if e23_beer_in_crisis = 0 : Half the officer corps wanted Hitler to win, and most of them still hold their commands. ?]
 
-[? if e23_beer_in_crisis = 1 : The Reichswehr, already fighting our hundreds, now has a putsch at its back. Seeckt must divide his forces. ?]
-
-The putsch has failed, but the danger has not. Half the officer corps sympathised with it.
-
-- @strike: Call a general strike against the fascist danger.
-- @front: Propose to the SPD and the unions a common defence against the right.
-- @analyse: Let the counter-revolutionaries fight each other.
+- @strike: Call a one-day strike against the fascists.
+- @front: Ask the SPD and the unions for joint defence squads.
+- @trial: Publish who knew about the putsch.
 
 @strike
-subtitle: The Left's answer. Militant; the authorities will treat us like the putschists.
+subtitle: The works stop for a day. The emergency commanders will treat us like the putschists.
 on-arrival: {!
-RG.ecci('zinoviev', 3);
-Q.militancy += 6;
-Q.repression += 5;
-Q.worker_support += 2;
-Q.crisis_momentum += 3;
-Q.offensive_satisfaction += 4;
+RG.district('bavaria', {militancy: 6});
+RG.district('berlin', {militancy: 4, repression: 4});
 Q.lean_offensive += 1;
 !}
 
-Our call goes out by every means we still have. In the industrial towns, whole works stop for a day. The emergency commanders ban more of our papers.
+Whole works stop in Berlin and the Ruhr. In Munich the strike committee is arrested by the same police who fired at the Odeonsplatz.
 
 @front
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A united front against fascism. The SPD's members are interested.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The SPD's members want it. Their executive may not.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids it.
 on-arrival: {!
-RG.ecci('radek', 3);
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.spd_relation += 5;
-Q.worker_support += 3;
-Q.crisis_momentum += 2;
-Q.unionist_satisfaction += 3;
-Q.lean_unionist += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('united_front');
+Q.e23_beer_front = Q.spd_relation >= 30 ? 1 : 0;
+Q.spd_relation += 4;
+if (Q.e23_beer_front) { Q.sa_strength *= 0.7; }
 !}
 
-The SPD's executive refuses to sit with us. Many of its local branches do not.
+[? if e23_beer_front = 1 : In thirty towns the Reichsbanner men and our hundreds patrol the same streets on the same nights. The brown shirts stay indoors. ?][? if e23_beer_front = 0 : The SPD executive refuses to sit with us. A few of its branches send men anyway. ?]
 
-@analyse
-subtitle: Cold, and correct, perhaps.
+@trial
+subtitle: Our informants in Munich have names. The officers named will not forget it.
 on-arrival: {!
-Q.luxemburgist_satisfaction += 3;
-Q.lean_luxemburgist += 1;
-Q.militancy -= 2;
+RG.ledger('We printed the names of the officers who knew about the Munich putsch.', 'e23_trial');
+Q.worker_support += 2;
+Q.army_loyalty -= 3;
 !}
 
-*Die Rote Fahne* explains that Kahr and Hitler are two wings of the same reaction, and that the workers should not mistake the quarrel of their enemies for a victory of their own.
+*Die Rote Fahne* prints the names of every Reichswehr officer in Bavaria who knew about the putsch in advance. The list runs to three columns, and two of the officers are retired within the month.

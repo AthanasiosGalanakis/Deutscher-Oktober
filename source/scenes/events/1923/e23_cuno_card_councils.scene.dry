@@ -1,7 +1,11 @@
 title: The Council of the Works
-subtitle: The factory councils are leading the strike. Who leads the councils?
+subtitle: The factory councils lead the strike. Who leads the councils?
 view-if: crisis_cuno = 1
-on-arrival: month_actions += 1
+on-arrival: {!
+Q.month_actions += 1;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.cunoTick(Q.crisis_time + 1);
+!}
 frequency: 100
 is-card: true
 new-page: true
@@ -9,51 +13,51 @@ tags: crisis
 
 = The Council of the Works
 
-The general assembly of Berlin's factory councils sits in permanent session in a union hall in the Engelufer. Our members are the largest group, but not a majority. SPD and non-party delegates want the strike to stay a strike. Some of ours want it to become something more.
+The assembly of Berlin's factory councils sits day and night in the union hall on the Engelufer. Our members are the largest group, not a majority. The Social Democratic and non-party delegates want the strike to stay a strike.
 
 - @joint: Elect a joint strike committee with the SPD delegates.
 - @guard: Put the hundreds at the council's disposal.
-- @national: Call a national congress of factory councils.
+- @congress: Call a national congress of factory councils.
 
 @joint
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Broadens the strike; the SPD delegates stay.
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Social Democratic strikers stay out longer.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids a joint committee with the SPD.
 on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.crisis_momentum += 6;
+RG.e22.against('united_front');
+Q.e23_cuno_endurance += 10;
+Q.e23_cuno_pressure += 3;
 Q.spd_relation += 4;
+RG.e22.cunoLines();
 Q.lean_unionist += 1;
 !}
 
-A strike committee of fifteen is elected, seven of them Social Democrats. The SPD executive disowns them. They stay.
+A strike committee of fifteen is elected, seven of them Social Democrats. Their executive disowns them, and they stay.
 
 @guard
-subtitle: Protects the strike; frightens the moderates.
+subtitle: The police keep their distance. The moderates are frightened.
 on-arrival: {!
-Q.crisis_momentum += 4;
-Q.red_guards_loyalty += 4;
-Q.militancy += 3;
+RG.district('berlin', {guards: 1, repression: 3});
+Q.e23_cuno_pressure += 8;
+Q.e23_cuno_endurance -= 3;
 Q.spd_relation -= 2;
+RG.e22.cunoLines();
 Q.lean_offensive += 1;
-RG.district('berlin', {guards: 1});
 !}
 
-Grey windcheaters appear at the doors of the power stations and the council's hall. The police keep their distance.
+Grey windcheaters appear at the doors of the power stations and the council hall.
 
-@national
-subtitle: Costs 1 fund. A national body for the councils, which may outlast the strike.
+@congress
+subtitle: Costs 1 fund. A national body of the councils that may outlast the strike.
+view-if: e23_council_congress = 0
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds to bring the delegates.
+unavailable-subtitle: We have no money to bring the delegates.
 on-arrival: {!
 Q.resources -= 1;
-Q.crisis_momentum += 5;
-Q.worker_support += 3;
+Q.e23_council_congress = 1;
+Q.e23_cuno_pressure += 5;
+RG.e22.cunoLines();
 Q.lean_ultraleft += 1;
-RG.startStrike('halle');
 !}
 
-Delegates from three hundred works arrive in Berlin by lorry and bicycle. The congress elects a national committee of the factory councils. The ADGB declares it illegitimate.
+Delegates from three hundred works arrive by lorry and bicycle and elect a national committee of the factory councils. The union federation declares it illegitimate.

@@ -1,87 +1,54 @@
 title: The Three Internationals
-subtitle: Moscow, Vienna and London meet in the Reichstag.
+subtitle: Moscow, Vienna and London meet at one table in the Reichstag.
 new-page: true
 tags: event
 view-if: year = 1922 and month = 4
 max-visits: 1
 priority: 2
-on-arrival: {!
-RG.news('Three Internationals meet at one table in the Reichstag', 2);
-!}
 
 = The Three Internationals
 
-From 2 to 5 April, the three Internationals meet in the Reichstag building: the Second, of Vandervelde and MacDonald; the Vienna Union of Friedrich Adler, which the workers call the Two-and-a-Half; and our own, represented by Radek, Bukharin and Clara Zetkin. It is the first time since 1914 that they have sat at one table.
+From 2 to 5 April the three Internationals meet in the Reichstag: the Second of Vandervelde and MacDonald, Friedrich Adler's Vienna Union, and ours, with Radek, Bukharin and Clara Zetkin. It is the first time since 1914 that they have sat at one table.
 
-The social democrats want guarantees for the Socialist Revolutionaries on trial in Moscow and an end to communist cells in their unions. Radek wants joint demonstrations against the capitalist offensive. A joint commission of nine is proposed, and a day of common marches on 20 April.
+The social democrats have one condition. The Socialist Revolutionaries on trial in Moscow must have defence counsel of their choice and must not be sentenced to death. If our side agrees, there will be joint marches across Europe on 20 April, and in Berlin the German party will organise them.
 
-The Comintern delegation speaks for the International. But the marches will be ours to organise, and our delegates will be watched by every German worker.
+- @promise: Give the guarantee, and march with the SPD.
+- @expose: March with them, and attack their leaders from the platform.
+- @away: Stay away from the marches.
 
-- @real: Treat it as a real beginning, and organise the marches with the SPD.
-- @expose: Use the conference to expose the reformist leaders.
-- @independent: Demand that the German party speaks for itself at the table.
-- @boycott: Stay away from the marches.
-
-@real
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] The Right's hope. Relations with the social democrats improve.
+@promise
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] A big day in the Lustgarten. The promise will have to be kept.
 choose-if: lock_united_front < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids marching with the social democrats.
 on-arrival: {!
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('united_front');
 RG.ecci('radek', 5);
-RG.ecci('lenin', 3);
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
 Q.e22_three_int = 1;
 Q.spd_relation += 8;
-Q.uspd_relation += 8;
-Q.worker_support += 4;
-Q.unionist_satisfaction += 6;
-Q.offensive_satisfaction -= 6;
 Q.lean_unionist += 2;
 !}
 
-On 20 April a hundred and fifty thousand march in the Lustgarten under red flags of every shade. The commission of nine breaks up within weeks, but the picture of the march stays on many kitchen walls.
+Radek signs the guarantee on the last evening. On 20 April a hundred and fifty thousand march in the Lustgarten under red flags of every shade, and Zetkin and Crispien speak from the same lorry.
 
 @expose
-subtitle: The Left's reading. Moscow's line in all but name; the SPD is offended.
+subtitle: Zinoviev's way of doing it. The SPD will not thank us.
 view-if: offensive_gone = 0
 on-arrival: {!
-RG.ecci('zinoviev', 4);
-RG.ecci('radek', -3);
+RG.ecci('zinoviev', 5);
 Q.e22_three_int = 2;
-Q.spd_relation -= 6;
-Q.uspd_relation -= 4;
-Q.offensive_satisfaction += 6;
-Q.unionist_satisfaction -= 3;
+Q.spd_relation -= 5;
 Q.lean_offensive += 2;
-Q.militancy += 3;
 !}
 
-Our speakers march beside the social democrats and attack them from the platform. The SPD press calls it a trick, and is not wholly wrong.
+Our speakers march beside the social democrats and denounce them from the platform. The SPD press calls it a trick.
 
-@independent
-subtitle: The Spartacist demand. More independence; Radek is annoyed.
+@away
+subtitle: The marches go on without us.
 on-arrival: {!
-RG.ecci('radek', -5);
 Q.e22_three_int = 3;
-Q.independence += 6;
-Q.luxemburgist_satisfaction += 6;
-Q.lean_luxemburgist += 2;
-Q.spd_relation += 2;
-!}
-
-[? if luxemburg_alive = 1 : Rosa Luxemburg takes a seat beside Zetkin and speaks for the German workers in a voice the social democrats still remember. ?][? if luxemburg_alive = 0 : Zetkin insists on speaking for the German party and not only for Moscow. ?] Radek complains, but the German delegates are heard.
-
-@boycott
-subtitle: Pure hands, empty streets.
-on-arrival: {!
-Q.e22_three_int = 4;
 Q.worker_support -= 3;
-Q.spd_relation -= 3;
 Q.ultraleft_satisfaction += 4;
-Q.unionist_satisfaction -= 5;
 !}
 
 Our members watch the marches from the pavement.

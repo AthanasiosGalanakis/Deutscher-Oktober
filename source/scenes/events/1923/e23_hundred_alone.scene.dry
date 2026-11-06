@@ -1,5 +1,5 @@
 title: A Hundred Acts Alone
-subtitle: A proletarian hundred takes the law into its own hands.
+subtitle: A proletarian hundred raids an arms store of the Black Reichswehr.
 new-page: true
 tags: event
 view-if: year = 1923 and month = 6 and crisis = 0 and congress = 0 and red_guards_strength >= 5
@@ -7,67 +7,60 @@ max-visits: 1
 on-arrival: {!
 var d = RG.target('guards');
 Q.e23_alone_d = d;
-Q.e23_alone_name = Q.district_names[d];
+Q.e23_alone_name = Q.sys_target_name;
 Q.e23_alone_trade = Q.sys_target_trade;
-Q.e23_alone_ours = Q.sys_target_ours;
-Q.e23_alone_faction = Q.sys_target_faction_name;
+Q.e23_alone_found = 0;
 RG.district(d, {militancy: 4, repression: 4});
 RG.news('Workers\' squad raids an arms store in ' + Q.e23_alone_name, 3);
 !}
 
 = A Hundred Acts Alone
 
-In [+ e23_alone_name +], a proletarian hundred drawn from [+ e23_alone_trade +] has acted without orders. On Saturday night forty of them drove out to a farm where the Black Reichswehr kept its rifles under the hay, tied up the two guards, and came back with three lorries of weapons. On Sunday they marched through the town with the rifles on their shoulders.
+In [+ e23_alone_name +] a hundred of [+ e23_alone_trade +] has acted without orders. On Saturday night forty of them drove out to a farm where the Black Reichswehr kept rifles under the hay, tied up the two guards and came back with three lorries of weapons. On Sunday they marched through the town with the rifles on their shoulders.
 
-The local police have asked Berlin for instructions. The nationalist press calls it the beginning of the Red Terror. The hundred's leader, a sheet-metal worker who was in the Red Army of the Ruhr in 1920, says he will hand the rifles to the party and to nobody else. [? if e23_alone_ours = 0 : The district follows the [+ e23_alone_faction +], and it is waiting to see what the Zentrale will say. ?]
+The police have asked Berlin for instructions. The hundred's leader, a sheet-metal worker who fought in the Red Army of the Ruhr in 1920, says he will give the rifles to the party and nobody else.
 
-- @back: Back them in public: the workers are arming against the fascists.
-- @command: Take the rifles into the party's apparatus, and the hundred under its command.
-- @disown: Disown them, and hand the rifles back.
+- @hide: Hide the rifles.
+- @back: Back them in public.
+- @return: Give the rifles back.
+
+@hide
+subtitle: The district secretary thinks the police will find them one time in three.
+on-arrival: {!
+Q.e23_alone = 2;
+Q.e23_alone_found = Math.random() < 0.33 ? 1 : 0;
+if (Q.e23_alone_found) {
+    RG.district(Q.e23_alone_d, {repression: 10, guards: -1});
+} else {
+    Q.red_guards_arms += 6;
+    RG.district(Q.e23_alone_d, {guards: 1});
+}
+!}
+
+[? if e23_alone_found = 0 : The rifles go into a cellar whose address three people know. The police search the trade union house twice and find a duplicating machine. ?][? if e23_alone_found = 1 : A neighbour saw the lorries unload. The police find the cellar on Wednesday and take the rifles and eleven men. ?]
 
 @back
-subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] The Left's answer. More rifles, more pride, and the police will come.
+subtitle: [? if lock_uprising = 1 : Against the party line: costs Unity. ?] Other hundreds will go looking for hay barns. The police will come in force.
 choose-if: lock_uprising < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids armed formations.
 on-arrival: {!
-if (Q.lock_uprising == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-RG.district(Q.e23_alone_d, {guards: 1.5, militancy: 6, repression: 8, loyalty: 4});
-Q.red_guards_arms += 4;
-Q.red_guards_loyalty += 4;
-Q.offensive_satisfaction += 5;
-Q.lean_offensive += 2;
-RG.ecci('bukharin', 4);
-!}
-
-*Die Rote Fahne* prints a photograph of the march. Within a week, hundreds in three other towns have gone looking for farms with hay in their barns. The police in [+ e23_alone_name +] arrest twenty men, and the rifles are not among what they find.
-
-@command
-subtitle: The rifles stay, and so does discipline. The apparatus approves; the hundred grumbles.
-on-arrival: {!
-RG.district(Q.e23_alone_d, {guards: 0.5, loyalty: 6});
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('uprising');
+Q.e23_alone = 1;
+RG.district(Q.e23_alone_d, {guards: 1.5, militancy: 6, repression: 10, loyalty: 4});
 Q.red_guards_arms += 3;
-Q.red_guards_loyalty += 8;
-Q.unity += 2;
-Q.offensive_satisfaction -= 2;
-Q.lean_unionist += 1;
-RG.ecci('trotsky', 4);
+RG.ecci('bukharin', 4);
+Q.lean_offensive += 2;
 !}
 
-A man from the military apparatus arrives on the night train. The rifles go into a cellar whose address only three people know, and the hundred's leader is made a company commander in an army that does not officially exist.
+*Die Rote Fahne* prints a photograph of the march. Within a week hundreds in three other towns have raided farms of their own.
 
-@disown
-subtitle: The SPD and the courts are satisfied. The district is not.
+@return
+subtitle: The courts and the SPD are satisfied. The hundred is not.
 on-arrival: {!
-RG.district(Q.e23_alone_d, {guards: -1.5, loyalty: -8, repression: -4});
+Q.e23_alone = 3;
+RG.district(Q.e23_alone_d, {guards: -1, loyalty: -8, repression: -4});
 Q.spd_relation += 4;
-Q.offensive_satisfaction -= 8;
-Q.unionist_satisfaction += 2;
-Q.red_guards_loyalty -= 6;
-Q.lean_unionist += 1;
-RG.ecci('radek', 3);
 !}
 
-The Zentrale declares that the party had no knowledge of the raid. The rifles are left at the police station in a handcart. The hundred's leader tears up his membership card in front of the district office.
+The rifles are left outside the police station in a handcart. The hundred's leader tears up his card in front of the district office.

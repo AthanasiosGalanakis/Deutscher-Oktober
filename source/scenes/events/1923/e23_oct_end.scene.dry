@@ -1,109 +1,79 @@
 title: The Decision
-subtitle: The German revolution is won or lost.
+subtitle: After two weeks of fighting, the reports from the districts are in.
 new-page: true
 tags: event
-view-if: crisis_october = 1 and crisis_time >= 5 and e23_rising_phase = 1 and e23_october_done = 0
+view-if: crisis_october = 1 and e23_rising_phase = 1 and e23_battle_done = 1 and e23_october_done = 0 and (e23_oct_fight >= 2 or e23_oct_alive = 0 or crisis_time >= e23_oct_end_time)
 max-visits: 1
 priority: 4
 on-arrival: {!
-var m = Q.crisis_momentum;
-if (Q.red_guards_strength >= 40) { m += 3; }
-if (Q.red_guards_arms >= 50) { m += 3; }
-if (Q.warsaw_outcome == 2) { m += 8; }
-if (Q.army_loyalty >= 70) { m -= 6; }
-if (Q.army_loyalty < 35) { m += 3; }
-// the districts decide it: armed, angry, loyal districts hold; policed ones break
-var dstr = function (d) {
-    var p = 'district_' + d + '_';
-    return Q[p + 'guards'] * 1.0 + Q[p + 'militancy'] * 0.15 + Q[p + 'loyalty'] * 0.1
-        - Q[p + 'repression'] * 0.15 + Math.min(8, Q[p + 'members'] / 8) + (Q[p + 'strike'] ? 3 : 0);
-};
-var regions = {1: ['saxony', 'thuringia'], 2: ['berlin'], 3: ['ruhr', 'hamburg']};
-var reg = regions[Q.e23_focus] || ['saxony', 'thuringia', 'berlin'];
-var S = 0;
-for (var rd of reg) { S += dstr(rd); }
-S = S / reg.length;
-Q.e23_oct_strength = Math.round(S);
-Q.e23_oct_district_bonus = Math.round(Math.max(-6, Math.min(8, (S - 18) / 2)));
-m += Q.e23_oct_district_bonus;
-var strongest = Q.districts.slice().sort(function (a, b) { return dstr(b) - dstr(a); });
-Q.e23_oct_best_name = Q.district_names[strongest[0]];
-Q.e23_oct_worst_name = Q.district_names[strongest[strongest.length - 1]];
-var region_ok = (Q.e23_focus == 1 && (Q.saxony_government == 1 || Q.district_saxony_loyalty >= 65 || S >= 24))
-    || (Q.e23_focus == 3 && (Q.ruhr_red_army == 2 || Q.district_ruhr_loyalty >= 55 || Q.district_hamburg_loyalty >= 55 || S >= 24));
-// a national victory also needs the masses and a wavering army behind the momentum
-if (m >= 92 && Q.worker_support >= 35 && Q.army_loyalty < 60) {
-    Q.e23_oct_result = 1;
-    Q.german_october = 3;
-} else if (m >= 66 && region_ok) {
-    Q.e23_oct_result = 2;
-    Q.german_october = 2;
-    Q.e23_red_region = (Q.e23_focus == 3) ? ((Q.ruhr_red_army == 2 || dstr('ruhr') >= dstr('hamburg')) ? 2 : 3) : 1;
-} else if (m < 15) {
-    Q.e23_oct_result = 4;
-    Q.german_october = 2;
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.octTick(Q.crisis_time);
+var held = Q.e23_oct_rising || [];
+var has = function (d) { return held.indexOf(d) >= 0; };
+var r;
+if (has('berlin') && held.length >= 4 && Q.army_loyalty < 50) {
+    r = 1;
+} else if (has('saxony') || has('thuringia') || has('halle')) {
+    r = 2; Q.e23_red_region = 1;
+} else if (has('ruhr')) {
+    r = 2; Q.e23_red_region = 2;
+} else if (has('hamburg') || has('bremen')) {
+    r = 2; Q.e23_red_region = 3;
+} else if (Q.e23_oct_arms < 2 && Q.spd_relation < 20 && Q.army_loyalty >= 55) {
+    r = 4;
 } else {
-    Q.e23_oct_result = 3;
-    Q.german_october = 2;
-    // whether Seeckt is tempted to keep the power the emergency gives him
-    Q.e23_seeckt_ambition = (Math.random() < 0.3) ? 1 : 0;
+    r = 3;
 }
-// Moscow's verdict on its own plan
-var verdict = {1: ['success', 3], 2: ['success', 3], 3: ['partial', 2], 4: ['partial', 2]}[Q.e23_oct_result];
+Q.e23_oct_result = r;
+Q.german_october = r == 1 ? 3 : 2;
+Q.e23_oct_martyr_ok = 0;
 if (Q.directive_active && Q.directive_id == 'october') {
-    RG.directiveResolve(verdict[0]);
+    RG.directiveResolve(r <= 2 ? 'success' : 'partial');
     Q.directive_reckoning = 0;
 }
-Q.e23_oct_verdict = verdict[1];
-if (Q.e23_oct_result == 1) {
+Q.e23_oct_verdict = r <= 2 ? 3 : 2;
+if (r == 1) {
     RG.ecci('all', 15);
-    RG.ecci('trotsky', 15);
-    for (var wd of Q.districts) { RG.district(wd, {repression: -30, militancy: 8}); }
-    RG.news('Councils take power: Seeckt flees Berlin', 3);
-} else if (Q.e23_oct_result == 2) {
-    RG.ecci('all', 6);
+    Q.districts.forEach(function (d) { RG.district(d, {repression: -30, militancy: 8}); });
+    RG.news('Councils take power: Seeckt leaves Berlin', 3);
+    RG.ledger('The German October won: the councils took Berlin.', 'e23_won');
+} else if (r == 2) {
     RG.ecci('trotsky', 8);
     var red = {1: ['saxony', 'thuringia'], 2: ['ruhr'], 3: ['hamburg', 'bremen']}[Q.e23_red_region];
-    for (var xd of Q.districts) {
-        if (red.indexOf(xd) >= 0) { RG.district(xd, {repression: -25, guards: 3, loyalty: 8}); }
-        else { RG.district(xd, {repression: 15}); }
-    }
-    RG.news('Councils hold ' + red.map(function (d) { return Q.district_names[d]; }).join(' and ') + ' against the Reichswehr', 3);
+    Q.districts.forEach(function (d) {
+        RG.district(d, red.indexOf(d) >= 0 ? {repression: -25, guards: 2, loyalty: 8} : {repression: 15});
+    });
+    Q.e23_red_names = RG.e22.list(red);
+    RG.news('Councils hold ' + Q.e23_red_names + ' against the Reichswehr', 3);
 } else {
     RG.ecci('trotsky', -10);
     RG.ecci('zinoviev', -6);
-    RG.ecci('radek', -4);
-    for (var ld of Q.districts) {
-        RG.district(ld, {repression: reg.indexOf(ld) >= 0 ? 10 : 4, guards: -Q['district_' + ld + '_guards'] * 0.5});
-        if (Q['district_' + ld + '_strike']) { RG.endStrike(ld, 'crushed'); }
-    }
+    Q.e22_workers_gov = 0;
+    Q.e23_seeckt_ambition = Math.random() < 0.3 ? 1 : 0;
+    Q.districts.forEach(function (d) {
+        RG.district(d, {repression: 8, guards: -Q['district_' + d + '_guards'] * 0.5});
+        if (Q['district_' + d + '_strike']) { RG.endStrike(d, 'crushed'); }
+    });
     RG.news('The rising is crushed: thousands arrested', 3);
 }
-Q.e23_october_done = 1;
-Q.crisis = 0; Q.crisis_october = 0; Q.crisis_name = 0; Q.crisis_goal = 0;
+RG.e22.octClear();
 !}
 
 = The Decision
 
-[? if e23_oct_district_bonus >= 3 : In the end the districts decided it. [+ e23_oct_best_name +] held, armed and on strike, when the generals expected it to break. ?][? if e23_oct_district_bonus <= -3 : In the end the districts decided it. Where the rising had to hold, the police had been there first, and the hundreds were too few. ?]
+[? if e23_oct_result = 1 : It started in a barracks in Spandau and went down the railway lines. Battalions elected councils and locked their officers in. On the ninth day General von Seeckt left Berlin for Pomerania with the officers who would follow him. The councils hold [+ e23_oct_held_names +]. ?]
 
-[? if e23_oct_result = 1 : The soldiers would not shoot. It began in a barracks in Spandau and spread down the railway lines: battalions that elected councils, officers locked in their quarters, machine guns handed over to the hundreds. On the sixth day General von Seeckt left Berlin for Pomerania with the officers who would follow him. In Leipzig and Hamburg, in the Ruhr and in the capital, the councils hold power. The German revolution has won. ?]
+[? if e23_oct_result = 2 : Berlin did not fall. [+ e23_red_names +] did not fall either. The Reichswehr is short of reliable battalions, and it has stopped attacking. ?][? if e23_oct_result = 2 and e23_red_region = 1 : The hundreds hold the line of the Erzgebirge and the Thuringian Forest, and the councils govern from Chemnitz to Gera. ?][? if e23_oct_result = 2 and e23_red_region = 2 : The councils govern the pits from Duisburg to Dortmund, between French bayonets and German ones. ?][? if e23_oct_result = 2 and e23_red_region = 3 : The harbour is closed to the Reichswehr's transports, and the sailors in Kiel have elected their own committee. ?]
 
-[? if e23_oct_result = 2 and e23_red_region = 1 : Berlin did not fall, and neither did Saxony. The hundreds hold the line of the Erzgebirge and the Thuringian Forest, the workers' councils govern from Chemnitz to Gera, and the Reichswehr, short of men and of reliable soldiers, has stopped attacking. A red Central Germany stands inside a hostile Reich. ?]
+[? if e23_oct_result = 3 and e23_oct_has_fallen = 1 : [+ e23_oct_fallen_names +] fell first. ?][? if e23_oct_result = 3 : The rising is beaten. The strike broke where the SPD called its members back to work, and the hundreds were driven out of the stations and the town halls one by one. Thousands are under arrest. ?]
 
-[? if e23_oct_result = 2 and e23_red_region = 2 : Berlin did not fall, but the Ruhr is ours. Between the French bayonets and the Reichswehr's, the councils govern the pits and the towns from Duisburg to Dortmund. Neither army wants to be the first to attack. ?]
-
-[? if e23_oct_result = 2 and e23_red_region = 3 : Berlin did not fall, but the coast did not either. Hamburg and Bremen are governed by workers' councils, the harbour is closed to the Reichswehr's transports, and the marines in Kiel have elected their own committee. ?]
-
-[? if e23_oct_result = 3 : The rising is beaten. The strike broke first, in the towns where the SPD called its members back to work, and then the hundreds were driven from the stations and the town halls one by one. The Reichswehr fought its way into Chemnitz and Leipzig. Thousands are under arrest. The leaders are in hiding, or across the border. ?]
-
-[? if e23_oct_result = 4 : It is a massacre. The strike never became general, the soldiers shot, and the hundreds were cut down in the streets. The Reichswehr and the Black Reichswehr hunt the party from district to district, with lists that were stolen from our own couriers. There is nothing left to retreat with. ?]
+[? if e23_oct_result = 4 : It was a massacre. The strike never became general, the soldiers fired, and the hundreds ran out of ammunition on the second day. The Black Reichswehr is going from district to district with lists taken from our couriers. ?]
 
 - @proclaim: Proclaim the German Socialist Soviet Republic.
-- @hold_region: Hold the red region, and build a council republic inside it.
-- @negotiate: Negotiate: give up the region in return for an amnesty.
-- @underground: Retreat underground, and save what can be saved.
-- @last_stand: Fight on in the workers' districts to the end.
+- @hold_region: Hold the red region and build a council republic inside it.
+- @negotiate: Give up the region in return for an amnesty.
+- @underground: Bury the rifles and go underground.
+- @last_stand: Fight on in the workers' districts.
 - @crushed: See how it ends.
 
 @proclaim
@@ -114,83 +84,67 @@ Q.ending_id = 1;
 go-to: game_over
 
 @hold_region
-subtitle: The council republic lives, besieged.
+subtitle: The council republic lives, under siege.
 view-if: e23_oct_result = 2
 on-arrival: {!
+RG.ledger('The councils held ' + Q.e23_red_names + ' against the Reichswehr.', 'e23_region');
 Q.ending_id = 2;
 !}
 go-to: game_over
 
 @negotiate
-subtitle: The rising ends without a massacre. The Republic survives, and so does the party.
+subtitle: Nobody else dies. The party stays legal and the hundreds lose their rifles.
 view-if: e23_oct_result = 2
 on-arrival: {!
 Q.e23_red_region = 0;
-RG.ledger('The councils gave up their red region in return for an amnesty.', 'e23_amnesty');
-RG.news('Amnesty: the councils hand back the town halls', 3);
+RG.ledger('The councils gave up ' + Q.e23_red_names + ' in return for an amnesty.', 'e23_amnesty');
 Q.repression += 10;
-Q.worker_support += 2;
 Q.red_guards_strength *= 0.5;
-for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 0.9;
-}
-Q.unionist_satisfaction += 4;
+Q.districts.forEach(function (d) { Q['district_' + d + '_members'] *= 0.9; });
 Q.offensive_satisfaction -= 8;
 !}
 
-The councils hand back the town halls in return for an amnesty, signed by Stresemann and witnessed by the Social Democratic ministers. Seeckt calls it treason. The hundreds go home with their heads up, and without their rifles.
+Stresemann signs the amnesty and two Social Democratic ministers witness it. Seeckt calls it treason. The hundreds hand in their rifles at the town halls and go home.
 
 @underground
-subtitle: The party goes into illegality. Many members are lost; the organisation survives.
+subtitle: Many members are lost. The organisation survives.
 view-if: e23_oct_result = 3
 on-arrival: {!
-var arr = ['meyer', 'pieck', 'eberlein', 'walcher', 'maslow', 'thalheimer'].filter(function (c) { return RG.isFree(c); });
-Q.e23_oct_arrests = arr.slice(0, 3).map(function (c) { return RG.comradeName(c); }).join(', ');
+var arr = ['meyer', 'pieck', 'eberlein', 'walcher', 'maslow', 'thalheimer'].filter(function (c) { return RG.isFree(c); }).slice(0, 3);
+Q.e23_oct_arrests = arr.map(function (c) { return RG.comradeName(c); }).join(', ');
 Q.e23_oct_has_arrests = arr.length ? 1 : 0;
-arr.slice(0, 3).forEach(function (c) { RG.arrest(c, 9, {quiet: true}); });
+arr.forEach(function (c) { RG.arrest(c, 9, {quiet: true}); });
 if (arr.length) { RG.news(Q.e23_oct_arrests + ' arrested', 2); }
-Q.repression += 25;
-Q.stability -= 4;
+Q.repression += 20;
 Q.red_guards_strength *= 0.3;
-Q.red_guards_arms *= 0.5;
-Q.worker_support -= 6;
-for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 0.65;
-}
-Q.unity -= 6;
+Q.districts.forEach(function (d) { Q['district_' + d + '_members'] *= 0.65; });
 !}
 
-The order goes out: bury the rifles, burn the lists, scatter. [? if e23_oct_has_arrests = 1 : The police are faster than the couriers: [+ e23_oct_arrests +] are taken in the first week. ?] By Christmas the party has lost a third of its members, and most of its weapons.
+The order goes out to bury the rifles, burn the membership lists and scatter. [? if e23_oct_has_arrests = 1 : The police move faster than the couriers, and [+ e23_oct_arrests +] are taken in the first week. ?] By Christmas the party has lost a third of its members.
 
 @last_stand
-subtitle: A legend, and very few survivors.
+subtitle: Very few will survive it, and the party will remember them.
 view-if: e23_oct_result = 3
 on-arrival: {!
-var fall = (Q.e23_focus == 3) ? 'thalmann' : ((Q.e23_focus == 2) ? 'maslow' : 'frolich');
-if (!RG.isFree(fall)) { fall = ['thalmann', 'maslow', 'frolich', 'eberlein'].filter(function (c) { return RG.isFree(c); })[0] || 0; }
-Q.e23_oct_fallen = fall ? RG.comradeName(fall) : 0;
-Q.e23_oct_has_fallen = fall ? 1 : 0;
-if (fall) { RG.kill(fall, {news: RG.comradeName(fall) + ' killed on the barricades'}); RG.ledger(RG.comradeName(fall) + ' fell on the barricades of the German October.', 'e23_fallen'); }
-Q.repression += 35;
-Q.stability -= 6;
-Q.red_guards_strength *= 0.1;
-Q.red_guards_arms *= 0.2;
-Q.militancy += 10;
-Q.worker_support -= 3;
-for (var d of Q.districts) {
-    Q['district_' + d + '_members'] *= 0.5;
+var fall = ['thalmann', 'maslow', 'frolich', 'eberlein'].filter(function (c) { return RG.isFree(c); })[0] || 0;
+Q.e23_oct_martyr = fall ? RG.comradeName(fall) : 0;
+Q.e23_oct_martyr_ok = fall ? 1 : 0;
+if (fall) {
+    RG.kill(fall, {news: RG.comradeName(fall) + ' killed on the barricades'});
+    RG.ledger(RG.comradeName(fall) + ' was killed on the barricades of the German October.', 'e23_fallen');
 }
-Q.offensive_satisfaction += 6;
+Q.repression += 30;
+Q.red_guards_strength *= 0.1;
+Q.militancy += 10;
+Q.districts.forEach(function (d) { Q['district_' + d + '_members'] *= 0.5; });
 !}
 
-In Wedding and Barmbek and the Chemnitz suburbs the barricades hold for a week. [? if e23_oct_has_fallen = 1 : [+ e23_oct_fallen +] is killed on the last of them. ?] When they fall, the Reichswehr shoots the prisoners it does not need. The workers who survive will name their sons after the dead.
+The barricades in Wedding, Barmbek and the Chemnitz suburbs hold for a week. [? if e23_oct_martyr_ok = 1 : [+ e23_oct_martyr +] is killed on the last of them. ?] The Reichswehr shoots the prisoners it does not need.
 
 @crushed
 view-if: e23_oct_result = 4
 on-arrival: {!
-for (var d of Q.districts) {
-    Q['district_' + d + '_members'] = 0.1;
-}
+Q.districts.forEach(function (d) { Q['district_' + d + '_members'] = 0.1; });
 Q.members = 0.8;
 Q.members_display = '0.8';
 Q.kpd_banned = 1;

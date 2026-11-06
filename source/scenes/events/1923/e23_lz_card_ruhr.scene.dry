@@ -13,45 +13,30 @@ tags: congress
 
 = The Delegates from the Ruhr
 
-The Ruhr delegation arrives a day late. Its members crossed the French customs line on foot, with their mandates sewn into their coat linings, and two of them spent a night in a French guardroom in Bochum. When they come into the hall, the whole congress stands up.
+The Ruhr delegation arrives a day late. Its members crossed the French customs line on foot with their mandates sewn into their coat linings, and two of them spent a night in a guardroom in Bochum. When they come into the hall the whole congress stands up. [? if e23_lz_ruhr_left = 1 : They follow the Left, and they want the congress to talk about the Ruhr instead of Saxony. ?][? if e23_lz_ruhr_left = 0 : They are as divided as the pits they come from. ?]
 
-[? if e23_lz_ruhr_left = 1 : They follow the Left, and they want the congress to talk about the Ruhr, not about Saxony. ?][? if e23_lz_ruhr_left = 0 : They are divided, like the pits they come from, and they want to know what the party will do for them. ?]
-
-- @promise: Promise the Ruhr the party's money and its best organisers.
-- @floor: Give them the floor to speak about the occupation.
-- @caution: Thank them, and move on to the theses.
+- @promise: Promise the Ruhr money and organisers.
+- @floor: Give them the floor.
 
 @promise
-subtitle: Costs 1 fund. Wins many of the Ruhr delegates; the district will expect the promise to be kept.
+subtitle: Costs 1 fund. Many of them come over, and the district will expect the promise kept.
 choose-if: resources >= 1
 unavailable-subtitle: We have nothing to promise them.
 on-arrival: {!
 Q.resources -= 1;
 Q.congress_last_moved = RG.congress.convert('ruhr', 0.35);
 RG.congress.tally();
-RG.district('ruhr', {loyalty: 6, militancy: 3});
+RG.district('ruhr', {loyalty: 6});
 !}
 
-[? if congress_last_moved > 0 : [+ congress_last_moved +] of the Ruhr delegates come over to our motion. ?][? if congress_last_moved = 0 : The Ruhr delegates were already with us. Now they are with us and expecting money. ?] Their secretary writes the promise down in a notebook that will be produced at the next congress.
+[? if congress_last_moved > 0 : [+ congress_last_moved +] of the Ruhr delegates come over to our motion. ?][? if congress_last_moved = 0 : The Ruhr delegates were with us already, and now they expect money as well. ?] Their secretary writes the promise in a notebook.
 
 @floor
 subtitle: The hall catches fire. It helps whoever sounds most like the Ruhr.
-view-if: offensive_gone = 0
 on-arrival: {!
-RG.congress.swayTo('offensive', 0.04);
+if (Q.offensive_gone == 0) { RG.congress.swayTo('offensive', 0.04); } else { RG.congress.sway(0.02); }
 RG.congress.bitter(2);
 RG.district('ruhr', {militancy: 6});
-Q.militancy += 2;
-Q.lean_offensive += 1;
 !}
 
-A miner from Gelsenkirchen speaks for twenty minutes about the French soldiers in the pit yards and the German owners in their villas. By the end of it, [+ congress_last_moved +] delegates have been carried towards the Left. Brandler, on the platform, applauds with care.
-
-@caution
-subtitle: The theses stay at the centre of the debate. The Ruhr notices.
-on-arrival: {!
-if (Q.unionist_gone == 0) { RG.congress.swayTo('unionist', 0.02); }
-RG.district('ruhr', {loyalty: -5});
-!}
-
-The chair thanks the comrades from the occupied territory and calls the next speaker on the Saxon question. The Ruhr delegates sit down, and do not stand up again for anyone.
+A miner from Gelsenkirchen speaks for twenty minutes about French soldiers in the pit yards and German owners in their villas. [+ congress_last_moved +] delegates are carried along with him. Brandler, on the platform, applauds carefully.

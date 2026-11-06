@@ -1,5 +1,5 @@
 title: The Warrant
-subtitle: The State Court issues a warrant for the party's leader.
+subtitle: The State Court wants the party's leader for high treason.
 new-page: true
 tags: event
 view-if: year = 1923 and month >= 11 and kpd_banned = 1 and e23_ban_done = 1 and e23_flight_done = 0 and crisis = 0 and congress = 0
@@ -15,67 +15,63 @@ Q.e23_fl_id = id;
 Q.e23_fl_name = id ? RG.comradeName(id) : 0;
 Q.e23_fl_has = id ? 1 : 0;
 Q.e23_fl_ok = 0;
+Q.e23_fl_p = Q.e23_cells == 1 ? 0.75 : 0.5;
 !}
 
 = The Warrant
 
-[? if e23_fl_has = 1 : The State Court in Leipzig has issued a warrant for **[+ e23_fl_name +]**, for high treason: preparing an armed rising against the constitution of the Reich. The charge sheet runs to forty pages. Somebody has given the prosecutor the minutes of meetings that only a dozen people attended. ?][? if e23_fl_has = 0 : The State Court in Leipzig has issued warrants for the whole of the Zentrale. There is nobody left at liberty to arrest who matters, and the police arrest the district secretaries instead. ?]
+[? if e22_protection_law = 1 : The State Court for the Protection of the Republic, which our deputies voted to create the summer before last, ?][? if e22_protection_law != 1 : The State Court in Leipzig ?] has issued a warrant for high treason. [? if e23_fl_has = 1 : It names [+ e23_fl_name +]. The charge sheet quotes the minutes of a meeting that only nine people attended. ?][? if e23_fl_has = 0 : It names the whole Zentrale, and there is nobody of the Zentrale left to arrest. The police take the district secretaries instead. ?]
 
-[? if e23_fl_has = 1 : The police have the flat in Neukölln under watch, and the safe flat in Steglitz. A comrade on the railways says there is a goods train to Bodenbach on Thursday night, and a guard who owes the party a favour. ?]
+[? if e23_fl_has = 1 : A railwayman in Dresden says there is a goods train to Bodenbach on Thursday night, with a guard who owes the party a favour. ?]
 
-- @abroad: Get [+ e23_fl_name +] across the border to Czechoslovakia.
-- @hide: Hide [+ e23_fl_name +] in Berlin, and keep working.
-- @dock: Let [+ e23_fl_name +] stand trial, and speak from the dock.
-- @nobody: Close the offices and wait for the storm to pass.
+- @abroad: Get [+ e23_fl_name +] over the border to Prague.
+- @hide: Hide [+ e23_fl_name +] in Berlin.
+- @dock: Let [+ e23_fl_name +] stand trial.
+- @nobody: Close the offices and wait.
 
 @abroad
-subtitle: Safe, and far away. The party at home must manage without its leader.
+subtitle: Safe in Prague. The party at home is run by letter.
 view-if: e23_fl_has = 1
 on-arrival: {!
 RG.exile(Q.e23_fl_id, {news: Q.e23_fl_name + ' escapes to Czechoslovakia'});
-Q.unity -= 2;
 Q.independence -= 3;
-RG.ledger(Q.e23_fl_name + ' fled abroad after the ban.', 'e23_flight');
+RG.ledger(Q.e23_fl_name + ' fled to Prague after the ban.', 'e23_flight');
 !}
 
-On Thursday night [+ e23_fl_name +] climbs into an empty coal wagon at the Dresden goods yard. By Friday morning the train is in Bodenbach, and the Czech comrades are waiting with a car. The next letter from the Zentrale to the districts is posted in Prague.
+[+ e23_fl_name +] climbs into an empty coal wagon at the Dresden goods yard on Thursday night. On Friday morning the Czech comrades are waiting at Bodenbach with a car.
 
 @hide
-subtitle: A gamble. If it works, the party keeps its leader at home. If not, the police have a trophy.
+subtitle: [? if e23_cells = 1 : With the new cells the odds are good. ?][? if e23_cells != 1 : The odds are about even. ?] If the police find the flat, they have a trophy.
 view-if: e23_fl_has = 1
 on-arrival: {!
-Q.e23_fl_ok = Math.random() < 0.55 ? 1 : 0;
+Q.e23_fl_ok = Math.random() < Q.e23_fl_p ? 1 : 0;
 if (Q.e23_fl_ok) {
     Q.unity += 3;
-    Q.red_guards_loyalty += 3;
     RG.setRole(Q.e23_fl_id, 'Leads the party in hiding');
 } else {
     RG.arrest(Q.e23_fl_id, 12, {news: Q.e23_fl_name + ' arrested in Berlin'});
-    Q.unity -= 4;
-    RG.ledger(Q.e23_fl_name + ' was arrested in hiding in Berlin.', 'e23_flight');
+    RG.ledger(Q.e23_fl_name + ' was found in hiding in Berlin and arrested.', 'e23_flight');
 }
 !}
 
-[? if e23_fl_ok = 1 : [+ e23_fl_name +] moves every second night: an allotment hut in Treptow, a dentist's flat in Charlottenburg, a room above a bakery in Wedding. The police search everywhere twice. The party's circulars keep coming, signed with a name everyone knows. ?][? if e23_fl_ok = 0 : The police come to the room above the bakery at four in the morning. They know exactly which stair creaks. ?]
+[? if e23_fl_ok = 1 : [+ e23_fl_name +] sleeps somewhere different every second night: an allotment hut in Treptow, a dentist's flat in Charlottenburg, a room over a bakery in Wedding. The circulars keep going out to the districts, signed with a name the police know. ?][? if e23_fl_ok = 0 : The police come up the stairs over the bakery at four in the morning. Somebody has told them which room it is. ?]
 
 @dock
-subtitle: Prison, and a speech the whole country will read. Worker support rises.
+subtitle: Prison for years, and a speech that every party paper will print.
 view-if: e23_fl_has = 1
 on-arrival: {!
 RG.arrest(Q.e23_fl_id, 12, {news: Q.e23_fl_name + ' surrenders to the State Court'});
 Q.worker_support += 4;
-Q.militancy += 3;
-Q.unity += 2;
-RG.ledger(Q.e23_fl_name + ' stood trial before the State Court rather than flee.', 'e23_flight');
+RG.ledger(Q.e23_fl_name + ' stood trial before the State Court instead of running.', 'e23_flight');
 !}
 
-[+ e23_fl_name +] walks into the police headquarters on the Alexanderplatz with a lawyer and a prepared statement. The trial will take months. The speech from the dock will be printed in every language of the International.
+[+ e23_fl_name +] walks into police headquarters on the Alexanderplatz with a lawyer and a written statement. The trial will take months, and the statement is already being translated in Moscow.
 
 @nobody
-subtitle: Nothing is risked, and nothing is done.
+subtitle: Nothing is risked.
 view-if: e23_fl_has = 0
 on-arrival: {!
 Q.unity -= 2;
 !}
 
-The district secretaries go to prison, and their deputies take their places, and the deputies of the deputies prepare to.
+The district secretaries go to prison, and their deputies take over the work.

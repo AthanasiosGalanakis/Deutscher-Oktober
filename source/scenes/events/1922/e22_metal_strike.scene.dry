@@ -1,76 +1,68 @@
 title: The Eight-Hour Day
-subtitle: The southern metalworkers are fighting for the forty-six-hour week.
+subtitle: The southern metalworkers strike against a longer week.
 new-page: true
 tags: event
 view-if: year = 1922 and month = 5
 max-visits: 1
 on-arrival: {!
-RG.news('Lenin taken ill at Gorki: the doctors speak of overwork', 2);
+RG.news('Lenin taken ill at Gorki', 2);
+Q.e22_metal_ok = 0;
 !}
 
 = The Eight-Hour Day
 
-The metal employers of southern Germany want their men to work longer for the same wage, and the men have refused. Since March, tens of thousands have been on strike or locked out. The strike funds are empty, the union is negotiating, and the employers' association says it will starve them back.
+The metal employers of Württemberg and Bavaria want forty-eight hours a week instead of forty-six, for the same wage. Since March tens of thousands of men have been on strike or locked out. The union's strike fund is empty and the employers say they will starve them back.
 
-[? if bavaria_soviet = 2 : In Red Bavaria the councils decreed the eight-hour day long ago. The fight is in Württemberg and Baden, and the employers there point to Munich as a warning. ?]
+The eight-hour day was the one gain of November 1918 that every worker feels in his legs. [? if bavaria_soviet = 2 : In Red Bavaria the councils decreed it long ago, and the employers in Stuttgart point to Munich as a warning. ?]
 
-The eight-hour day was the one great gain of the November revolution that every worker can feel in his legs. If it falls in the south, it will fall everywhere. May Day is coming.
-
-- @may_day: Make May Day a national day of action for the strikers.
-- @collect: Collect for the strike funds in every works.
+- @collect: Take collections for the strike fund.
 - @occupy: Tell the locked-out men to occupy the works.
-
-@may_day
-subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] Joint May Day marches with the unions, for the eight-hour day.
-choose-if: lock_united_front < 2
-unavailable-subtitle: The [+ leading_faction_adj +] line forbids marching with the reformist unions.
-on-arrival: {!
-if (Q.lock_united_front == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
-Q.e22_metal = 1;
-Q.worker_support += 4;
-Q.spd_relation += 3;
-Q.unionist_satisfaction += 4;
-Q.lean_unionist += 1;
-!}
-
-On May Day the slogans are the same in every procession: hands off the eight-hour day. In late May the southern strike ends in a compromise that saves the principle, for now.
+- @may_day: Make May Day their day.
 
 @collect
-subtitle: Costs 1 fund. Wins goodwill in the south.
+subtitle: Costs 1 fund. A gesture the south will remember.
 choose-if: resources >= 1
-unavailable-subtitle: We have no funds to give.
+unavailable-subtitle: We have nothing to send.
 on-arrival: {!
-Q.e22_metal = 2;
 Q.resources -= 1;
-Q.worker_support += 3;
-Q.district_bavaria_members += 0.8;
-Q.district_bavaria_loyalty += 5;
-Q.unity += 2;
+RG.district('bavaria', {members: 0.08, loyalty: 6});
+Q.e22_metal = 2;
 !}
 
-Collection lists go round the Berlin and Saxon works. The money is small; the gesture is not forgotten in Munich and Stuttgart.
+Collection lists go round the Berlin and Saxon works. The money is small. In Stuttgart and Munich they know where it came from.
 
 @occupy
-subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] The Left's answer. Bold, and the police will come.
+subtitle: [? if lock_councils = 1 : Against the party line: costs Unity. ?] Walcher thinks they might hold the works one time in three. If they do, the employers give way.
 choose-if: lock_councils < 2
 unavailable-subtitle: The [+ leading_faction_adj +] line forbids occupations.
 on-arrival: {!
-RG.district('bavaria', {militancy: 5, repression: 4});
-if (Q.lock_councils == 1) {
-    Q.unity -= 10;
-    Q[Q.leading_faction + '_satisfaction'] -= 10;
-}
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('councils');
 Q.e22_metal = 3;
-Q.militancy += 7;
-Q.repression += 6;
-Q.worker_support += 1;
-Q.offensive_satisfaction += 5;
-Q.ultraleft_satisfaction += 4;
+Q.e22_metal_ok = Math.random() < 0.35 ? 1 : 0;
+if (Q.e22_metal_ok) {
+    RG.district('bavaria', {members: 0.15, loyalty: 10, militancy: 8});
+    Q.worker_support += 4;
+    RG.ledger('The occupied metal works of the south saved the forty-six-hour week.', 'e22_metal');
+} else {
+    RG.district('bavaria', {members: -0.1, repression: 10});
+}
 Q.lean_offensive += 2;
-Q.district_bavaria_members -= 0.5;
 !}
 
-Two works near Stuttgart are occupied for three days before the Württemberg police clear them. The strike ends soon after, and our members in the south are the first to be blacklisted.
+[? if e22_metal_ok = 1 : The men of Bosch in Stuttgart and MAN in Augsburg hold their works for eleven days. On the twelfth the employers' association withdraws its demand. ?][? if e22_metal_ok = 0 : The Württemberg police clear the works on the third day. Our men are the first on the employers' blacklists. ?]
+
+@may_day
+subtitle: [? if lock_united_front = 1 : Against the party line: costs Unity. ?] One slogan in every procession, beside the unions.
+choose-if: lock_united_front < 2
+unavailable-subtitle: The [+ leading_faction_adj +] line forbids marching with the reformist unions.
+on-arrival: {!
+if (!RG.e22) { this._runActions(this.game.scenes.e22_lib.onArrival); }
+RG.e22.against('united_front');
+Q.e22_metal = 1;
+Q.worker_support += 3;
+Q.spd_relation += 3;
+Q.lean_unionist += 1;
+!}
+
+On May Day the slogan is the same in every procession: hands off the eight-hour day. The strike ends in late May with a compromise that keeps the principle.

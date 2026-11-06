@@ -1,4 +1,4 @@
-title: The End of 1923
+title: New Year 1924
 subtitle: The year of crisis is over.
 new-page: true
 tags: event
@@ -7,18 +7,16 @@ max-visits: 1
 priority: 5
 on-arrival: {!
 Q.ending_id = 6;
-RG.ledger(Q.kpd_banned == 1 ? 'The party entered 1924 banned, but alive.' : 'The party entered 1924 legal, and alive.', 'end_1924');
+RG.ledger(Q.kpd_banned == 1 ? 'The party went into 1924 banned.' : 'The party went into 1924 legal.', 'end_1924');
 !}
 
-= The End of 1923
+= New Year 1924
 
-The year that began with French soldiers in Essen ends with a new currency, a general with emergency powers, and a Republic that is still standing, to the surprise of many of its citizens.
+The year began with French soldiers in Essen. It ends with a new currency, a general holding emergency powers, and a Republic that is still standing.
 
-Five years ago, a hundred-odd delegates founded the Communist Party of Germany in the Prussian Landtag. Since then it has been through civil war, risings, splits, congresses beyond counting and the whole of the inflation. [? if kpd_banned = 1 : It enters 1924 banned. ?][? if kpd_banned = 0 : It enters 1924 legal, which in itself is something. ?]
+Five years ago a hundred delegates founded the party in the Prussian Landtag, on the last days of December 1918. [? if kpd_banned = 1 : On New Year's Eve 1923 the party is banned, and its Central Committee meets in a flat with the curtains drawn. ?][? if kpd_banned = 0 : On New Year's Eve 1923 the party is legal, and its offices on the Rosenthaler Strasse are open. ?]
 
-It is time to take stock.
-
-- @finish: See how the party stands.
+- @finish: Look back over the five years.
 
 @finish
 go-to: game_over

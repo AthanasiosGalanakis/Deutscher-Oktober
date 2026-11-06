@@ -1,5 +1,5 @@
 title: Lenin Falls Silent
-subtitle: A third stroke takes Lenin's speech, and Moscow divides.
+subtitle: A third stroke takes Lenin's speech.
 new-page: true
 tags: event
 view-if: year = 1923 and month = 3 and comintern_member = 1
@@ -11,58 +11,41 @@ RG.ecci('lenin', -10);
 
 = Lenin Falls Silent
 
-On 10 March Lenin suffers a third stroke. He lives, at Gorki, but he cannot speak, and he will not write again. His last articles, dictated in the winter, were against bureaucracy, against the Workers' and Peasants' Inspection, and, those close to him say, against the general secretary of the party, Joseph Stalin, who has been answering the letters.
+On 10 March Lenin suffers a third stroke. He lives, at Gorki, but he cannot speak and will not write again. Zinoviev and Kamenev have joined the general secretary, Stalin, against Trotsky. Radek, who knows Germany best, belongs to nobody.
 
-The men who are left do not trust each other. Zinoviev, President of the International, and Kamenev have joined Stalin in a triumvirate against Trotsky, who has the Red Army and the reputation. Radek, who knows Germany best, is nobody's man. Bukharin edits *Pravda* and is courted by everyone.
+The Zentrale's monthly report goes to the Executive. Somebody there has to read it first.
 
-The German party lives on the Executive's letters and the Executive's money. Whoever wins in Moscow will decide what those letters say.
-
-- @zinoviev: Report to Zinoviev, as the President of the International.
-- @trotsky: Send the Zentrale's reports to Trotsky.
-- @radek: Keep to Radek, who knows Germany.
-- @aloof: Keep the German party out of the Russian quarrel.
+- @zinoviev: Send it to Zinoviev, the President.
+- @trotsky: Send it to Trotsky.
+- @radek: Send it to Radek.
 
 @zinoviev
-subtitle: The President is pleased, and he likes the Left. Trotsky notices.
+subtitle: The President likes to be asked. He likes the Left better.
 on-arrival: {!
 RG.ecci('zinoviev', 10);
 RG.ecci('trotsky', -4);
+Q.e23_patron = 1;
 Q.independence -= 3;
-Q.offensive_satisfaction += 3;
-Q.lean_offensive += 1;
 !}
 
-The Zentrale's monthly report goes to the President's office first. Zinoviev answers it himself, at length, with compliments for the Berlin district.
+Zinoviev answers the report himself, at length, with compliments for the Berlin district.
 
 @trotsky
-subtitle: Trotsky wants a German revolution and a date for it. The triumvirs keep a list.
+subtitle: Trotsky wants a German revolution and a date for it. The triumvirs keep a list of who writes to him.
 on-arrival: {!
 RG.ecci('trotsky', 10);
 RG.ecci('zinoviev', -6);
-Q.red_guards_arms += 2;
-Q.lean_unionist += 1;
+Q.e23_patron = 2;
 !}
 
-Trotsky reads German reports with a pencil and returns them with questions about rifles, railway junctions and the loyalty of the Reichswehr's sergeants. In the Kremlin, someone notes who is writing to him.
+Trotsky sends the reports back with questions in pencil about rifles, railway junctions and the sergeants of the Reichswehr.
 
 @radek
-subtitle: The Right's friend in Moscow. Radek defends us; nobody defends Radek.
+subtitle: Radek will defend us in Moscow. Nobody there defends Radek.
 on-arrival: {!
-RG.ecci('radek', 8);
-RG.ecci('zinoviev', -2);
-Q.unionist_satisfaction += 3;
-Q.lean_unionist += 1;
+RG.ecci('radek', 10);
+RG.ecci('zinoviev', -3);
+Q.e23_patron = 3;
 !}
 
-Radek promises to keep the German question out of the Russian one. It is a promise he cannot keep, and he knows it.
-
-@aloof
-subtitle: The Spartacist answer. More independence, and nobody in Moscow owes us anything.
-on-arrival: {!
-Q.independence += 5;
-RG.ecci('all', -3);
-Q.luxemburgist_satisfaction += 4;
-Q.lean_luxemburgist += 1;
-!}
-
-The Zentrale resolves that the German party has no view on the internal questions of the Russian party. In Moscow, every faction reads that as a view.
+Radek promises to keep the German question out of the Russian one. He knows he cannot.
